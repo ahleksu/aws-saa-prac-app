@@ -68,7 +68,7 @@
 
 > Goal: ≥270 validated questions across the four domain JSONs, plus an aggregated `all.json`. **This is the highest-leverage phase for exam prep — invest here before polishing UI.**
 
-- [ ] **P1-T1** — Create `scripts/validate-quiz.mjs` (Node ESM, no deps; or use `node:fs`). Validates each `public/quiz/*.json` per PLAN §5 rules. Exit non-zero on any violation. Print a per-file summary `{file, count, single, multiple, errors}`.
+- [x] **P1-T1** — Create `scripts/validate-quiz.mjs` (Node ESM, no deps; or use `node:fs`). Validates each `public/quiz/*.json` per PLAN §5 rules. Exit non-zero on any violation. Print a per-file summary `{file, count, single, multiple, errors}`.
   - **Acceptance:** Running on the empty seed files passes (count 0 ok). Running with a deliberately broken question fails with a clear message.
 
 - [ ] **P1-T2** — Create `scripts/build-all-json.mjs` that concatenates the four domain files, re-sequences IDs (1..N), and writes `public/quiz/all.json`. Idempotent.

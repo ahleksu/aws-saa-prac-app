@@ -50,6 +50,8 @@
 
 ## Phase P1 — Question Bank
 
+- [x] P1-T1: `scripts/validate-quiz.mjs` (Node ESM, no deps). Validates schema + single/multiple invariants (single = exactly 4 answers / 1 correct; multiple = ≥5 answers, ≥2 correct, stem must include `(Choose TWO)`/`(Choose THREE)` and correct count must match) + unique IDs per file + domain whitelist (4 SAA literals) + resource URL host whitelist (`docs.aws.amazon.com`, `aws.amazon.com`, `wa.aws.amazon.com`, https only). Accepts optional file/dir args (default scans `public/quiz/`). Positive run on empty seeds → 5/5 OK exit 0; negative run on `/tmp` fixture with 9 deliberate violations → exits 1 with all 9 errors anchored to `q[i] (id=N) ...`. — 2026-05-10
+
 **Volume tracker** (target from PLAN §6.2):
 
 | Domain | File | Authored | Target | % |
