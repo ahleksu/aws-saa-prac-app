@@ -31,6 +31,34 @@
 - [x] **P0-T7** — Update root `App` component template to render `<router-outlet />` only (drop the default scaffold). Keep the test in `app.spec.ts` passing.
   - **Acceptance:** `npm test` green; `/` shows HomeComponent (not the Angular scaffold splash).
 
+> **Alignment tasks (added 2026-05-10):** P0-T5's hand-rolled Home failed manual UX verification. The four tasks below realign the stack with CLF (PrimeNG/Aura-Noir/PrimeIcons/animations) and rewrite Home 1:1 from `aws-clf-prac-app/src/app/pages/home/home.component.html`. P1 stays blocked until P0-T11 acceptance is green.
+
+- [x] **P0-T8** — Install runtime deps: `npm i primeng @primeng/themes primeicons tailwindcss-primeui chart.js @angular/animations` _(swapped `@primeng/themes` → `@primeuix/themes` because the former is deprecated and PrimeNG 21 expects `@primeuix/themes`)_.
+  - **Acceptance:** `npm install` succeeds with no peer-dependency errors against Angular 21.
+
+- [x] **P0-T9** — Wire global config to match CLF:
+  - `src/app/app.config.ts`: add `provideAnimationsAsync()` and `providePrimeNG({ theme: { preset: <Noir custom Aura> } })` mirroring `aws-clf-prac-app/src/app/app.config.ts:10-71` (zinc primary palette, light-mode only, `darkModeSelector: 'none'`).
+  - `src/styles.css`: add `@import "primeicons/primeicons.css";` and `@plugin "tailwindcss-primeui";` (mirror `aws-clf-prac-app/src/styles.css`).
+  - `src/index.html`: title → `AWS SAA-C03 Practice Exam App`; favicon points at `app-icon.png` (copy from CLF `public/`).
+  - **Acceptance:** `ng build --configuration development` succeeds; PrimeIcons render; no console errors.
+
+- [x] **P0-T10** — Rewrite `src/app/pages/home/home.ts` to mirror `aws-clf-prac-app/src/app/pages/home/home.component.html` 1:1, with these adaptations:
+  - Title: `AWS SAA-C03 Practice Exam`.
+  - Byline + 4-icon social row: keep verbatim.
+  - Cards (5 instead of CLF's 6): "All Domains Quiz" (full width), then 4 SAA domain cards — "Domain 1: Design Secure Architectures (30%)" → `secure`, "Domain 2: Design Resilient Architectures (26%)" → `resilient`, "Domain 3: Design High-Performing Architectures (24%)" → `performance`, "Domain 4: Design Cost-Optimized Architectures (20%)" → `cost`. Each uses `<p-button label="Start Quiz" (onClick)="startQuiz('<slug>')">` and the same `border rounded-lg p-6 shadow-sm hover:shadow-lg transform hover:scale-105 transition duration-300` styling.
+  - Live Session card: **omitted** (PLAN §10 defers Live mode); add a one-line note to the disclaimer that Live mode is post-exam.
+  - Disclaimer + Support sections: copy verbatim, swap GitHub link to this repo or remove.
+  - `[@fadeIn]` animation trigger (600ms ease-out, opacity 0→1, translateY(20px)→0).
+  - Keep project rules: no `standalone: true` declaration (omit), `OnPush`, signals, `inject(Router)`, `@if`/`@for`.
+  - **Acceptance:** Side-by-side visual diff against CLF home matches; AXE clean; keyboard-navigable.
+
+- [x] **P0-T11** — Verify alignment end-to-end before P1.
+  - `npm test` passes (4/4 specs still green).
+  - `ng build --configuration development` succeeds; `ng build` (production) inside 500kB initial-warning / 1MB error budgets.
+  - Manual `npm start` walk: `/` matches CLF reference (hero, social row, 5 cards with hover scale, disclaimer, support footer); `/quiz?type=secure`, `/result`, `/review` still render their stubs under the new theme.
+  - Run AXE in DevTools on `/`; fix all serious/critical issues.
+  - **Acceptance:** all four bullets green → tick `[x]`, flip P0 to **Complete (8 / 11 — P0-T5 superseded)** in PROGRESS.md, mark Blocker as RESOLVED, commit `fix(P0): align UX with CLF reference`.
+
 ---
 
 ## Phase P1 — Question Bank (PLAN §5, §6)

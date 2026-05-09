@@ -49,12 +49,14 @@ Key files in the CLF repo to study before each phase:
 | Inputs/outputs | decorators | **`input()` / `output()` functions** |
 | DI | constructor injection | **`inject()`** function |
 | Control flow | `*ngIf`, `*ngFor` | **`@if`, `@for`, `@switch`** |
-| UI library | PrimeNG 19 + PrimeIcons | **None — Tailwind v4 + plain HTML/SVG.** Don't add PrimeNG. |
-| Charts | `primeng/chart` (wraps Chart.js) | **`chart.js` directly** in a thin signal-driven component |
-| Animations | `@angular/animations` | Skip unless trivially needed via CSS |
+| UI library | PrimeNG 19 + PrimeIcons | **PrimeNG 21 + PrimeIcons + `tailwindcss-primeui` plugin (Aura/Noir preset, light-mode only)** — mirror CLF stack so templates port verbatim. _(Reversed 2026-05-10 after Home page diverged; see Decisions Log.)_ |
+| Charts | `primeng/chart` (wraps Chart.js) | **`chart.js` directly** in a thin signal-driven component (skip the `primeng/chart` wrapper, but reuse CLF's exact Chart.js `data` + `options` configs from `result.component.ts`). |
+| Animations | `@angular/animations` | **`provideAnimationsAsync()`** required by PrimeNG. Reuse CLF's `[@fadeIn]` trigger on Home/Quiz mount. |
 | Tests | Karma + Jasmine | **Vitest** (already configured by `@angular/build:unit-test`) |
 | HTTP client | `provideHttpClient()` (manual add) | Add `provideHttpClient()` to `app.config.ts` |
 | Backend | Node.js + Socket.io on EC2 | **None.** Solo mode reads JSON from `public/quiz/`. |
+
+> **Mirror rule (added 2026-05-10):** If a CLF screen uses a PrimeNG component, the SAA equivalent uses the same component with the same props/severity/icons unless SAA scope explicitly differs (e.g., Live Session card, deferred per §10). Don't reinvent primitives.
 
 ## 5. Question Schema
 
@@ -162,9 +164,11 @@ readonly isAnswered = computed(() => !!this.answerState()[this.currentQuestion()
 
 State flows through `update()` / `set()` only — never `mutate()`.
 
-## 9. Charts (no PrimeNG)
+## 9. Charts (chart.js directly, no `primeng/chart`)
 
-Add `chart.js` directly. Build one `<app-donut-chart>` and one `<app-stacked-bar-chart>` standalone component, each with `input()` for data and an `effect()` that re-creates the chart instance when inputs change. Destroy the chart on `DestroyRef`.
+Add `chart.js` directly (the rest of the UI is PrimeNG, but for charts we skip the `primeng/chart` wrapper). Build one `<app-donut-chart>` and one `<app-stacked-bar-chart>` standalone component, each with `input()` for data and an `effect()` that re-creates the chart instance when inputs change. Destroy the chart on `DestroyRef`.
+
+**Reuse the CLF Chart.js config exactly** — colors `#16a34a` (correct) / `#ef4444` (incorrect) / `#9CA3AF` (skipped); donut `cutout: '60%'`, `legend.position: 'bottom'`; stacked bar `scales.x.stacked = scales.y.stacked = true`, `legend.position: 'top'`. The CLF wrapper passes the same shape via `[data]` / `[options]`.
 
 ## 10. Out of Scope (for now)
 
