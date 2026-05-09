@@ -89,4 +89,10 @@
 ## Open Questions for the User
 <!-- Surface these in chat at the next session start, not via docs. -->
 
-_(none — P0 visual/AXE gate resolved 2026-05-10)_
+- 2026-05-10 — **P1-T3 sourcing strategy.** PLAN §6.1 lists 5 tiers. Only the exam guide is staged in `.context/`. To start authoring 80 Secure questions, pick one (or a mix):
+  - **A. Pure tier-3 (AWS docs + training-data knowledge).** Fastest. I author all 80 from scratch, grounded in `.context/AWS_SAA_EXAM_GUIDE.md` Domain 1 task statements + AWS service knowledge. `resource` URLs cite `docs.aws.amazon.com` per service area. Risk: solo-AI-grounded, no first-party verbatim citations.
+  - **B. Tier 1+3 (WebFetch AWS sample + author rest).** I WebFetch the AWS official SAA-C03 sample PDF (10 questions verbatim with attribution) and any whitepapers I cite, then author the rest. Slower (extra fetches) but more authoritative.
+  - **C. Tier 5 paraphrase from your local material.** You drop any owned Tutorials Dojo / Whizlabs / ExamPro notes into `.context/_sources/` (gitignored). I paraphrase per PLAN §6.1 tier-5 rules (re-derive distractors from AWS docs, cite the AWS doc as `resource`, never the third-party site). Highest authoring quality but blocked on you staging the material.
+  - **D. Adapt CLF security_compliance.json.** Sift CLF for SAA-relevant questions and re-author at associate difficulty. Risk: CLF is foundational; many CLF-Sec questions are below SAA depth.
+  - Most likely good answer: **A as primary, with B for the 10 official samples** if you want the citation. Reply with "A", "A+B", "C — material at <path>", or "D".
+- 2026-05-10 — **Schedule reality check (T-5 days).** Volume target is ≥270 questions across 4 domains. Even at a sustained 20 questions/hour of authoring time, that's ~13–14 hours. Are you OK with descoping to PLAN §6.2 minimums (or below) if P2/P3 UI work is at risk? Flag if you'd rather I cut Secure to 60 / Resilient to 50 / Performance to 45 / Cost to 40 (~195 total) to reserve more time for the quiz-loop UI in P2/P3. Reply "keep targets" or "descope to <numbers>".
