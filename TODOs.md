@@ -71,7 +71,7 @@
 - [x] **P1-T1** — Create `scripts/validate-quiz.mjs` (Node ESM, no deps; or use `node:fs`). Validates each `public/quiz/*.json` per PLAN §5 rules. Exit non-zero on any violation. Print a per-file summary `{file, count, single, multiple, errors}`.
   - **Acceptance:** Running on the empty seed files passes (count 0 ok). Running with a deliberately broken question fails with a clear message.
 
-- [ ] **P1-T2** — Create `scripts/build-all-json.mjs` that concatenates the four domain files, re-sequences IDs (1..N), and writes `public/quiz/all.json`. Idempotent.
+- [x] **P1-T2** — Create `scripts/build-all-json.mjs` that concatenates the four domain files, re-sequences IDs (1..N), and writes `public/quiz/all.json`. Idempotent.
   - **Acceptance:** `node scripts/build-all-json.mjs` completes; `all.json` length equals sum of domain files; `validate-quiz.mjs` still passes after.
 
 - [ ] **P1-T3** — Author Domain 1 (Secure) questions until `secure.json` has ≥80 entries. Follow PLAN §6.3 workflow. **Sourcing priority order from PLAN §6.1 — start with AWS official sample + Skill Builder + AWS docs; only paraphrase from third-party sites, never copy verbatim.** Cite `docs.aws.amazon.com` URLs in `resource`.
