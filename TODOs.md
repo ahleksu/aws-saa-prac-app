@@ -59,6 +59,9 @@
   - Run AXE in DevTools on `/`; fix all serious/critical issues.
   - **Acceptance:** all four bullets green → tick `[x]`, flip P0 to **Complete (8 / 11 — P0-T5 superseded)** in PROGRESS.md, mark Blocker as RESOLVED, commit `fix(P0): align UX with CLF reference`.
 
+- [x] **P0-T12** — Resolve `NG0913` oversized-image warning surfaced during user's manual verification of P0-T11. `ahleksu-notion-face.png` was 2400×2400 (570 KB) but rendered ~120×120. Resize source to 240×240 (16 KB; 2× retina) and switch the `<img>` in `home.ts` to `NgOptimizedImage` (`ngSrc` + explicit `width`/`height`) per `.claude/CLAUDE.md`'s static-image rule.
+  - **Acceptance:** browser console clean of NG0913 on `/`; `tsc --noEmit`, `npm test`, and `ng build` all still pass within budgets.
+
 ---
 
 ## Phase P1 — Question Bank (PLAN §5, §6)

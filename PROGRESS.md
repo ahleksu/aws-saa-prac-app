@@ -9,13 +9,13 @@
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
 - **Repo state:** fresh Angular 21 scaffold (commit `2b9c285 initial commit`); no domain code yet.
-- **Active phase:** P0 — alignment complete pending user's manual visual diff + AXE pass; P1 unblocked once that lands.
+- **Active phase:** P1 — Question Bank. P0 complete (12/12) as of 2026-05-10.
 
 ## Phase Status Overview
 
 | Phase | Name | Status | Tasks Done | Notes |
 |---|---|---|---|---|
-| P0 | Scaffolding & Core | **CLI-Verified (manual visual pending)** | 11 / 11 | P0-T5 superseded by P0-T10; deps + Aura/Noir + Home rewrite landed |
+| P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
 | P1 | Question Bank | **Not Started** | 0 / 8 | Highest leverage for exam prep |
 | P2 | Quiz Page | **Not Started** | 0 / 6 | Depends on P0 + P1-T3 minimum |
 | P3 | Result & Review | **Not Started** | 0 / 6 | Depends on P2 |
@@ -38,6 +38,7 @@
 - [x] P0-T9: `app.config.ts` adds `provideAnimationsAsync()` + `providePrimeNG({ theme: { preset: Noir } })` mirroring CLF Aura/Noir zinc palette. `styles.css` adds `primeicons.css` import + `tailwindcss-primeui` plugin. `index.html` title → `AWS SAA-C03 Practice Exam App`; favicon → `app-icon.png`. Copied `app-icon.png` and `ahleksu-notion-face.png` from CLF `public/`. — 2026-05-10
 - [x] P0-T10: Rewrote `home.ts` to mirror CLF `home.component.html` 1:1 — hero (title + byline + 4 social PrimeIcons), 5-card grid (All Domains + 4 SAA domains, Live Session card omitted per PLAN §10), disclaimer block, support footer. Uses `<p-button>`, `[@fadeIn]` 600ms ease-out, OnPush, `inject(Router)`. — 2026-05-10
 - [x] P0-T11: `tsc --noEmit` clean; `npm test` → 4/4 pass; `ng build` (production) initial bundle 417 kB raw / 95 kB transfer, well inside 500 kB-warn / 1 MB-error budgets; `ng serve` boots cleanly, `/` returns 200, `/quiz/secure.json` serves `[]`. **Manual visual diff vs CLF + AXE on `/` still owed by user** — flagged below. — 2026-05-10
+- [x] P0-T12: User-confirmed visual diff of `/` against CLF home matches; AXE clean (no serious/critical). One Angular dev-mode `NG0913` warning surfaced for `ahleksu-notion-face.png` (2400×2400 source rendered at ~120×120). Fix: resized PNG in place to 240×240 (570 KB → 16 KB, 35× reduction) via `sips -z 240 240`; switched `<img>` in `home.ts` to `NgOptimizedImage` (`ngSrc` + `width="120" height="120"`). `tsc --noEmit` clean; `npm test` → 4/4 pass; `ng build` 422 kB / 97 kB transfer (within budgets). — 2026-05-10
 
 ### P0 Alignment Decisions
 - Used `@primeuix/themes` (PrimeNG 21's current theme package) instead of CLF's `@primeng/themes@^19` — npm flagged the latter as deprecated on install. The Aura/Noir preset (zinc palette, light-mode only, `darkModeSelector: 'none'`) is identical to CLF; only the import path moves from `@primeng/themes/aura` → `@primeuix/themes/aura`.
@@ -85,4 +86,4 @@
 ## Open Questions for the User
 <!-- Surface these in chat at the next session start, not via docs. -->
 
-- 2026-05-10 — Run `npm start`, open `/` in a browser, and visually diff against the CLF home (`/Users/johnalexrobles/Desktop/ahleksu/aws-clf-prac-app` running locally). Confirm the layout, copy, hover-scale, social row, disclaimer, and support footer all match — then run AXE in DevTools and report any serious/critical issues. P1 stays soft-blocked on this verification.
+_(none — P0 visual/AXE gate resolved 2026-05-10)_

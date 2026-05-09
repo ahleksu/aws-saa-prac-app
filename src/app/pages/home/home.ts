@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
-  imports: [ButtonModule],
+  imports: [ButtonModule, NgOptimizedImage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('fadeIn', [
@@ -180,9 +181,11 @@ import { animate, style, transition, trigger } from '@angular/animations';
             class="transform hover:scale-105 transition duration-200"
           >
             <img
-              src="ahleksu-notion-face.png"
+              ngSrc="ahleksu-notion-face.png"
               alt="Buy me a coffee"
-              class="w-30 h-30 mx-auto"
+              width="120"
+              height="120"
+              class="mx-auto"
             />
           </a>
         </div>
