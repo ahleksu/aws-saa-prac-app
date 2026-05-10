@@ -8,8 +8,8 @@
 
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
-- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/chart tasks in progress; latest commits tracked in git log.
-- **Active phase:** P3 — Result & Review. P0, P1, and P2 complete as of 2026-05-10.
+- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/review complete; latest commits tracked in git log.
+- **Active phase:** P4 — Polish & Readiness Gate. P0, P1, P2, and P3 complete as of 2026-05-10.
 
 ## Phase Status Overview
 
@@ -18,7 +18,7 @@
 | P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
 | P2 | Quiz Page | **Complete** | 6 / 6 | Full CLF-style quiz loop implemented with Angular signals |
-| P3 | Result & Review | **In Progress** | 4 / 6 | Result page and shared Chart.js components complete; Review page remains |
+| P3 | Result & Review | **Complete** | 6 / 6 | Result and Review pages complete with text labels for non-color-only status |
 | P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
 
@@ -86,6 +86,8 @@
 - [x] P3-T2: Shared `DonutChart` component exists at `src/app/shared/donut-chart.ts` using `input.required`, Chart.js direct rendering, `effect()`, and `DestroyRef` cleanup. — 2026-05-10
 - [x] P3-T3: Shared `StackedBarChart` component exists at `src/app/shared/stacked-bar-chart.ts` with direct Chart.js stacked-bar rendering and destroy cleanup. — 2026-05-10
 - [x] P3-T4: Implemented `Result` page with `QuizResultNavigationState` handoff, `history.state` fallback, missing-state home redirect, signal/computed totals, score, date, donut data, all-domain stacked chart data, and Review/Retake/Home actions. Added focused result specs covering render, zero-total score, chart visibility, navigation state, retake type, and missing-state redirect. — 2026-05-10
+- [x] P3-T5: Implemented `ReviewAnswers` page mirroring the CLF review flow with Angular signals/computed state, typed navigation-state validation, exact SAA domain filter, PrimeNG select/chips/buttons, collapse/expand, result/retake/home navigation, and result-state rebuild fallback. Added focused review specs for redirects, counts, filtering, labels, collapse/expand, and navigation state. — 2026-05-10
+- [x] P3-T6: Result already exposes textual counts and an accessible domain breakdown table; Review now adds visible text labels for correct answers, user-selected wrong answers, distractors, and per-question status so correctness is not color-only. — 2026-05-10
 
 ## Phase P4 — Polish & Exam Readiness Gate
 

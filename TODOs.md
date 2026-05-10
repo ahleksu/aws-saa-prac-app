@@ -126,9 +126,9 @@
 - [x] **P3-T4** — Implement `ResultComponent`. Read state via `Router.getCurrentNavigation()?.extras.state` in the constructor (it's available before route activation). Compute `score = round(correct/total*100)`. Render donut + bar charts. Buttons: "Review Questions", "Retake Test", "Go to Homepage".
   - **Acceptance:** Refreshing `/result` falls back gracefully (no crash, redirect to `/`).
 
-- [ ] **P3-T5** — Implement `ReviewAnswersComponent` with a domain filter (signals). Each question shows the user's selection, correctness, the correct answer(s), and explanations for every option. Mirror CLF's `review-answers.component.ts:31-60` logic but using signals.
+- [x] **P3-T5** — Implement `ReviewAnswersComponent` with a domain filter (signals). Each question shows the user's selection, correctness, the correct answer(s), and explanations for every option. Mirror CLF's `review-answers.component.ts:31-60` logic but using signals.
 
-- [ ] **P3-T6** — Result and Review must color-code with WCAG-AA contrast (don't rely on color alone — use icons or text labels too).
+- [x] **P3-T6** — Result and Review must color-code with WCAG-AA contrast (don't rely on color alone — use icons or text labels too).
 
 ---
 
