@@ -138,7 +138,7 @@
 
 - [ ] **P4-T2** — Mobile pass: 360px width minimum. Verify Quiz page is usable thumb-friendly.
 
-- [ ] **P4-T3** — `npm run build` succeeds within budgets. If component CSS exceeds 4kB, split or move to global styles.
+- [x] **P4-T3** — `npm run build` succeeds within budgets. If component CSS exceeds 4kB, split or move to global styles.
 
 - [ ] **P4-T4** — Take one full mock run (`type=all`, 65 questions). Capture pain points → file follow-up tasks here.
 

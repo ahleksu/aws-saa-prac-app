@@ -19,7 +19,7 @@
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
 | P2 | Quiz Page | **Complete** | 6 / 6 | Full CLF-style quiz loop implemented with Angular signals |
 | P3 | Result & Review | **Complete** | 6 / 6 | Result and Review pages complete with text labels for non-color-only status |
-| P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
+| P4 | Polish & Readiness Gate | **In Progress** | 1 / 5 | Production build gate complete; AXE, mobile, mock run, and final DoD remain |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
 
 ---
@@ -90,6 +90,8 @@
 - [x] P3-T6: Result already exposes textual counts and an accessible domain breakdown table; Review now adds visible text labels for correct answers, user-selected wrong answers, distractors, and per-question status so correctness is not color-only. — 2026-05-10
 
 ## Phase P4 — Polish & Exam Readiness Gate
+
+- [x] P4-T3: `npm run build` passes after the CLF-mirrored Quiz/Result/Review implementation; production initial bundle is 479.50 kB raw / 111.23 kB transfer, below the 500 kB warning and 1 MB error budgets. `node scripts/validate-quiz.mjs` also remains clean. — 2026-05-10
 
 ---
 
