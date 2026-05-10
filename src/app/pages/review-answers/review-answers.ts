@@ -170,7 +170,7 @@ interface ReviewNavigationState {
             label="Retake Test"
             icon="pi pi-refresh"
             severity="warn"
-            styleClass="w-full md:w-auto"
+            styleClass="w-full md:w-auto !border-amber-800 !bg-amber-800 !text-white hover:!border-amber-900 hover:!bg-amber-900"
             (onClick)="retakeTest()"
           />
           <p-button

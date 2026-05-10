@@ -134,7 +134,7 @@
 
 ## Phase P4 — Polish & Exam Readiness Gate (PLAN §11, §14)
 
-- [ ] **P4-T1** — Run AXE in DevTools on `/`, `/quiz?type=secure`, `/result`, `/review`. Fix all serious/critical issues.
+- [x] **P4-T1** — Run AXE in DevTools on `/`, `/quiz?type=secure`, `/result`, `/review`. Fix all serious/critical issues.
 
 - [x] **P4-T2** — Mobile pass: 360px width minimum. Verify Quiz page is usable thumb-friendly.
   - **Note:** User-confirmed mobile pass on 2026-05-10.
@@ -144,7 +144,7 @@
 - [x] **P4-T4** — Take one full mock run (`type=all`, 65 questions). Capture pain points → file follow-up tasks here.
   - **Note:** User-confirmed full mock run on 2026-05-10; no new pain-point task was requested.
 
-- [ ] **P4-T5** — Definition of Done checklist (PLAN §14) all ticked. Tag the commit `v1.0-exam-ready`.
+- [x] **P4-T5** — Definition of Done checklist (PLAN §14) all ticked. Tag the commit `v1.0-exam-ready`.
 
 - [x] **P4-T6** — Fix SAA answer-position bias. Rebalance `secure`, `resilient`, `performance`, and `cost` JSON so correct answers are distributed across positions; regenerate `all.json`; add runtime answer shuffling and validator guardrails for duplicate answer text, extreme first-answer bias, and all-leading multiple-choice correct sets.
   - **Acceptance:** `node scripts/validate-quiz.mjs` passes; answer-position audit no longer reports `270/270` first-answer correctness; runtime specs prove answers shuffle while domain question order is preserved.

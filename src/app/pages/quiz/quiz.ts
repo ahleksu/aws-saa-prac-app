@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { ProgressBarModule } from 'primeng/progressbar';
 import { catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 
 import { QuizService } from '../../core/quiz.service';
@@ -50,7 +49,7 @@ function normalizeQuizType(value: string | null): QuizType {
 
 @Component({
   selector: 'app-quiz',
-  imports: [ButtonModule, DialogModule, ProgressBarModule],
+  imports: [ButtonModule, DialogModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="max-w-4xl mx-auto px-4 py-10">
@@ -63,14 +62,27 @@ function normalizeQuizType(value: string | null): QuizType {
         </section>
       } @else if (currentQuestion(); as question) {
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div class="w-full" aria-label="Quiz progress">
-            <p-progressbar [value]="progress()" [showValue]="false" styleClass="h-3" />
+          <div class="w-full">
+            <div
+              class="h-3 overflow-hidden rounded-full bg-gray-200"
+              role="progressbar"
+              aria-label="Quiz progress"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-valuenow]="progressValue()"
+              [attr.aria-valuetext]="'Question ' + questionPosition() + ' of ' + totalQuestions()"
+            >
+              <div
+                class="h-full rounded-full bg-zinc-950 transition-[width]"
+                [style.width.%]="progress()"
+              ></div>
+            </div>
           </div>
           <p-button
             label="Finish Test"
             icon="pi pi-flag"
             severity="danger"
-            styleClass="w-full whitespace-nowrap sm:w-auto"
+            styleClass="w-full whitespace-nowrap sm:w-auto !border-red-700 !bg-red-700 !text-white hover:!border-red-800 hover:!bg-red-800"
             (onClick)="finishTest()"
           />
         </div>
@@ -305,6 +317,7 @@ export class Quiz {
   readonly progress = computed(() =>
     this.totalQuestions() === 0 ? 0 : ((this.currentIndex() + 1) / this.totalQuestions()) * 100,
   );
+  readonly progressValue = computed(() => Math.round(this.progress()));
   readonly questionPosition = computed(() =>
     this.totalQuestions() === 0 ? 0 : this.currentIndex() + 1,
   );
