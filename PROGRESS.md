@@ -8,8 +8,8 @@
 
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
-- **Repo state:** P0 complete plus P1 question bank complete; latest commits tracked in git log.
-- **Active phase:** P2 — Quiz Page. P0 and P1 complete as of 2026-05-10.
+- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; latest commits tracked in git log.
+- **Active phase:** P3 — Result & Review. P0, P1, and P2 complete as of 2026-05-10.
 
 ## Phase Status Overview
 
@@ -17,7 +17,7 @@
 |---|---|---|---|---|
 | P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
-| P2 | Quiz Page | **In Progress** | 1 / 6 | P2-T1 route-based question loading complete |
+| P2 | Quiz Page | **Complete** | 6 / 6 | Full CLF-style quiz loop implemented with Angular signals |
 | P3 | Result & Review | **Not Started** | 0 / 6 | Depends on P2 |
 | P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
@@ -74,6 +74,11 @@
 ## Phase P2 — Quiz Page
 
 - [x] P2-T1: `Quiz` reads `?type=` via `ActivatedRoute`, normalizes unsupported values to `all`, calls `QuizService.loadQuestions(type)`, shuffles and slices `all` runs to 65 questions, persists loaded questions through `QuizService.setQuestions`, and renders "Question 1 of N" with the first stem. Added focused Vitest coverage for domain, all-domain, and unsupported type loading. `npm test -- --watch=false`, `npm run build`, and `node scripts/validate-quiz.mjs` pass. — 2026-05-10
+- [x] P2-T2: Added single-choice radio and multiple-choice checkbox rendering backed by `selectedAnswers` signal state, with visible selected-card borders and keyboard-friendly native inputs. — 2026-05-10
+- [x] P2-T3: Added Check Answer logic using `isSelectionCorrect`; submitted questions show all explanations, correct answers in green, selected wrong answers in red, and correctness feedback with domain/resource details. — 2026-05-10
+- [x] P2-T4: Added Back/Next navigation and per-question restore from `answerState`, preserving submitted selections, correctness, and explanations when moving between questions. — 2026-05-10
+- [x] P2-T5: Added Finish Test flow with exactly one confirmation dialog for unanswered runs; finalization builds typed `QuizResultNavigationState`, calls `QuizService.setQuestions/setUserAnswers`, and navigates to `/result`. — 2026-05-10
+- [x] P2-T6: Added PrimeNG progress bar driven by the `progress` computed signal plus top-level Finish Test action. — 2026-05-10
 
 ## Phase P3 — Result & Review
 

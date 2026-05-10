@@ -96,19 +96,19 @@
 - [x] **P2-T1** — Implement `QuizComponent` per the signal shape in PLAN §8. Read `?type=` from `ActivatedRoute`, call `QuizService.loadQuestions(type)`. When `type === 'all'`, shuffle and slice to 65.
   - **Acceptance:** Visiting `/quiz?type=secure` shows question 1 of N.
 
-- [ ] **P2-T2** — Implement single-choice rendering with native radio-style buttons (Tailwind). Implement multi-choice rendering with native checkboxes. Mark from selection using signal-backed sets.
+- [x] **P2-T2** — Implement single-choice rendering with native radio-style buttons (Tailwind). Implement multi-choice rendering with native checkboxes. Mark from selection using signal-backed sets.
   - **Acceptance:** Toggling answers updates the visual state; keyboard (Tab + Space/Enter) works.
 
-- [ ] **P2-T3** — Implement Submit/Check Answer logic (mirror CLF `quiz.component.ts:108-132` but using signals). Show inline explanation per answer with green/red borders. Disable answer toggling once submitted for that question.
+- [x] **P2-T3** — Implement Submit/Check Answer logic (mirror CLF `quiz.component.ts:108-132` but using signals). Show inline explanation per answer with green/red borders. Disable answer toggling once submitted for that question.
   - **Acceptance:** Multi-correct comparison uses sorted-array equality. Single-correct uses string equality.
 
-- [ ] **P2-T4** — Implement Next / Back navigation. Persist per-question state in the `answerState` signal map keyed by `Question.id`, restored on navigation.
+- [x] **P2-T4** — Implement Next / Back navigation. Persist per-question state in the `answerState` signal map keyed by `Question.id`, restored on navigation.
   - **Acceptance:** Going Back to a previously answered question shows the prior selection and explanation. Going Forward to a never-visited one is blank.
 
-- [ ] **P2-T5** — Implement "Finish Test". If unanswered count > 0, show a confirm dialog (Tailwind modal — no PrimeNG). On confirm, navigate to `/result` via `Router.navigate(['/result'], { state: {...} })` with the same payload shape as CLF's `finalizeQuiz()`: `{ total, correct, timestamp, domainSummary, type, questions }`.
+- [x] **P2-T5** — Implement "Finish Test". If unanswered count > 0, show one confirm dialog. On confirm, navigate to `/result` via `Router.navigate(['/result'], { state: {...} })` with the same payload shape as CLF's `finalizeQuiz()`: `{ total, correct, timestamp, domainSummary, type, questions }`.
   - **Acceptance:** Clicking Finish on a half-answered run prompts; submitting via the dialog routes to `/result`.
 
-- [ ] **P2-T6** — Progress indicator: a Tailwind progress bar driven by the `progress` computed signal.
+- [x] **P2-T6** — Progress indicator driven by the `progress` computed signal.
 
 ---
 
