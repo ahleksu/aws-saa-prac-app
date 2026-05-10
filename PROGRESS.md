@@ -8,7 +8,7 @@
 
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
-- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; latest commits tracked in git log.
+- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/chart tasks in progress; latest commits tracked in git log.
 - **Active phase:** P3 — Result & Review. P0, P1, and P2 complete as of 2026-05-10.
 
 ## Phase Status Overview
@@ -18,7 +18,7 @@
 | P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
 | P2 | Quiz Page | **Complete** | 6 / 6 | Full CLF-style quiz loop implemented with Angular signals |
-| P3 | Result & Review | **Not Started** | 0 / 6 | Depends on P2 |
+| P3 | Result & Review | **In Progress** | 4 / 6 | Result page and shared Chart.js components complete; Review page remains |
 | P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
 
@@ -81,6 +81,11 @@
 - [x] P2-T6: Added PrimeNG progress bar driven by the `progress` computed signal plus top-level Finish Test action. — 2026-05-10
 
 ## Phase P3 — Result & Review
+
+- [x] P3-T1: `chart.js` dependency already present from P0 PrimeNG/chart alignment; original "do not install PrimeNG" note was superseded by the recorded P0 decision to adopt PrimeNG for CLF parity. — 2026-05-10
+- [x] P3-T2: Shared `DonutChart` component exists at `src/app/shared/donut-chart.ts` using `input.required`, Chart.js direct rendering, `effect()`, and `DestroyRef` cleanup. — 2026-05-10
+- [x] P3-T3: Shared `StackedBarChart` component exists at `src/app/shared/stacked-bar-chart.ts` with direct Chart.js stacked-bar rendering and destroy cleanup. — 2026-05-10
+- [x] P3-T4: Implemented `Result` page with `QuizResultNavigationState` handoff, `history.state` fallback, missing-state home redirect, signal/computed totals, score, date, donut data, all-domain stacked chart data, and Review/Retake/Home actions. Added focused result specs covering render, zero-total score, chart visibility, navigation state, retake type, and missing-state redirect. — 2026-05-10
 
 ## Phase P4 — Polish & Exam Readiness Gate
 

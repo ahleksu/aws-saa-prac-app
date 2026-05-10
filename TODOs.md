@@ -116,13 +116,14 @@
 
 > Goal: visual feedback after a run, plus a filterable review of every question.
 
-- [ ] **P3-T1** — Install `chart.js` only (`npm i chart.js`). Do **not** install PrimeNG.
+- [x] **P3-T1** — Install `chart.js` only (`npm i chart.js`). Do **not** install PrimeNG.
+  - **Note:** `chart.js` is installed. PrimeNG was adopted earlier during P0 UX alignment, superseding the original "Do not install PrimeNG" constraint.
 
-- [ ] **P3-T2** — Create `src/app/shared/donut-chart.ts` standalone component. `input()` for `{labels, data, colors}`. `effect()` initializes Chart.js instance; cleans up via `DestroyRef.onDestroy()`.
+- [x] **P3-T2** — Create `src/app/shared/donut-chart.ts` standalone component. `input()` for `{labels, data, colors}`. `effect()` initializes Chart.js instance; cleans up via `DestroyRef.onDestroy()`.
 
-- [ ] **P3-T3** — Create `src/app/shared/stacked-bar-chart.ts` analogous to T2.
+- [x] **P3-T3** — Create `src/app/shared/stacked-bar-chart.ts` analogous to T2.
 
-- [ ] **P3-T4** — Implement `ResultComponent`. Read state via `Router.getCurrentNavigation()?.extras.state` in the constructor (it's available before route activation). Compute `score = round(correct/total*100)`. Render donut + bar charts. Buttons: "Review Answers", "Retake", "Home".
+- [x] **P3-T4** — Implement `ResultComponent`. Read state via `Router.getCurrentNavigation()?.extras.state` in the constructor (it's available before route activation). Compute `score = round(correct/total*100)`. Render donut + bar charts. Buttons: "Review Questions", "Retake Test", "Go to Homepage".
   - **Acceptance:** Refreshing `/result` falls back gracefully (no crash, redirect to `/`).
 
 - [ ] **P3-T5** — Implement `ReviewAnswersComponent` with a domain filter (signals). Each question shows the user's selection, correctness, the correct answer(s), and explanations for every option. Mirror CLF's `review-answers.component.ts:31-60` logic but using signals.
