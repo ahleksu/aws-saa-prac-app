@@ -105,7 +105,7 @@
 - [x] **P2-T4** — Implement Next / Back navigation. Persist per-question state in the `answerState` signal map keyed by `Question.id`, restored on navigation.
   - **Acceptance:** Going Back to a previously answered question shows the prior selection and explanation. Going Forward to a never-visited one is blank.
 
-- [x] **P2-T5** — Implement "Finish Test". If unanswered count > 0, show one confirm dialog. On confirm, navigate to `/result` via `Router.navigate(['/result'], { state: {...} })` with the same payload shape as CLF's `finalizeQuiz()`: `{ total, correct, timestamp, domainSummary, type, questions }`.
+- [x] **P2-T5** — Implement "Finish Test". If unanswered count > 0, show one confirm dialog. On confirm, navigate to `/result` via `Router.navigate(['/result'], { state: {...} })` with the CLF-compatible payload extended for SAA skipped tracking: `{ total, correct, skipped, timestamp, domainSummary, type, questions }`.
   - **Acceptance:** Clicking Finish on a half-answered run prompts; submitting via the dialog routes to `/result`.
 
 - [x] **P2-T6** — Progress indicator driven by the `progress` computed signal.

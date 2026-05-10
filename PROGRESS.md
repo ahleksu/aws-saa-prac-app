@@ -37,7 +37,7 @@
 - [x] P0-T8: `npm i primeng @primeuix/themes primeicons tailwindcss-primeui chart.js @angular/animations` — clean install, no peer-dep errors against Angular 21. `@primeng/themes` deprecated in favor of `@primeuix/themes` for PrimeNG 21+; swapped accordingly. — 2026-05-10
 - [x] P0-T9: `app.config.ts` adds `provideAnimationsAsync()` + `providePrimeNG({ theme: { preset: Noir } })` mirroring CLF Aura/Noir zinc palette. `styles.css` adds `primeicons.css` import + `tailwindcss-primeui` plugin. `index.html` title → `AWS SAA-C03 Practice Exam App`; favicon → `app-icon.png`. Copied `app-icon.png` and `ahleksu-notion-face.png` from CLF `public/`. — 2026-05-10
 - [x] P0-T10: Rewrote `home.ts` to mirror CLF `home.component.html` 1:1 — hero (title + byline + 4 social PrimeIcons), 5-card grid (All Domains + 4 SAA domains, Live Session card omitted per PLAN §10), disclaimer block, support footer. Uses `<p-button>`, `[@fadeIn]` 600ms ease-out, OnPush, `inject(Router)`. — 2026-05-10
-- [x] P0-T11: `tsc --noEmit` clean; `npm test` → 4/4 pass; `ng build` (production) initial bundle 417 kB raw / 95 kB transfer, well inside 500 kB-warn / 1 MB-error budgets; `ng serve` boots cleanly, `/` returns 200, `/quiz/secure.json` serves `[]`. **Manual visual diff vs CLF + AXE on `/` still owed by user** — flagged below. — 2026-05-10
+- [x] P0-T11: `tsc --noEmit` clean; `npm test` → 4/4 pass; `ng build` (production) initial bundle 417 kB raw / 95 kB transfer, well inside 500 kB-warn / 1 MB-error budgets; `ng serve` boots cleanly, `/` returns 200, `/quiz/secure.json` serves `[]`. Manual visual diff vs CLF and AXE on `/` were later confirmed in P0-T12. — 2026-05-10
 - [x] P0-T12: User-confirmed visual diff of `/` against CLF home matches; AXE clean (no serious/critical). One Angular dev-mode `NG0913` warning surfaced for `ahleksu-notion-face.png` (2400×2400 source rendered at ~120×120). Fix: resized PNG in place to 240×240 (570 KB → 16 KB, 35× reduction) via `sips -z 240 240`; switched `<img>` in `home.ts` to `NgOptimizedImage` (`ngSrc` + `width="120" height="120"`). `tsc --noEmit` clean; `npm test` → 4/4 pass; `ng build` 422 kB / 97 kB transfer (within budgets). — 2026-05-10
 
 ### P0 Alignment Decisions
@@ -105,7 +105,7 @@
 ## Blockers
 <!-- Format: "YYYY-MM-DD — <blocker> — <what would unblock>" -->
 
-- 2026-05-10 — Home page diverged from CLF reference UX (hand-rolled Tailwind grid; no PrimeNG/Aura-Noir theme; missing social-icon row, fadeIn animation, disclaimer block, support footer). Manual visual verification by user **failed P0-T5 acceptance** even though `tsc`, `npm test`, and `ng build` all passed. Unblock: adopt PrimeNG (decided), then re-author Home + global config to mirror CLF (P0-T8…T11). — **RESOLVED 2026-05-10 (CLI checks).** User must still confirm side-by-side visual diff and AXE-clean `/` to flip P0 to fully Complete.
+- 2026-05-10 — Home page diverged from CLF reference UX (hand-rolled Tailwind grid; no PrimeNG/Aura-Noir theme; missing social-icon row, fadeIn animation, disclaimer block, support footer). Manual visual verification by user **failed P0-T5 acceptance** even though `tsc`, `npm test`, and `ng build` all passed. Unblocked by adopting PrimeNG and re-authoring Home/global config to mirror CLF; user later confirmed side-by-side visual diff and AXE-clean `/` in P0-T12. — **RESOLVED 2026-05-10.**
 
 ## Open Questions for the User
 <!-- Surface these in chat at the next session start, not via docs. -->
