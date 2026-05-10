@@ -17,7 +17,7 @@
 |---|---|---|---|---|
 | P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
-| P2 | Quiz Page | **Not Started** | 0 / 6 | Next phase; depends on P0 + P1 |
+| P2 | Quiz Page | **In Progress** | 1 / 6 | P2-T1 route-based question loading complete |
 | P3 | Result & Review | **Not Started** | 0 / 6 | Depends on P2 |
 | P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
@@ -72,6 +72,8 @@
 <!-- Update the table after every authoring batch (recommended cadence: every 10 questions). -->
 
 ## Phase P2 — Quiz Page
+
+- [x] P2-T1: `Quiz` reads `?type=` via `ActivatedRoute`, normalizes unsupported values to `all`, calls `QuizService.loadQuestions(type)`, shuffles and slices `all` runs to 65 questions, persists loaded questions through `QuizService.setQuestions`, and renders "Question 1 of N" with the first stem. Added focused Vitest coverage for domain, all-domain, and unsupported type loading. `npm test -- --watch=false`, `npm run build`, and `node scripts/validate-quiz.mjs` pass. — 2026-05-10
 
 ## Phase P3 — Result & Review
 

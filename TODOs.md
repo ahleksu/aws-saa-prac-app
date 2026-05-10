@@ -93,7 +93,7 @@
 
 > Goal: full quiz loop for both `single` and `multiple` types, with state preserved across navigation.
 
-- [ ] **P2-T1** — Implement `QuizComponent` per the signal shape in PLAN §8. Read `?type=` from `ActivatedRoute`, call `QuizService.loadQuestions(type)`. When `type === 'all'`, shuffle and slice to 65.
+- [x] **P2-T1** — Implement `QuizComponent` per the signal shape in PLAN §8. Read `?type=` from `ActivatedRoute`, call `QuizService.loadQuestions(type)`. When `type === 'all'`, shuffle and slice to 65.
   - **Acceptance:** Visiting `/quiz?type=secure` shows question 1 of N.
 
 - [ ] **P2-T2** — Implement single-choice rendering with native radio-style buttons (Tailwind). Implement multi-choice rendering with native checkboxes. Mark from selection using signal-backed sets.
