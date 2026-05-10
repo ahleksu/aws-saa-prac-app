@@ -1,1 +1,1967 @@
-[]
+[
+  {
+    "id": 1,
+    "question": "A photo-sharing application stores millions of new objects per hour in Amazon S3. Upload and read traffic is spread across many users, and the team wants higher aggregate request throughput without changing durability requirements. Which design best supports the expected S3 request rate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Distribute object keys across multiple prefixes and parallelize requests from the application.",
+        "status": "correct",
+        "explanation": "S3 can scale request performance per prefix, so spreading traffic across prefixes and issuing requests in parallel increases aggregate throughput."
+      },
+      {
+        "text": "Move all objects into a single prefix so S3 can cache the key namespace more efficiently.",
+        "status": "skipped",
+        "explanation": "Concentrating all traffic into one prefix reduces the number of independent request paths available for scaling."
+      },
+      {
+        "text": "Enable S3 Versioning because versioned buckets automatically provide higher request throughput.",
+        "status": "skipped",
+        "explanation": "Versioning protects object history, but it is not the feature used to increase request throughput."
+      },
+      {
+        "text": "Store the objects in S3 Glacier Flexible Retrieval to increase write parallelism.",
+        "status": "skipped",
+        "explanation": "Glacier storage classes are optimized for archival cost and retrieval patterns, not high-rate application writes."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "A media company uploads 80 GB video files from a processing fleet to Amazon S3. Single PUT requests are slow and occasionally fail late in the transfer. Which upload method should the company use to improve throughput and recovery?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use multipart upload and upload parts in parallel.",
+        "status": "correct",
+        "explanation": "Multipart upload lets large objects be split into parts that can be uploaded concurrently and retried independently."
+      },
+      {
+        "text": "Use S3 Select to upload only the columns that changed.",
+        "status": "skipped",
+        "explanation": "S3 Select retrieves subsets of existing object data and does not accelerate object uploads."
+      },
+      {
+        "text": "Enable S3 Object Lock for the destination bucket.",
+        "status": "skipped",
+        "explanation": "Object Lock enforces retention controls and does not change upload throughput or retry behavior."
+      },
+      {
+        "text": "Write the files first to S3 Standard-IA because it has lower-latency uploads than S3 Standard.",
+        "status": "skipped",
+        "explanation": "Changing to Standard-IA does not provide a faster upload path and may add retrieval constraints for frequently accessed media."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "A global customer base uploads large design files to one S3 bucket in us-east-1. Users in Asia and Europe report poor upload latency over the public internet. Which S3 feature can improve long-distance upload performance with minimal application changes?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/transfer-acceleration.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable S3 Transfer Acceleration and use the acceleration endpoint for uploads.",
+        "status": "correct",
+        "explanation": "Transfer Acceleration routes uploads through AWS edge locations and the AWS backbone, which can reduce latency for distant clients."
+      },
+      {
+        "text": "Enable S3 Inventory reports for the bucket.",
+        "status": "skipped",
+        "explanation": "S3 Inventory creates object metadata reports and does not change the network path for uploads."
+      },
+      {
+        "text": "Convert the bucket to S3 One Zone-IA.",
+        "status": "skipped",
+        "explanation": "One Zone-IA changes storage availability and cost characteristics, not global upload routing."
+      },
+      {
+        "text": "Add an Amazon EBS volume as a cache in front of S3.",
+        "status": "skipped",
+        "explanation": "EBS is attached to EC2 instances and cannot be placed directly in front of a public S3 bucket for global uploads."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "A data lake ingestion service writes thousands of objects per second to Amazon S3 and periodically uploads 50 GB compressed files. The team must improve aggregate throughput and make large uploads more resilient. (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use multiple S3 prefixes that reflect independent ingestion partitions.",
+        "status": "correct",
+        "explanation": "Multiple active prefixes allow S3 request performance to scale across more request paths."
+      },
+      {
+        "text": "Use multipart upload for the 50 GB objects.",
+        "status": "correct",
+        "explanation": "Multipart upload improves large-object throughput and permits failed parts to be retried without restarting the whole upload."
+      },
+      {
+        "text": "Use one sequential object key prefix so list operations are always ordered.",
+        "status": "skipped",
+        "explanation": "A single hot prefix is not the best design for high aggregate request throughput."
+      },
+      {
+        "text": "Store all new objects in S3 Glacier Deep Archive first.",
+        "status": "skipped",
+        "explanation": "Deep Archive is intended for rarely accessed archives and is not optimized for active ingestion and immediate processing."
+      },
+      {
+        "text": "Disable client-side retries so failed uploads return faster.",
+        "status": "skipped",
+        "explanation": "Retries with backoff are important for robust high-throughput S3 clients; disabling them reduces reliability."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "A database on Amazon EC2 requires very low storage latency and must sustain more IOPS than general purpose SSD volumes can provide. The instance type supports the highest EBS performance features. Which EBS volume type is the best fit?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "io2 Block Express",
+        "status": "correct",
+        "explanation": "io2 Block Express is designed for the highest EBS IOPS, throughput, durability, and low-latency requirements."
+      },
+      {
+        "text": "sc1",
+        "status": "skipped",
+        "explanation": "Cold HDD volumes are for infrequently accessed throughput workloads and are not appropriate for low-latency database I/O."
+      },
+      {
+        "text": "st1",
+        "status": "skipped",
+        "explanation": "Throughput Optimized HDD volumes favor sequential throughput rather than high random IOPS and low latency."
+      },
+      {
+        "text": "Magnetic standard",
+        "status": "skipped",
+        "explanation": "Previous-generation magnetic volumes do not meet modern high-performance database I/O requirements."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "An application uses EC2 instances with EBS volumes for a transactional workload. The current gp2 volumes are oversized only to get enough IOPS, and the team wants to tune IOPS and throughput independently. Which volume type should be selected?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "gp3",
+        "status": "correct",
+        "explanation": "gp3 volumes allow storage size, IOPS, and throughput to be provisioned independently for general purpose SSD workloads."
+      },
+      {
+        "text": "S3 Standard",
+        "status": "skipped",
+        "explanation": "S3 is object storage and cannot replace a block volume mounted by an EC2 instance for this workload."
+      },
+      {
+        "text": "EFS One Zone",
+        "status": "skipped",
+        "explanation": "EFS is shared file storage, not block storage with independently provisioned EBS IOPS and throughput."
+      },
+      {
+        "text": "sc1",
+        "status": "skipped",
+        "explanation": "Cold HDD volumes are low-cost magnetic storage and are not suited for transactional SSD performance requirements."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "A team is tuning storage for two EC2 workloads: a latency-sensitive database that needs high random IOPS, and a log analytics system that reads large files sequentially. Which storage choices are performance aligned? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use io2 or io2 Block Express for the latency-sensitive database.",
+        "status": "correct",
+        "explanation": "Provisioned IOPS SSD volumes are designed for demanding random I/O and low-latency database workloads."
+      },
+      {
+        "text": "Use st1 for the sequential log analytics workload.",
+        "status": "correct",
+        "explanation": "Throughput Optimized HDD volumes are designed for large, sequential workloads such as logs and analytics."
+      },
+      {
+        "text": "Use sc1 for the database because it provides the lowest storage latency.",
+        "status": "skipped",
+        "explanation": "sc1 is cold HDD storage and is not intended for latency-sensitive random database I/O."
+      },
+      {
+        "text": "Use instance store for the only durable copy of the database.",
+        "status": "skipped",
+        "explanation": "Instance store can be fast but is ephemeral, so it is not appropriate as the sole durable database storage."
+      },
+      {
+        "text": "Use S3 Glacier Instant Retrieval as a mounted block device for the log analytics workload.",
+        "status": "skipped",
+        "explanation": "S3 Glacier Instant Retrieval is object storage and is not mounted as an EC2 block device."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "A Linux application runs on hundreds of EC2 instances across multiple Availability Zones and needs shared POSIX file storage. File activity is bursty and the team does not want to provision throughput manually. Which storage service and throughput mode should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon EFS with Elastic Throughput",
+        "status": "correct",
+        "explanation": "EFS provides shared file storage across AZs, and Elastic Throughput automatically scales throughput with workload demand."
+      },
+      {
+        "text": "Amazon EBS gp3 attached to every instance at the same time",
+        "status": "skipped",
+        "explanation": "EBS is primarily single-instance block storage and is not a shared multi-AZ POSIX file system for hundreds of instances."
+      },
+      {
+        "text": "Amazon S3 mounted as a block file system through the EC2 console",
+        "status": "skipped",
+        "explanation": "S3 is object storage and does not natively provide POSIX file-system semantics as a mounted block device."
+      },
+      {
+        "text": "Amazon FSx for Windows File Server",
+        "status": "skipped",
+        "explanation": "FSx for Windows File Server supports Windows SMB workloads, not Linux POSIX semantics as the primary fit."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "A company has a large EFS file system used by thousands of container tasks. The workload can tolerate slightly higher metadata latency but needs the highest aggregate throughput and operations per second. Which EFS performance mode is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Max I/O",
+        "status": "correct",
+        "explanation": "Max I/O is intended for highly parallel workloads that need greater aggregate throughput and operations per second."
+      },
+      {
+        "text": "General Purpose",
+        "status": "skipped",
+        "explanation": "General Purpose favors lower latency and is the default for many workloads, but Max I/O is the better fit for extreme parallelism."
+      },
+      {
+        "text": "Burst Balance",
+        "status": "skipped",
+        "explanation": "Burst balance is a metric related to burst credits, not an EFS performance mode."
+      },
+      {
+        "text": "Cold HDD",
+        "status": "skipped",
+        "explanation": "Cold HDD is an EBS volume category, not an Amazon EFS performance mode."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "A machine learning team runs short-lived training clusters that require a high-performance shared file system and fast access to training data stored in Amazon S3. Which AWS storage service best fits this workload?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon FSx for Lustre",
+        "status": "correct",
+        "explanation": "FSx for Lustre provides a high-performance parallel file system and can integrate with S3 for compute-intensive workloads."
+      },
+      {
+        "text": "Amazon EFS Infrequent Access",
+        "status": "skipped",
+        "explanation": "EFS IA reduces cost for infrequently accessed files but is not the best match for high-performance parallel training storage."
+      },
+      {
+        "text": "Amazon S3 Glacier Deep Archive",
+        "status": "skipped",
+        "explanation": "Deep Archive is for long-term archival storage and does not provide a high-performance shared training file system."
+      },
+      {
+        "text": "Amazon FSx for Windows File Server",
+        "status": "skipped",
+        "explanation": "FSx for Windows File Server provides SMB file shares for Windows workloads, not a Lustre parallel file system."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "A Windows-based line-of-business application requires shared file storage that supports SMB, Windows ACLs, and integration with Microsoft Active Directory. The workload is sensitive to file-server latency. Which service should be selected?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon FSx for Windows File Server",
+        "status": "correct",
+        "explanation": "FSx for Windows File Server provides managed Windows file storage with SMB, Windows permissions, and Active Directory integration."
+      },
+      {
+        "text": "Amazon EFS",
+        "status": "skipped",
+        "explanation": "EFS is a Linux-oriented NFS file system and is not the best match for native Windows SMB and Windows ACL requirements."
+      },
+      {
+        "text": "Amazon S3 Standard",
+        "status": "skipped",
+        "explanation": "S3 is object storage and does not provide native SMB file shares with Windows ACLs."
+      },
+      {
+        "text": "Amazon EBS st1 shared across all Windows instances",
+        "status": "skipped",
+        "explanation": "EBS st1 is block storage for EC2 instances and does not provide managed SMB file shares across a fleet."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "A company is moving a large on-premises NFS data set to AWS. The migration must run repeatedly during a transition period, and the production application also needs low-latency access from the data center to files stored in AWS. Which services can address these needs? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use AWS DataSync to transfer the NFS data set to Amazon EFS or Amazon S3.",
+        "status": "correct",
+        "explanation": "DataSync is built for online transfers between on-premises storage and AWS storage services."
+      },
+      {
+        "text": "Use AWS Storage Gateway File Gateway for low-latency on-premises file access backed by AWS storage.",
+        "status": "correct",
+        "explanation": "File Gateway can present file protocols locally while storing data durably in AWS."
+      },
+      {
+        "text": "Use Amazon Route 53 Resolver to copy the files into AWS.",
+        "status": "skipped",
+        "explanation": "Route 53 Resolver handles DNS resolution and does not migrate or cache file data."
+      },
+      {
+        "text": "Use Amazon SQS FIFO queues as the file system between the data center and AWS.",
+        "status": "skipped",
+        "explanation": "SQS is a message queue and does not provide file transfer or file-system access."
+      },
+      {
+        "text": "Use an EBS snapshot shared with the on-premises storage array.",
+        "status": "skipped",
+        "explanation": "EBS snapshots protect AWS block volumes and are not a direct migration path from an on-premises NFS array."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "question": "A branch office needs local SMB access to recently used files while the authoritative copy is stored durably in AWS. Users should not need to change to an object API. Which service meets this performance pattern?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Storage Gateway File Gateway",
+        "status": "correct",
+        "explanation": "File Gateway provides local file protocol access with a cache while storing data in AWS-backed storage."
+      },
+      {
+        "text": "Amazon CloudFront",
+        "status": "skipped",
+        "explanation": "CloudFront caches HTTP and HTTPS content at edge locations, not SMB file shares in a branch office."
+      },
+      {
+        "text": "AWS Transit Gateway",
+        "status": "skipped",
+        "explanation": "Transit Gateway connects networks but does not provide local file caching or file protocol translation."
+      },
+      {
+        "text": "Amazon EBS direct APIs",
+        "status": "skipped",
+        "explanation": "EBS direct APIs work with EBS snapshot data and do not present a local SMB file share to branch users."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "question": "A stateless image rendering service spends most of its time performing CPU-bound calculations and has little memory pressure. The team wants the best EC2 instance family orientation for high processor performance. Which instance family should be evaluated first?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Compute optimized instances, such as the C family",
+        "status": "correct",
+        "explanation": "Compute optimized instances are intended for workloads that benefit from high-performance processors."
+      },
+      {
+        "text": "Memory optimized instances, such as the R family",
+        "status": "skipped",
+        "explanation": "Memory optimized instances help memory-intensive applications, which is not the primary bottleneck in this scenario."
+      },
+      {
+        "text": "Storage optimized instances, such as the I family",
+        "status": "skipped",
+        "explanation": "Storage optimized instances focus on local storage I/O and are not the first fit for CPU-bound rendering."
+      },
+      {
+        "text": "Burstable instances, such as the T family, for sustained full CPU utilization",
+        "status": "skipped",
+        "explanation": "Burstable instances are not ideal for sustained CPU-heavy workloads that continuously need high processor capacity."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "question": "An in-memory analytics engine keeps a large working set in RAM and shows frequent paging on current instances. CPU use is moderate, but query latency rises when memory pressure increases. Which EC2 instance family is the best starting point?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Memory optimized instances, such as the R or X family",
+        "status": "correct",
+        "explanation": "Memory optimized instances are designed for workloads that need large memory capacity relative to compute."
+      },
+      {
+        "text": "Accelerated computing instances with GPUs for every query",
+        "status": "skipped",
+        "explanation": "GPU acceleration helps specific parallel compute workloads but does not directly solve general RAM pressure."
+      },
+      {
+        "text": "Burstable instances with unlimited mode enabled",
+        "status": "skipped",
+        "explanation": "Burstable CPU credits do not address a large in-memory working set."
+      },
+      {
+        "text": "Storage optimized HDD instances only",
+        "status": "skipped",
+        "explanation": "More local disk throughput does not remove the paging caused by insufficient memory."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "A tightly coupled HPC simulation runs on EC2 instances and sends frequent low-latency messages between nodes. The application needs the lowest network latency and highest packet-per-second performance inside one Availability Zone. Which placement strategy should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Cluster placement group",
+        "status": "correct",
+        "explanation": "A cluster placement group packs instances close together in one AZ to support low-latency, high-throughput networking."
+      },
+      {
+        "text": "Spread placement group across many AZs",
+        "status": "skipped",
+        "explanation": "Spread placement groups reduce correlated failure risk but do not optimize for the lowest node-to-node latency."
+      },
+      {
+        "text": "Partition placement group with instances spread across all Regions",
+        "status": "skipped",
+        "explanation": "Partition placement groups isolate failure domains and do not span all Regions."
+      },
+      {
+        "text": "Dedicated Hosts without a placement group",
+        "status": "skipped",
+        "explanation": "Dedicated Hosts provide physical host control but do not by themselves optimize HPC network placement."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "A distributed NoSQL cluster on EC2 stores several replicas of each shard. The architect wants to reduce the effect of a single rack-level failure while keeping related nodes grouped by shard. Which placement group strategy is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Partition placement group",
+        "status": "correct",
+        "explanation": "Partition placement groups divide instances into logical partitions backed by separate hardware, which suits distributed replicated systems."
+      },
+      {
+        "text": "Cluster placement group",
+        "status": "skipped",
+        "explanation": "Cluster placement groups optimize low-latency networking but increase placement concentration rather than partition isolation."
+      },
+      {
+        "text": "Capacity Reservation group",
+        "status": "skipped",
+        "explanation": "Capacity reservations help reserve capacity but are not the placement strategy for shard-aware hardware isolation."
+      },
+      {
+        "text": "A single Availability Zone without a placement group",
+        "status": "skipped",
+        "explanation": "Using one AZ without a placement group does not provide partition-aware hardware separation."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "A web service runs behind an Application Load Balancer and an Auto Scaling group. The request rate varies throughout the day, and the team wants the group to automatically maintain a steady number of requests per target. Which scaling policy should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Target tracking scaling based on ALB request count per target",
+        "status": "correct",
+        "explanation": "Target tracking can adjust capacity to keep a chosen metric, such as ALB requests per target, near a configured value."
+      },
+      {
+        "text": "Manual scaling once per week",
+        "status": "skipped",
+        "explanation": "Manual scaling cannot react continuously to changing daily request volume."
+      },
+      {
+        "text": "A lifecycle hook that terminates instances when requests increase",
+        "status": "skipped",
+        "explanation": "Lifecycle hooks control instance launch or termination workflows and are not scaling policies."
+      },
+      {
+        "text": "A scheduled action that always sets desired capacity to one",
+        "status": "skipped",
+        "explanation": "Forcing capacity to one would not maintain a steady request load per target during demand changes."
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "An Auto Scaling group needs to add a small number of instances when CPU is moderately high and add many instances when CPU is extremely high. Which policy type supports different scaling adjustments for different alarm breach sizes?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Step scaling",
+        "status": "correct",
+        "explanation": "Step scaling supports multiple adjustment steps based on how far the metric breaches the alarm threshold."
+      },
+      {
+        "text": "Instance refresh",
+        "status": "skipped",
+        "explanation": "Instance refresh replaces instances during updates and does not define metric breach adjustments."
+      },
+      {
+        "text": "Warm pool only",
+        "status": "skipped",
+        "explanation": "Warm pools can reduce launch time but do not choose different scale-out sizes based on alarm severity."
+      },
+      {
+        "text": "Termination policy",
+        "status": "skipped",
+        "explanation": "Termination policies influence which instances are removed, not how much the group scales when metrics breach thresholds."
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "question": "An EC2 Auto Scaling group hosts a public API with predictable weekday peaks and occasional unexpected surges. The company wants responsive capacity while avoiding constant manual changes. Which scaling approaches are appropriate? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use a target tracking policy tied to a utilization or load metric.",
+        "status": "correct",
+        "explanation": "Target tracking automatically adjusts capacity to keep a chosen metric near a target value."
+      },
+      {
+        "text": "Use scheduled scaling for known weekday peak periods.",
+        "status": "correct",
+        "explanation": "Scheduled scaling is appropriate when demand changes are predictable by time."
+      },
+      {
+        "text": "Disable health checks so instances remain in service during surges.",
+        "status": "skipped",
+        "explanation": "Health checks protect availability and disabling them does not improve scaling responsiveness."
+      },
+      {
+        "text": "Set maximum capacity equal to desired capacity at all times.",
+        "status": "skipped",
+        "explanation": "If maximum capacity equals desired capacity, the group cannot scale out for unexpected surges."
+      },
+      {
+        "text": "Use an IAM permission boundary as the scaling trigger.",
+        "status": "skipped",
+        "explanation": "Permission boundaries limit IAM permissions and are not Auto Scaling demand signals."
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "question": "A Lambda function performs CPU-heavy JSON transformations. Profiling shows the function is slow, but code optimization opportunities are limited. Which configuration change can improve CPU performance for the function?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Increase the function memory setting and test the effect on duration.",
+        "status": "correct",
+        "explanation": "Lambda allocates CPU power in proportion to memory, so increasing memory can improve CPU-bound function duration."
+      },
+      {
+        "text": "Reduce the timeout to force faster execution.",
+        "status": "skipped",
+        "explanation": "A shorter timeout may cause failures but does not provide more CPU resources."
+      },
+      {
+        "text": "Move the function package to S3 Glacier Instant Retrieval.",
+        "status": "skipped",
+        "explanation": "The storage class of deployment artifacts is not the mechanism for increasing Lambda CPU allocation."
+      },
+      {
+        "text": "Disable CloudWatch Logs for the function.",
+        "status": "skipped",
+        "explanation": "Logging changes may reduce small overhead but do not address the CPU allocation bottleneck."
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "question": "A serverless API has strict p95 latency requirements and receives sudden traffic spikes after marketing emails. Cold starts during spikes are causing latency outliers. Which Lambda feature should be configured for the critical function alias?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Provisioned concurrency",
+        "status": "correct",
+        "explanation": "Provisioned concurrency keeps initialized execution environments ready, reducing cold-start latency for configured versions or aliases."
+      },
+      {
+        "text": "Reserved concurrency set to zero",
+        "status": "skipped",
+        "explanation": "Reserved concurrency of zero throttles the function and would stop it from serving requests."
+      },
+      {
+        "text": "A larger dead-letter queue",
+        "status": "skipped",
+        "explanation": "A dead-letter queue helps capture failed asynchronous events and does not reduce synchronous cold-start latency."
+      },
+      {
+        "text": "A shorter log retention period",
+        "status": "skipped",
+        "explanation": "Log retention controls how long logs are kept and does not prepare Lambda environments ahead of traffic."
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "question": "A company runs containerized web services with variable traffic and wants to avoid managing EC2 capacity while still scaling tasks horizontally. Which compute option best fits the requirement?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon ECS on AWS Fargate",
+        "status": "correct",
+        "explanation": "Fargate runs ECS tasks without requiring the customer to manage the underlying EC2 instances."
+      },
+      {
+        "text": "Amazon EC2 Dedicated Hosts only",
+        "status": "skipped",
+        "explanation": "Dedicated Hosts increase host-level control and management responsibility, which conflicts with the no-EC2-management goal."
+      },
+      {
+        "text": "Amazon S3 Batch Operations",
+        "status": "skipped",
+        "explanation": "S3 Batch Operations performs actions on S3 objects and does not run containerized web services."
+      },
+      {
+        "text": "AWS Storage Gateway Volume Gateway",
+        "status": "skipped",
+        "explanation": "Volume Gateway provides hybrid block storage and does not run containers."
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "question": "A genomics company must process thousands of independent batch jobs. Each job can run in a container, and the compute fleet should scale up for the queue and scale down when work is complete. Which service should orchestrate the workload?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Batch",
+        "status": "correct",
+        "explanation": "AWS Batch schedules batch jobs and provisions compute resources based on job queue demand."
+      },
+      {
+        "text": "Amazon Route 53",
+        "status": "skipped",
+        "explanation": "Route 53 provides DNS and routing services, not batch job scheduling and compute fleet scaling."
+      },
+      {
+        "text": "Amazon CloudFront",
+        "status": "skipped",
+        "explanation": "CloudFront is a content delivery network and does not orchestrate container batch queues."
+      },
+      {
+        "text": "AWS Config",
+        "status": "skipped",
+        "explanation": "AWS Config records resource configuration and compliance, not high-throughput batch job execution."
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "question": "A data engineering team needs to run Apache Spark jobs over terabytes of data in S3. The team wants managed cluster provisioning and the ability to tune cluster size for each workload. Which service is the best fit?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon EMR",
+        "status": "correct",
+        "explanation": "Amazon EMR provides managed clusters for big data frameworks such as Apache Spark and can process data stored in S3."
+      },
+      {
+        "text": "Amazon Cognito",
+        "status": "skipped",
+        "explanation": "Cognito provides identity services and does not run Spark clusters."
+      },
+      {
+        "text": "AWS Secrets Manager",
+        "status": "skipped",
+        "explanation": "Secrets Manager stores and rotates secrets and does not provide distributed data processing clusters."
+      },
+      {
+        "text": "Amazon EFS Lifecycle Management",
+        "status": "skipped",
+        "explanation": "EFS lifecycle policies manage file storage classes and do not execute Spark workloads."
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "question": "A latency-sensitive trading analytics platform runs on EC2 and has both compute-heavy services and tightly coupled messaging nodes. Which design choices can improve compute and network performance? (Choose THREE)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Select instance families that match the dominant workload bottleneck.",
+        "status": "correct",
+        "explanation": "Choosing compute, memory, storage, or accelerated instance families according to the bottleneck is central to performance efficiency."
+      },
+      {
+        "text": "Use a cluster placement group for tightly coupled nodes in the same AZ.",
+        "status": "correct",
+        "explanation": "Cluster placement groups improve low-latency, high-throughput networking between colocated instances."
+      },
+      {
+        "text": "Use Auto Scaling policies so stateless services can add capacity when demand increases.",
+        "status": "correct",
+        "explanation": "Auto Scaling lets elastic services maintain performance as demand changes."
+      },
+      {
+        "text": "Place every component on a single burstable instance to reduce network hops.",
+        "status": "skipped",
+        "explanation": "A single burstable instance creates a capacity bottleneck and does not support elastic high-performance architecture."
+      },
+      {
+        "text": "Use a spread placement group for the tightly coupled messaging nodes to minimize latency.",
+        "status": "skipped",
+        "explanation": "Spread placement groups prioritize hardware separation rather than the lowest possible inter-node latency."
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "question": "A Lambda-based image API has inconsistent latency during traffic spikes and CPU-bound resizing tasks. Which configuration changes should be evaluated to improve performance? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Increase memory to provide more proportional CPU for the resizing code.",
+        "status": "correct",
+        "explanation": "Lambda CPU allocation increases with memory, which can reduce duration for CPU-bound resizing."
+      },
+      {
+        "text": "Configure provisioned concurrency for the latency-critical alias.",
+        "status": "correct",
+        "explanation": "Provisioned concurrency keeps execution environments initialized and can reduce cold-start outliers."
+      },
+      {
+        "text": "Reduce memory to the minimum value to increase CPU sharing.",
+        "status": "skipped",
+        "explanation": "Reducing memory also reduces proportional CPU allocation and can make CPU-bound work slower."
+      },
+      {
+        "text": "Set reserved concurrency to zero during peak periods.",
+        "status": "skipped",
+        "explanation": "Reserved concurrency of zero prevents the function from running and would cause throttling."
+      },
+      {
+        "text": "Move resized images to S3 Glacier Deep Archive before returning the response.",
+        "status": "skipped",
+        "explanation": "Archival storage does not reduce Lambda compute latency for synchronous image resizing."
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "question": "An Amazon RDS for MySQL database handles a write-heavy order system and many reporting queries. Reporting queries are causing read contention on the primary database, but the reports can tolerate replication lag. What should the architect add?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "RDS read replicas for the reporting workload",
+        "status": "correct",
+        "explanation": "Read replicas offload read traffic from the primary database and are suitable when the workload can tolerate asynchronous lag."
+      },
+      {
+        "text": "Multi-AZ standby as the reporting target",
+        "status": "skipped",
+        "explanation": "A Multi-AZ standby is for availability and failover, not for serving normal reporting queries."
+      },
+      {
+        "text": "An SQS queue in front of every SELECT query",
+        "status": "skipped",
+        "explanation": "SQS decouples messages but does not execute database read queries or reduce read load directly."
+      },
+      {
+        "text": "A larger NAT gateway",
+        "status": "skipped",
+        "explanation": "NAT gateway capacity does not address read contention inside the database."
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "question": "An Aurora MySQL application has one writer and several Aurora Replicas. The application should distribute read-only queries across healthy replicas without hard-coding instance endpoints. Which endpoint should it use for reads?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Aurora reader endpoint",
+        "status": "correct",
+        "explanation": "The Aurora reader endpoint load balances read-only connections across available Aurora Replicas in the cluster."
+      },
+      {
+        "text": "The writer endpoint for all read and write traffic",
+        "status": "skipped",
+        "explanation": "Sending all reads to the writer misses the opportunity to scale read traffic across replicas."
+      },
+      {
+        "text": "The RDS Proxy endpoint configured for schema migration only",
+        "status": "skipped",
+        "explanation": "RDS Proxy can pool connections, but the Aurora reader endpoint is the direct endpoint for distributing read traffic."
+      },
+      {
+        "text": "The instance endpoint of one replica stored in a configuration file",
+        "status": "skipped",
+        "explanation": "Hard-coding one replica endpoint concentrates reads and fails to adapt if that replica changes health or role."
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "question": "A serverless application opens many short-lived connections to an Amazon RDS database during bursts. The database spends too much time handling connection churn, and the team wants to pool and reuse connections. Which service should be added?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon RDS Proxy",
+        "status": "correct",
+        "explanation": "RDS Proxy pools and shares database connections, helping applications handle bursts without overwhelming the database with connection churn."
+      },
+      {
+        "text": "Amazon CloudFront",
+        "status": "skipped",
+        "explanation": "CloudFront caches HTTP content and does not pool database connections."
+      },
+      {
+        "text": "Amazon Route 53 health checks",
+        "status": "skipped",
+        "explanation": "Route 53 health checks monitor endpoints but do not manage database connection reuse."
+      },
+      {
+        "text": "AWS Glue Data Catalog",
+        "status": "skipped",
+        "explanation": "The Glue Data Catalog stores metadata for analytics and does not pool RDS application connections."
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "question": "A new DynamoDB-backed application expects unpredictable traffic spikes after social media campaigns. The team does not have reliable capacity forecasts and wants the table to handle changing request rates without capacity planning. Which capacity mode should be used initially?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "On-demand capacity mode",
+        "status": "correct",
+        "explanation": "On-demand mode is suited to unpredictable workloads because DynamoDB handles capacity without requiring provisioned throughput settings."
+      },
+      {
+        "text": "Provisioned mode with one read capacity unit and one write capacity unit",
+        "status": "skipped",
+        "explanation": "A very low fixed provisioned capacity would throttle during unexpected traffic spikes."
+      },
+      {
+        "text": "Reserved concurrency",
+        "status": "skipped",
+        "explanation": "Reserved concurrency is a Lambda control and is not a DynamoDB table capacity mode."
+      },
+      {
+        "text": "S3 Intelligent-Tiering",
+        "status": "skipped",
+        "explanation": "S3 Intelligent-Tiering is an object storage class and does not configure DynamoDB throughput."
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "question": "A DynamoDB table has steady, predictable traffic with a known daily peak window. The company wants cost-efficient throughput while still allowing automatic adjustments around the peak. Which configuration is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Provisioned capacity mode with auto scaling configured for table throughput",
+        "status": "correct",
+        "explanation": "Provisioned mode can be cost efficient for predictable traffic, and auto scaling adjusts capacity as utilization changes."
+      },
+      {
+        "text": "On-demand mode with a fixed EC2 Auto Scaling group",
+        "status": "skipped",
+        "explanation": "EC2 Auto Scaling does not control DynamoDB table capacity."
+      },
+      {
+        "text": "DynamoDB global tables in every Region solely to increase one Region's write capacity",
+        "status": "skipped",
+        "explanation": "Global tables are for multi-Region replication and availability, not the simplest way to tune predictable capacity in one Region."
+      },
+      {
+        "text": "A Multi-AZ standby replica for DynamoDB",
+        "status": "skipped",
+        "explanation": "DynamoDB does not use the RDS-style Multi-AZ standby model for table throughput."
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "question": "A gaming leaderboard reads the same DynamoDB items many times per second. The workload is read-heavy, eventually consistent reads are acceptable, and microsecond response times are desired. Which service can be placed in front of DynamoDB?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon DynamoDB Accelerator (DAX)",
+        "status": "correct",
+        "explanation": "DAX is an in-memory cache for DynamoDB that can reduce read latency for suitable read-heavy access patterns."
+      },
+      {
+        "text": "Amazon RDS Proxy",
+        "status": "skipped",
+        "explanation": "RDS Proxy pools connections for relational databases and does not cache DynamoDB items."
+      },
+      {
+        "text": "AWS DataSync",
+        "status": "skipped",
+        "explanation": "DataSync transfers file and object data and does not provide a DynamoDB read-through cache."
+      },
+      {
+        "text": "Amazon EBS io2",
+        "status": "skipped",
+        "explanation": "EBS io2 is block storage for EC2 and cannot be placed in front of DynamoDB as an item cache."
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "question": "An application repeatedly queries a relational database for product catalog data that changes only a few times per hour. Database CPU is high because the same read queries are executed by many web servers. Which service should be added to reduce read latency and database load?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon ElastiCache",
+        "status": "correct",
+        "explanation": "ElastiCache provides managed in-memory caching, which can serve repeated reads with lower latency and reduce database load."
+      },
+      {
+        "text": "AWS CloudTrail Lake",
+        "status": "skipped",
+        "explanation": "CloudTrail Lake stores and queries audit events and is not an application data cache."
+      },
+      {
+        "text": "Amazon EFS Max I/O",
+        "status": "skipped",
+        "explanation": "EFS is shared file storage and does not cache relational query results for web servers."
+      },
+      {
+        "text": "AWS Site-to-Site VPN",
+        "status": "skipped",
+        "explanation": "A VPN changes network connectivity and does not reduce repeated database query execution."
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "question": "A session store must support sub-millisecond access for ephemeral key-value data. The application can rebuild sessions if a cache node fails, and no complex data structures are required. Which caching option is suitable?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon ElastiCache for Memcached",
+        "status": "correct",
+        "explanation": "Memcached is a simple in-memory key-value cache suitable for ephemeral session data and high-speed access."
+      },
+      {
+        "text": "Amazon S3 Glacier Flexible Retrieval",
+        "status": "skipped",
+        "explanation": "Glacier Flexible Retrieval is archival object storage and cannot provide sub-millisecond session access."
+      },
+      {
+        "text": "Amazon Redshift Spectrum",
+        "status": "skipped",
+        "explanation": "Redshift Spectrum queries data in S3 for analytics and is not a low-latency session cache."
+      },
+      {
+        "text": "Amazon EBS snapshots",
+        "status": "skipped",
+        "explanation": "EBS snapshots are backups of block volumes and do not provide an online key-value cache."
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "question": "A SaaS application uses Aurora PostgreSQL and has unpredictable scaling needs during onboarding events. The team wants relational compatibility and capacity that can scale more granularly than manually resizing fixed DB instances. Which option should be evaluated?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Aurora Serverless v2",
+        "status": "correct",
+        "explanation": "Aurora Serverless v2 provides Aurora relational database capacity that can scale automatically in fine-grained increments."
+      },
+      {
+        "text": "Amazon Neptune",
+        "status": "skipped",
+        "explanation": "Neptune is a graph database and does not preserve Aurora PostgreSQL compatibility."
+      },
+      {
+        "text": "DynamoDB DAX only",
+        "status": "skipped",
+        "explanation": "DAX accelerates DynamoDB reads and does not provide relational PostgreSQL compatibility."
+      },
+      {
+        "text": "Amazon S3 Select",
+        "status": "skipped",
+        "explanation": "S3 Select retrieves subsets of object data and is not a relational database capacity model."
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "question": "An application has a relational order database that is overloaded by read traffic. Some reads need fresh relational data, while product metadata can be cached for minutes. Which changes improve read performance without moving writes off the primary database? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Add read replicas and direct eligible read-only queries to them.",
+        "status": "correct",
+        "explanation": "Read replicas can offload read traffic from the primary database for queries that can tolerate replica lag."
+      },
+      {
+        "text": "Cache product metadata in Amazon ElastiCache with an appropriate TTL.",
+        "status": "correct",
+        "explanation": "Caching repeatedly read metadata reduces database query volume and improves read latency."
+      },
+      {
+        "text": "Use the Multi-AZ standby endpoint for reporting queries.",
+        "status": "skipped",
+        "explanation": "The standby in a standard RDS Multi-AZ deployment is not used for normal read traffic."
+      },
+      {
+        "text": "Move the primary database volume to S3 Glacier Deep Archive.",
+        "status": "skipped",
+        "explanation": "Archival object storage is not a live relational database storage engine."
+      },
+      {
+        "text": "Disable indexes so writes use fewer database resources.",
+        "status": "skipped",
+        "explanation": "Removing indexes can make read queries slower and does not address the need to offload or cache reads."
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "question": "A DynamoDB table receives heavy traffic for a small set of popular tenant IDs, causing throttling on hot partitions. The application can adjust its access pattern and has repeated reads for popular items. Which actions can improve performance? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Redesign the partition key strategy to distribute requests more evenly.",
+        "status": "correct",
+        "explanation": "A high-cardinality, well-distributed partition key helps avoid concentrated traffic on a small number of partitions."
+      },
+      {
+        "text": "Use DAX for suitable repeated read operations.",
+        "status": "correct",
+        "explanation": "DAX can reduce read pressure on DynamoDB for cacheable, read-heavy access patterns."
+      },
+      {
+        "text": "Use a single constant partition key for every tenant.",
+        "status": "skipped",
+        "explanation": "A constant partition key concentrates all traffic and worsens hot partition behavior."
+      },
+      {
+        "text": "Move the table to S3 Standard-IA to increase partition count.",
+        "status": "skipped",
+        "explanation": "S3 storage classes do not change DynamoDB table partitioning."
+      },
+      {
+        "text": "Replace all queries with full table scans.",
+        "status": "skipped",
+        "explanation": "Full table scans are usually less efficient and do not solve hot-key access for popular tenants."
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "question": "A high-traffic relational application must improve database performance. It has many short-lived application connections, frequent repeated lookups, and separate reporting reads that can be slightly stale. Which options can help? (Choose THREE)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use RDS Proxy to pool and reuse database connections.",
+        "status": "correct",
+        "explanation": "RDS Proxy reduces connection overhead and protects the database from connection storms."
+      },
+      {
+        "text": "Add ElastiCache for repeated lookup results that can be cached.",
+        "status": "correct",
+        "explanation": "ElastiCache can serve repeated lookups quickly and reduce direct database reads."
+      },
+      {
+        "text": "Use read replicas for reporting queries that tolerate replication lag.",
+        "status": "correct",
+        "explanation": "Read replicas offload eligible reporting reads from the primary database."
+      },
+      {
+        "text": "Send all reporting queries to the Multi-AZ standby instance.",
+        "status": "skipped",
+        "explanation": "A typical RDS Multi-AZ standby is reserved for failover and is not used for normal read scaling."
+      },
+      {
+        "text": "Use AWS WAF rate-based rules as the database connection pool.",
+        "status": "skipped",
+        "explanation": "WAF filters web requests and does not pool database connections or cache query results."
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "question": "A fraud detection system needs to traverse relationships between accounts, devices, IP addresses, and transactions with millisecond query latency. The data model is highly connected and queries follow graph patterns. Which database service is the best fit?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/neptune/latest/userguide/intro.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Neptune",
+        "status": "correct",
+        "explanation": "Neptune is a managed graph database designed for highly connected data and graph query patterns."
+      },
+      {
+        "text": "Amazon S3 Inventory",
+        "status": "skipped",
+        "explanation": "S3 Inventory reports object metadata and does not execute graph traversals."
+      },
+      {
+        "text": "Amazon Timestream",
+        "status": "skipped",
+        "explanation": "Timestream is optimized for time series data rather than graph relationship traversal."
+      },
+      {
+        "text": "Amazon EFS",
+        "status": "skipped",
+        "explanation": "EFS is a file system and does not provide a managed graph query engine."
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "question": "An application must provide low-latency search over product descriptions, logs, and free-form text. Users need relevance-ranked results and filtering at query time. Which AWS service should be evaluated?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon OpenSearch Service",
+        "status": "correct",
+        "explanation": "OpenSearch Service is designed for search, log analytics, and text query workloads that need indexing and relevance-based retrieval."
+      },
+      {
+        "text": "Amazon RDS Multi-AZ standby",
+        "status": "skipped",
+        "explanation": "A standby database improves availability but is not a search engine for free-form text."
+      },
+      {
+        "text": "AWS Backup Audit Manager",
+        "status": "skipped",
+        "explanation": "Backup Audit Manager helps audit backup compliance and does not index application text."
+      },
+      {
+        "text": "Amazon VPC Flow Logs",
+        "status": "skipped",
+        "explanation": "VPC Flow Logs capture network metadata and do not provide application search functionality."
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "question": "A team is migrating an application that already uses MongoDB-compatible document APIs. The workload requires a managed document database with scalable read capacity and minimal application rewrite. Which service should be considered?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon DocumentDB",
+        "status": "correct",
+        "explanation": "Amazon DocumentDB is a managed document database with MongoDB compatibility for applications using document access patterns."
+      },
+      {
+        "text": "Amazon Redshift only",
+        "status": "skipped",
+        "explanation": "Redshift is a data warehouse and is not a MongoDB-compatible operational document database."
+      },
+      {
+        "text": "AWS DataSync",
+        "status": "skipped",
+        "explanation": "DataSync transfers data but does not provide a managed document database API."
+      },
+      {
+        "text": "Amazon EBS Multi-Attach",
+        "status": "skipped",
+        "explanation": "EBS Multi-Attach is block storage behavior and does not provide document database query capabilities."
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "question": "A website serves static assets and dynamic API responses to users around the world. The team wants to reduce latency for cacheable content and offload requests from the origin. Which service should be placed in front of the origin?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon CloudFront",
+        "status": "correct",
+        "explanation": "CloudFront caches content at edge locations and can reduce latency and origin load for global users."
+      },
+      {
+        "text": "AWS Direct Connect",
+        "status": "skipped",
+        "explanation": "Direct Connect provides private connectivity to AWS but is not a global content delivery cache."
+      },
+      {
+        "text": "Amazon EBS Fast Snapshot Restore",
+        "status": "skipped",
+        "explanation": "Fast Snapshot Restore improves EBS volume initialization and does not accelerate web content delivery."
+      },
+      {
+        "text": "AWS Glue crawler",
+        "status": "skipped",
+        "explanation": "A Glue crawler discovers data schemas and does not cache web content for users."
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "question": "An application serves private video files from S3 to viewers worldwide. Most viewers watch the same popular files repeatedly, and origin egress must be reduced. Which architecture is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use CloudFront with the S3 bucket as the origin and configure appropriate cache behavior.",
+        "status": "correct",
+        "explanation": "CloudFront can cache S3-origin content near viewers, lowering latency and reducing repeated origin fetches."
+      },
+      {
+        "text": "Mount the S3 bucket as an EBS volume in every Region.",
+        "status": "skipped",
+        "explanation": "S3 buckets are not mounted as EBS volumes, and this would not provide edge caching."
+      },
+      {
+        "text": "Use AWS Batch to pre-process every viewer request.",
+        "status": "skipped",
+        "explanation": "Batch processing is not used to serve repeated low-latency video downloads."
+      },
+      {
+        "text": "Place a NAT gateway in front of the S3 bucket.",
+        "status": "skipped",
+        "explanation": "A NAT gateway provides outbound internet access for private subnets and does not cache S3 content globally."
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "question": "A multiplayer application uses UDP and TCP endpoints in multiple AWS Regions. Users connect over the public internet, and the company wants static anycast IP addresses plus routing to the healthiest low-latency regional endpoint. Which service should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Global Accelerator",
+        "status": "correct",
+        "explanation": "Global Accelerator provides static anycast IPs and routes user traffic over the AWS global network to healthy endpoints."
+      },
+      {
+        "text": "Amazon CloudWatch Logs Insights",
+        "status": "skipped",
+        "explanation": "CloudWatch Logs Insights queries logs and does not provide network acceleration or anycast IPs."
+      },
+      {
+        "text": "AWS Glue Data Catalog",
+        "status": "skipped",
+        "explanation": "The Glue Data Catalog manages metadata and does not route application traffic."
+      },
+      {
+        "text": "Amazon S3 Transfer Acceleration",
+        "status": "skipped",
+        "explanation": "S3 Transfer Acceleration helps S3 object transfers and is not a general TCP/UDP application accelerator."
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "question": "A financial application uses long-lived TCP connections and requires very high throughput with ultra-low latency. The load balancer must preserve client IP addresses and operate at Layer 4. Which load balancer type should be selected?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Network Load Balancer",
+        "status": "correct",
+        "explanation": "Network Load Balancers operate at Layer 4 and are designed for high-performance TCP, UDP, and TLS traffic."
+      },
+      {
+        "text": "Application Load Balancer",
+        "status": "skipped",
+        "explanation": "Application Load Balancers operate at Layer 7 and are best for HTTP and HTTPS request routing."
+      },
+      {
+        "text": "Gateway Load Balancer",
+        "status": "skipped",
+        "explanation": "Gateway Load Balancer is intended for deploying and scaling network appliances, not general application TCP load balancing."
+      },
+      {
+        "text": "Classic Load Balancer for all new workloads",
+        "status": "skipped",
+        "explanation": "Classic Load Balancer is previous generation and is not the best choice for new high-performance Layer 4 designs."
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "question": "A microservices application exposes HTTPS endpoints and must route requests to different target groups based on host headers and URL paths. Which AWS load balancing option should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Application Load Balancer",
+        "status": "correct",
+        "explanation": "Application Load Balancers provide Layer 7 routing features such as host-based and path-based routing."
+      },
+      {
+        "text": "Network Load Balancer only",
+        "status": "skipped",
+        "explanation": "NLBs operate at Layer 4 and do not provide HTTP host and path routing rules."
+      },
+      {
+        "text": "AWS Direct Connect gateway",
+        "status": "skipped",
+        "explanation": "A Direct Connect gateway supports private network connectivity and does not route HTTP requests to target groups."
+      },
+      {
+        "text": "Amazon S3 Multi-Object Delete",
+        "status": "skipped",
+        "explanation": "S3 Multi-Object Delete is unrelated to HTTPS request routing."
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "question": "A company transfers large data sets between an on-premises data center and AWS every day. Internet VPN performance is inconsistent, and the company wants a dedicated private network connection with more predictable bandwidth. Which service should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Direct Connect",
+        "status": "correct",
+        "explanation": "Direct Connect provides dedicated network connectivity from on-premises locations to AWS for more consistent performance."
+      },
+      {
+        "text": "Amazon CloudFront",
+        "status": "skipped",
+        "explanation": "CloudFront accelerates content delivery to users and does not provide a dedicated private data center link."
+      },
+      {
+        "text": "Amazon API Gateway cache",
+        "status": "skipped",
+        "explanation": "API Gateway caching improves API response performance and does not create private network connectivity."
+      },
+      {
+        "text": "AWS Organizations",
+        "status": "skipped",
+        "explanation": "AWS Organizations manages accounts and policies, not network bandwidth between a data center and AWS."
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "question": "A company needs encrypted connectivity from a branch office to a VPC within days. The bandwidth requirements are moderate, and the team can use the public internet for transport. Which connectivity option is fastest to establish?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Site-to-Site VPN",
+        "status": "correct",
+        "explanation": "Site-to-Site VPN provides encrypted tunnels over the internet and can usually be provisioned faster than dedicated circuits."
+      },
+      {
+        "text": "A new AWS Direct Connect dedicated connection only",
+        "status": "skipped",
+        "explanation": "Direct Connect can provide dedicated connectivity but typically requires circuit provisioning and is not the fastest short-term option."
+      },
+      {
+        "text": "Amazon CloudFront signed URLs",
+        "status": "skipped",
+        "explanation": "CloudFront signed URLs control content access and do not connect a branch network to a VPC."
+      },
+      {
+        "text": "An S3 lifecycle policy",
+        "status": "skipped",
+        "explanation": "S3 lifecycle policies manage object transitions and expirations, not network connectivity."
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "question": "A SaaS provider exposes an API hosted behind a Network Load Balancer in its VPC. Customer VPCs should access the service privately without public IPs, NAT gateways, or VPC peering. Which networking service should the provider use?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS PrivateLink",
+        "status": "correct",
+        "explanation": "PrivateLink enables private connectivity to services across VPCs using interface endpoints without exposing traffic to the public internet."
+      },
+      {
+        "text": "Internet Gateway",
+        "status": "skipped",
+        "explanation": "An internet gateway enables public internet routing and does not meet the private-only access requirement."
+      },
+      {
+        "text": "AWS WAF managed rules",
+        "status": "skipped",
+        "explanation": "WAF filters web requests and does not create private VPC-to-service connectivity."
+      },
+      {
+        "text": "Amazon Route 53 public hosted zone only",
+        "status": "skipped",
+        "explanation": "DNS alone does not provide private network connectivity to a provider service."
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "question": "A company serves a public application to global users. Static files should be cached close to users, and non-cacheable TCP traffic should enter the AWS network through the closest edge location and route to healthy regional endpoints. Which services fit these needs? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Amazon CloudFront for static and cacheable web content",
+        "status": "correct",
+        "explanation": "CloudFront caches HTTP and HTTPS content at edge locations to reduce user latency and origin load."
+      },
+      {
+        "text": "AWS Global Accelerator for non-cacheable TCP application traffic",
+        "status": "correct",
+        "explanation": "Global Accelerator routes traffic over the AWS global network to healthy endpoints using anycast IPs."
+      },
+      {
+        "text": "AWS Glue crawler for edge routing",
+        "status": "skipped",
+        "explanation": "Glue crawlers discover data schemas and do not route user network traffic."
+      },
+      {
+        "text": "Amazon EBS snapshots replicated to every edge location",
+        "status": "skipped",
+        "explanation": "EBS snapshots are block storage backups and do not provide edge caching or application traffic acceleration."
+      },
+      {
+        "text": "S3 Object Lock for dynamic TCP routing",
+        "status": "skipped",
+        "explanation": "Object Lock enforces retention policies and does not accelerate non-cacheable TCP traffic."
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "question": "An application has three traffic patterns: HTTP path-based routing for APIs, high-throughput TCP routing for a custom protocol, and global caching of static images. Which AWS services are appropriate? (Choose THREE)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Application Load Balancer for HTTP path-based API routing",
+        "status": "correct",
+        "explanation": "ALB provides Layer 7 routing capabilities including path-based routing."
+      },
+      {
+        "text": "Network Load Balancer for high-throughput TCP routing",
+        "status": "correct",
+        "explanation": "NLB is designed for high-performance Layer 4 TCP, UDP, and TLS traffic."
+      },
+      {
+        "text": "Amazon CloudFront for globally cached static images",
+        "status": "correct",
+        "explanation": "CloudFront caches static content near users to reduce latency and origin load."
+      },
+      {
+        "text": "AWS Step Functions as the TCP load balancer",
+        "status": "skipped",
+        "explanation": "Step Functions orchestrates workflows and is not a network load balancer."
+      },
+      {
+        "text": "AWS KMS as the image content delivery network",
+        "status": "skipped",
+        "explanation": "KMS manages cryptographic keys and does not cache or deliver static content."
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "question": "A public web application must remain responsive if one Availability Zone has issues. The architecture uses an internet-facing load balancer and private application instances. Which subnet placement is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Place the load balancer in public subnets across multiple AZs and application instances in private subnets across multiple AZs.",
+        "status": "correct",
+        "explanation": "Using multiple AZs for both the load balancer and application tier supports availability and distributes traffic across zones."
+      },
+      {
+        "text": "Place all load balancer nodes and application instances in one public subnet.",
+        "status": "skipped",
+        "explanation": "A single subnet and AZ create a zone-level bottleneck and failure domain."
+      },
+      {
+        "text": "Place application instances in public subnets only so they bypass the load balancer.",
+        "status": "skipped",
+        "explanation": "Bypassing the load balancer removes managed traffic distribution and health-based routing."
+      },
+      {
+        "text": "Place the internet-facing load balancer in private subnets with no route to an internet gateway.",
+        "status": "skipped",
+        "explanation": "An internet-facing load balancer needs subnets that can support public routing."
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "question": "An application ingests clickstream events from thousands of producers. Multiple consumer applications must process the same ordered stream in near real time, and consumers need control over replay from earlier positions. Which service should be selected?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Kinesis Data Streams",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports near-real-time streaming with consumers that can process and replay records from the stream."
+      },
+      {
+        "text": "Amazon S3 Glacier Deep Archive",
+        "status": "skipped",
+        "explanation": "Deep Archive is long-term storage and does not provide near-real-time stream processing."
+      },
+      {
+        "text": "AWS CloudFormation StackSets",
+        "status": "skipped",
+        "explanation": "StackSets deploy CloudFormation stacks across accounts and Regions, not clickstream event streams."
+      },
+      {
+        "text": "Amazon EFS Lifecycle Management",
+        "status": "skipped",
+        "explanation": "EFS lifecycle policies manage file storage classes and do not ingest ordered event streams."
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "question": "A security team wants to load streaming application logs into Amazon S3 for later Athena queries. The team does not want to manage stream consumers or custom delivery code. Which service is the simplest fit?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Data Firehose",
+        "status": "correct",
+        "explanation": "Firehose can capture, transform, and deliver streaming data to destinations such as S3 with minimal custom consumer management."
+      },
+      {
+        "text": "Amazon EBS direct APIs",
+        "status": "skipped",
+        "explanation": "EBS direct APIs work with snapshot block data and do not deliver streaming logs to S3."
+      },
+      {
+        "text": "AWS IAM Access Analyzer",
+        "status": "skipped",
+        "explanation": "IAM Access Analyzer evaluates resource access and does not ingest and deliver log streams."
+      },
+      {
+        "text": "AWS Direct Connect",
+        "status": "skipped",
+        "explanation": "Direct Connect provides network connectivity and does not manage streaming log delivery into S3."
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "question": "A company is choosing a streaming platform. One workload needs custom low-latency consumers with replay control, and another team needs compatibility with existing Apache Kafka clients and tooling. Which services are appropriate? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/msk/latest/developerguide/what-is-msk.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use Kinesis Data Streams for custom stream consumers that need replay control.",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports custom consumers and replay from retained stream records."
+      },
+      {
+        "text": "Use Amazon Managed Streaming for Apache Kafka for Kafka-compatible applications.",
+        "status": "correct",
+        "explanation": "Amazon MSK provides managed Apache Kafka clusters for applications that use Kafka APIs and tooling."
+      },
+      {
+        "text": "Use Amazon EFS as a Kafka broker replacement for ordered event streaming.",
+        "status": "skipped",
+        "explanation": "EFS is a shared file system and is not a managed event streaming broker."
+      },
+      {
+        "text": "Use AWS Backup to replay stream events to consumers.",
+        "status": "skipped",
+        "explanation": "AWS Backup protects resources but does not act as a streaming event service."
+      },
+      {
+        "text": "Use Amazon Route 53 Resolver query logs as the primary stream broker.",
+        "status": "skipped",
+        "explanation": "Resolver query logs record DNS query activity and do not provide a general-purpose streaming platform."
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "question": "A data lake stores raw JSON files in S3. The analytics team needs a managed ETL service to discover schemas, transform the data into Parquet, and write curated datasets back to S3. Which service should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Glue",
+        "status": "correct",
+        "explanation": "AWS Glue provides managed data integration, crawlers, catalog metadata, and ETL jobs for transforming data lake datasets."
+      },
+      {
+        "text": "Amazon GuardDuty",
+        "status": "skipped",
+        "explanation": "GuardDuty detects security threats and does not transform data lake files."
+      },
+      {
+        "text": "Amazon VPC Traffic Mirroring",
+        "status": "skipped",
+        "explanation": "Traffic Mirroring copies network packets and is not an ETL service."
+      },
+      {
+        "text": "AWS Certificate Manager",
+        "status": "skipped",
+        "explanation": "Certificate Manager provisions TLS certificates and does not discover schemas or transform S3 data."
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "question": "A business analyst wants to run ad hoc SQL queries directly against structured files stored in Amazon S3. The team wants a serverless query service and does not want to load the data into a database first. Which service should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Athena",
+        "status": "correct",
+        "explanation": "Athena is a serverless interactive query service that can query data in S3 using SQL."
+      },
+      {
+        "text": "Amazon ECR",
+        "status": "skipped",
+        "explanation": "ECR stores container images and does not run SQL queries against S3 data."
+      },
+      {
+        "text": "AWS Systems Manager Session Manager",
+        "status": "skipped",
+        "explanation": "Session Manager provides shell access to instances and is not a serverless SQL query engine."
+      },
+      {
+        "text": "Amazon CloudFront Functions",
+        "status": "skipped",
+        "explanation": "CloudFront Functions run lightweight edge code and do not query data lake files with SQL."
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "question": "A research institute needs to move 200 TB of data from an on-premises file system to Amazon S3 over an existing network connection. The transfer must be incremental after the first copy and should include scheduling and verification features. Which service should be used?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS DataSync",
+        "status": "correct",
+        "explanation": "DataSync is designed to move data between on-premises storage and AWS storage with automation, scheduling, and transfer verification."
+      },
+      {
+        "text": "Amazon Inspector",
+        "status": "skipped",
+        "explanation": "Inspector scans workloads for vulnerabilities and does not perform large-scale data transfers."
+      },
+      {
+        "text": "AWS Config conformance packs",
+        "status": "skipped",
+        "explanation": "Config conformance packs evaluate compliance and do not transfer file data to S3."
+      },
+      {
+        "text": "Amazon SNS message filtering",
+        "status": "skipped",
+        "explanation": "SNS filters messages and is not a bulk data migration service."
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "question": "A factory application must keep using local iSCSI block storage while asynchronously backing the data to AWS. The local appliance should provide low-latency access for the factory systems. Which AWS service pattern matches this requirement?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Storage Gateway Volume Gateway",
+        "status": "correct",
+        "explanation": "Volume Gateway presents iSCSI block storage locally and can store or back up data in AWS."
+      },
+      {
+        "text": "Amazon Athena federated query",
+        "status": "skipped",
+        "explanation": "Athena federated query runs SQL across data sources and does not present local iSCSI volumes."
+      },
+      {
+        "text": "Amazon CloudFront with field-level encryption",
+        "status": "skipped",
+        "explanation": "CloudFront accelerates web content and does not provide local block storage."
+      },
+      {
+        "text": "AWS Lambda function URLs",
+        "status": "skipped",
+        "explanation": "Lambda function URLs expose HTTPS endpoints and do not provide iSCSI storage access."
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "question": "A streaming analytics pipeline must support near-real-time processing of events and also persist raw events to S3 for later analysis. The team wants independent consumers for real-time processing and managed delivery to the data lake. Which services should be combined? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Kinesis Data Streams for real-time event ingestion and consumer processing",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports near-real-time ingestion and independent consumers."
+      },
+      {
+        "text": "Amazon Data Firehose to deliver stream data into S3",
+        "status": "correct",
+        "explanation": "Firehose can deliver streaming data to S3 without requiring custom delivery consumers."
+      },
+      {
+        "text": "Amazon EBS snapshots as the event stream",
+        "status": "skipped",
+        "explanation": "EBS snapshots capture block volume state and are not an event streaming service."
+      },
+      {
+        "text": "AWS CloudTrail organization trails as the custom analytics consumer",
+        "status": "skipped",
+        "explanation": "CloudTrail records API activity and is not a general-purpose stream processor for application events."
+      },
+      {
+        "text": "Amazon Route 53 hosted zones for raw event persistence",
+        "status": "skipped",
+        "explanation": "Hosted zones store DNS records and do not persist analytics events in a data lake."
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "question": "A data lake team stores curated Parquet data in S3. Analysts need SQL access, and ETL jobs need a shared metadata catalog so tables are consistently discovered. Which services meet these needs? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Amazon Athena for serverless SQL queries on S3 data",
+        "status": "correct",
+        "explanation": "Athena enables SQL queries directly over data stored in S3."
+      },
+      {
+        "text": "AWS Glue Data Catalog for shared table metadata",
+        "status": "correct",
+        "explanation": "The Glue Data Catalog stores metadata that analytics services can use to discover data lake tables."
+      },
+      {
+        "text": "AWS Shield Advanced as the table catalog",
+        "status": "skipped",
+        "explanation": "Shield Advanced provides DDoS protection and does not catalog data lake schemas."
+      },
+      {
+        "text": "Amazon EBS Fast Snapshot Restore for SQL access to S3 files",
+        "status": "skipped",
+        "explanation": "Fast Snapshot Restore improves EBS volume creation from snapshots and does not query S3 data."
+      },
+      {
+        "text": "AWS IAM Identity Center as the query engine",
+        "status": "skipped",
+        "explanation": "IAM Identity Center manages workforce access and is not a SQL query engine."
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "question": "A company is building a data ingestion architecture for application logs. Logs should be buffered, optionally transformed, delivered to S3, cataloged for discovery, and queried with SQL without managing servers. Which components are appropriate? (Choose THREE)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Amazon Data Firehose for managed buffering, transformation, and delivery",
+        "status": "correct",
+        "explanation": "Firehose can buffer, optionally transform, and deliver streaming records to destinations such as S3."
+      },
+      {
+        "text": "AWS Glue Data Catalog for table metadata",
+        "status": "correct",
+        "explanation": "The Glue Data Catalog provides shared metadata so analytics tools can discover the S3 data."
+      },
+      {
+        "text": "Amazon Athena for serverless SQL queries",
+        "status": "correct",
+        "explanation": "Athena provides serverless SQL querying over data stored in S3."
+      },
+      {
+        "text": "Amazon EC2 instances required for every Athena query coordinator",
+        "status": "skipped",
+        "explanation": "Athena is serverless from the user's perspective and does not require managing EC2 query coordinator instances."
+      },
+      {
+        "text": "Amazon S3 Glacier Deep Archive as the only active query layer",
+        "status": "skipped",
+        "explanation": "Deep Archive is designed for long-term retention and is not the active layer for frequent SQL queries."
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "question": "A data science team runs complex Spark transformations with custom libraries and wants fine control over cluster configuration. The input and output data are in S3, and jobs run for several hours. Which service is most appropriate?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon EMR",
+        "status": "correct",
+        "explanation": "EMR supports managed big data clusters with frameworks such as Spark and gives teams control over cluster configuration."
+      },
+      {
+        "text": "Amazon SQS long polling only",
+        "status": "skipped",
+        "explanation": "SQS queues messages and does not execute distributed Spark transformations."
+      },
+      {
+        "text": "AWS WAF Bot Control",
+        "status": "skipped",
+        "explanation": "WAF Bot Control protects web applications and does not process S3 data with Spark."
+      },
+      {
+        "text": "Amazon CloudFront origin groups",
+        "status": "skipped",
+        "explanation": "CloudFront origin groups support origin failover for content delivery and do not provide Spark clusters."
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "question": "A company must keep a data lake synchronized with large on-premises file shares and then query the migrated data in AWS using standard SQL. Which services should be used together? (Choose TWO)",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "AWS DataSync to move and synchronize data from on-premises storage to Amazon S3",
+        "status": "correct",
+        "explanation": "DataSync supports automated transfers from on-premises file systems into AWS storage such as S3."
+      },
+      {
+        "text": "Amazon Athena to query the S3 data with SQL",
+        "status": "correct",
+        "explanation": "Athena can run SQL queries directly against structured data stored in S3."
+      },
+      {
+        "text": "AWS KMS key rotation as the file transfer engine",
+        "status": "skipped",
+        "explanation": "KMS key rotation manages cryptographic keys and does not transfer file shares."
+      },
+      {
+        "text": "Amazon CloudFront signed cookies as the SQL query engine",
+        "status": "skipped",
+        "explanation": "CloudFront signed cookies control access to cached content and do not query S3 data with SQL."
+      },
+      {
+        "text": "Amazon EBS Multi-Attach to mount the same S3 bucket to all analysts",
+        "status": "skipped",
+        "explanation": "EBS Multi-Attach applies to compatible EBS volumes and does not mount S3 buckets or provide SQL analysis."
+      }
+    ]
+  }
+]

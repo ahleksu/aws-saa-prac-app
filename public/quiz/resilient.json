@@ -1,1 +1,935 @@
-[]
+[
+  {
+    "id": 1,
+    "question": "An ecommerce application receives bursts of orders during flash sales. The checkout API must respond quickly even when the fulfillment system is temporarily slow, and no accepted order should be lost. Which design best improves resilience through loose coupling?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Place orders on an Amazon SQS queue and have fulfillment workers process messages asynchronously.", "status": "correct", "explanation": "SQS buffers accepted work and decouples checkout from fulfillment so a slow consumer does not make the API fail." },
+      { "text": "Have the checkout API write directly to the fulfillment service over a synchronous HTTP call.", "status": "skipped", "explanation": "A synchronous dependency couples checkout availability to the fulfillment service and can fail during spikes or outages." },
+      { "text": "Store each order in an Amazon EFS file and poll the file system from one EC2 instance.", "status": "skipped", "explanation": "A single polling instance is a bottleneck and EFS does not provide queue semantics such as visibility timeouts." },
+      { "text": "Increase the timeout on the checkout API until fulfillment finishes each order.", "status": "skipped", "explanation": "Longer timeouts make users wait and do not isolate checkout from fulfillment failures." }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "A billing platform must notify email, analytics, and fraud services whenever an invoice is created. Each service should be able to fail or scale independently without blocking the others. Which architecture is the best fit?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/sns/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Publish invoice-created events to an Amazon SNS topic with separate subscriptions for each service.", "status": "correct", "explanation": "SNS fanout lets multiple subscribers receive the same event while remaining independently scalable and isolated." },
+      { "text": "Call each service sequentially from the billing process and return after all calls complete.", "status": "skipped", "explanation": "Sequential synchronous calls make billing depend on every downstream service being healthy." },
+      { "text": "Store events in a single shared database table that all services update directly.", "status": "skipped", "explanation": "A shared writable table tightly couples services and can create contention and ownership issues." },
+      { "text": "Send all notifications to one EC2 instance that forwards messages to each service.", "status": "skipped", "explanation": "A single forwarding instance creates a bottleneck and a single point of failure." }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "A company is moving to event-driven microservices. Teams need to route events from internal applications and supported SaaS sources to different targets based on event content, with minimal custom routing code. Which service should they use?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon EventBridge with event buses and rules that match event patterns.", "status": "correct", "explanation": "EventBridge provides managed event buses and content-based rules for routing events to targets." },
+      { "text": "Amazon EBS volumes mounted to every microservice.", "status": "skipped", "explanation": "EBS is block storage for EC2 instances and does not provide event routing." },
+      { "text": "Application Load Balancer path routing for all asynchronous events.", "status": "skipped", "explanation": "ALB routes HTTP requests but is not an event bus for durable asynchronous integration." },
+      { "text": "AWS CloudFormation nested stacks for routing application events.", "status": "skipped", "explanation": "CloudFormation provisions infrastructure and does not route runtime events between services." }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "An order workflow validates payment, reserves inventory, ships products, and sends notifications. The workflow needs retries, branching, and a visible execution history when a step fails. Which service should coordinate the workflow?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "AWS Step Functions using a state machine for the order workflow.", "status": "correct", "explanation": "Step Functions coordinates multi-step workflows with retries, branching, error handling, and execution history." },
+      { "text": "A single Lambda function that sleeps between each step and stores progress in memory.", "status": "skipped", "explanation": "In-memory progress is lost on failure and sleeping inside Lambda is a fragile workflow design." },
+      { "text": "Amazon Route 53 weighted routing between the workflow steps.", "status": "skipped", "explanation": "Route 53 handles DNS routing and failover, not application workflow orchestration." },
+      { "text": "An Application Load Balancer listener rule for each business step.", "status": "skipped", "explanation": "ALB listener rules route HTTP traffic and do not manage stateful business workflows." }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "A photo processing service receives thousands of uploads per minute. Processing can take several seconds, and temporary processor failures should not require users to retry uploads. Which design is most resilient?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Store uploads in Amazon S3 and trigger asynchronous processing with Lambda workers, using a queue where buffering is needed.", "status": "correct", "explanation": "S3 durably stores uploads while asynchronous Lambda processing can scale and retry independently of the user request." },
+      { "text": "Process the image entirely inside the web request before storing it.", "status": "skipped", "explanation": "Synchronous processing ties upload success to processor health and duration." },
+      { "text": "Keep uploaded images only on the web server instance until processing is complete.", "status": "skipped", "explanation": "Instance-local storage risks data loss if the instance fails before processing finishes." },
+      { "text": "Disable retries so failed image processing never repeats.", "status": "skipped", "explanation": "Disabling retries reduces resilience because transient failures become permanent failures." }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "A containerized web application must stay available during an Availability Zone impairment. The team wants AWS to manage the container hosts and replace unhealthy tasks. Which deployment option best meets the requirement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Run an Amazon ECS service on AWS Fargate across multiple subnets in different Availability Zones behind an Application Load Balancer.", "status": "correct", "explanation": "ECS on Fargate can maintain desired task count across AZs while the load balancer sends traffic only to healthy targets." },
+      { "text": "Run one long-lived container on a single EC2 instance and assign it an Elastic IP address.", "status": "skipped", "explanation": "A single instance in one AZ is a single point of failure." },
+      { "text": "Package the container as an AMI and manually start it after failures.", "status": "skipped", "explanation": "Manual recovery increases RTO and does not provide automatic replacement of failed tasks." },
+      { "text": "Place all tasks in one private subnet to reduce cross-AZ traffic.", "status": "skipped", "explanation": "Using one subnet limits the service to one AZ and reduces fault tolerance." }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "A web platform has separate services for user profiles, search, and checkout. The company wants one public HTTPS endpoint that routes requests by path to healthy targets in multiple Availability Zones. Which component should be used?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "type": "single",
+    "answers": [
+      { "text": "Application Load Balancer with path-based listener rules and target groups in multiple Availability Zones.", "status": "correct", "explanation": "ALB supports Layer 7 routing and health checks across targets in multiple AZs." },
+      { "text": "Network Load Balancer with DNS MX records for each path.", "status": "skipped", "explanation": "NLB operates at Layer 4 and DNS MX records are for mail routing, not HTTP path routing." },
+      { "text": "One public EC2 reverse proxy instance with all traffic routed through it.", "status": "skipped", "explanation": "A single proxy instance creates a single point of failure unless additional HA mechanisms are added." },
+      { "text": "Amazon SQS message attributes for routing live browser requests.", "status": "skipped", "explanation": "SQS is for asynchronous message processing and does not serve as a public HTTPS load balancer." }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "A stateless web tier runs on EC2 instances and has predictable daily traffic peaks. The application must add capacity automatically and replace unhealthy instances. Which design should be chosen?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use an Auto Scaling group spanning multiple Availability Zones with scaling policies and load balancer health checks.", "status": "correct", "explanation": "EC2 Auto Scaling adjusts capacity and replaces unhealthy instances across AZs." },
+      { "text": "Run the maximum expected number of instances in one Availability Zone at all times.", "status": "skipped", "explanation": "One AZ remains a failure domain and fixed overprovisioning does not replace unhealthy instances as effectively." },
+      { "text": "Use manual instance launches during the traffic peak.", "status": "skipped", "explanation": "Manual scaling is slower and more error prone than policy-driven scaling." },
+      { "text": "Place all users on one large EC2 instance with a larger EBS volume.", "status": "skipped", "explanation": "Vertical scaling alone leaves a single instance as a single point of failure." }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "A production application uses Amazon RDS for PostgreSQL. The database must automatically fail over if the primary DB instance or its Availability Zone fails, with minimal application changes. Which option should be configured?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html",
+    "type": "single",
+    "answers": [
+      { "text": "Enable Amazon RDS Multi-AZ deployment for the DB instance.", "status": "correct", "explanation": "RDS Multi-AZ maintains a standby in another AZ and provides automatic failover through the DB endpoint." },
+      { "text": "Create a read replica in the same Availability Zone and send writes to it during failure.", "status": "skipped", "explanation": "A same-AZ read replica does not protect against AZ failure and is not the automatic standby for Multi-AZ failover." },
+      { "text": "Increase the DB instance class size so it can survive an Availability Zone outage.", "status": "skipped", "explanation": "A larger instance does not remove the AZ as a failure domain." },
+      { "text": "Take a manual snapshot every hour and restore it during primary failure.", "status": "skipped", "explanation": "Snapshot restore is a recovery process with higher RTO than automatic Multi-AZ failover." }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "A company is building a relational workload on Amazon Aurora. The database must tolerate storage failures and support rapid failover to another instance in the cluster. Which design is most appropriate?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
+    "type": "single",
+    "answers": [
+      { "text": "Create an Aurora DB cluster with Aurora Replicas in multiple Availability Zones.", "status": "correct", "explanation": "Aurora storage is replicated across AZs and replicas can be promoted during failover." },
+      { "text": "Run Aurora on a single DB instance without replicas because storage is already replicated.", "status": "skipped", "explanation": "Replicated storage helps durability, but a cluster without replicas has fewer failover targets." },
+      { "text": "Copy database files to Amazon S3 every few minutes and restore them after failure.", "status": "skipped", "explanation": "Manual file copy and restore produces a much longer RTO than Aurora failover." },
+      { "text": "Use an EC2 Auto Scaling group to scale the Aurora writer instance.", "status": "skipped", "explanation": "Aurora DB instances are managed by RDS, not scaled by EC2 Auto Scaling groups." }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "A global gaming application stores player profiles in DynamoDB. Users in North America and Europe require local low-latency reads and writes, and the application must remain available if one Region is unavailable. Which feature should be used?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",
+    "type": "single",
+    "answers": [
+      { "text": "DynamoDB global tables with replicas in both Regions.", "status": "correct", "explanation": "Global tables provide multi-Region replication and allow applications to read and write to local replica tables." },
+      { "text": "A single DynamoDB table in one Region with DAX enabled.", "status": "skipped", "explanation": "DAX can reduce read latency but does not provide multi-Region write availability." },
+      { "text": "A nightly export of the table to Amazon S3 in the second Region.", "status": "skipped", "explanation": "Nightly export creates stale recovery data and does not support active local writes." },
+      { "text": "A DynamoDB table in one Availability Zone and a standby table in another Availability Zone.", "status": "skipped", "explanation": "DynamoDB is regional and abstracts AZ placement; this is not how DynamoDB HA is configured." }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "A media company stores source video files in an S3 bucket. It needs copies in a second AWS Region for disaster recovery while retaining object metadata and updates after the rule is enabled. Which capability should be configured?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon S3 Cross-Region Replication with versioning enabled on the source and destination buckets.", "status": "correct", "explanation": "S3 replication copies new object versions to a destination bucket in another Region for DR use cases." },
+      { "text": "S3 lifecycle expiration from the source bucket to the destination bucket.", "status": "skipped", "explanation": "Lifecycle expiration deletes or transitions objects and does not create Region-level replicas." },
+      { "text": "Mount the S3 bucket to an EC2 instance and copy files with a cron job only once per month.", "status": "skipped", "explanation": "A monthly copy creates a large RPO and depends on custom instance scheduling." },
+      { "text": "Enable S3 Transfer Acceleration on the bucket.", "status": "skipped", "explanation": "Transfer Acceleration improves transfer performance but does not replicate objects to another Region." }
+    ]
+  },
+  {
+    "id": 13,
+    "question": "A public web application runs in two AWS Regions. The company wants DNS to direct users to the primary Region and automatically route to the secondary Region only when health checks fail. Which Route 53 routing policy should be used?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "type": "single",
+    "answers": [
+      { "text": "Failover routing policy with health checks for primary and secondary records.", "status": "correct", "explanation": "Route 53 failover routing uses health checks to return a secondary endpoint when the primary is unhealthy." },
+      { "text": "Simple routing policy with both IP addresses in one record and no health checks.", "status": "skipped", "explanation": "Simple routing does not provide automatic health-based primary-to-secondary failover." },
+      { "text": "Geolocation routing that always sends North America to the primary Region.", "status": "skipped", "explanation": "Geolocation routing is based on user location, not primary endpoint health." },
+      { "text": "Multivalue answer routing with no endpoint health evaluation.", "status": "skipped", "explanation": "Without health evaluation, DNS can continue returning unhealthy endpoints." }
+    ]
+  },
+  {
+    "id": 14,
+    "question": "A reporting application can be offline for several hours after a Regional disaster, and up to one day of data loss is acceptable. The company wants the lowest ongoing DR cost. Which strategy is most appropriate?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Backup and restore to another Region when a disaster is declared.", "status": "correct", "explanation": "Backup and restore has the lowest standby cost and fits relaxed RTO and RPO requirements." },
+      { "text": "Active-active in two Regions with full production capacity in both Regions.", "status": "skipped", "explanation": "Active-active provides low RTO/RPO but has much higher ongoing cost than required." },
+      { "text": "Warm standby with all application tiers running at reduced scale in another Region.", "status": "skipped", "explanation": "Warm standby improves RTO but costs more than necessary for several-hour recovery." },
+      { "text": "Single-AZ deployment with local snapshots only.", "status": "skipped", "explanation": "Local-only recovery does not address a Regional disaster." }
+    ]
+  },
+  {
+    "id": 15,
+    "question": "A transactional workload requires faster disaster recovery than backup and restore, but the business cannot justify running a full duplicate environment. The secondary Region should contain core infrastructure and replicated data, with application servers scaled up during recovery. Which DR strategy is this?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Pilot light", "status": "correct", "explanation": "Pilot light keeps critical core components and data ready while most application capacity is started during recovery." },
+      { "text": "Backup and restore", "status": "skipped", "explanation": "Backup and restore does not keep a preconfigured core application environment running or ready." },
+      { "text": "Active-active", "status": "skipped", "explanation": "Active-active runs production traffic in multiple Regions continuously, which is more than the scenario requires." },
+      { "text": "Single-site high availability", "status": "skipped", "explanation": "Single-site HA improves local availability but does not provide a secondary Region DR posture." }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "A customer-facing workload needs a disaster recovery design with minutes of RTO. A smaller version of the full application stack should run continuously in a second Region and scale out during failover. Which strategy matches this requirement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Warm standby", "status": "correct", "explanation": "Warm standby keeps a scaled-down but functional environment running, allowing faster recovery than pilot light." },
+      { "text": "Backup and restore", "status": "skipped", "explanation": "Backup and restore generally has a longer RTO because infrastructure and data must be restored." },
+      { "text": "Manual rebuild from source code after a disaster.", "status": "skipped", "explanation": "Manual rebuild creates unpredictable and typically long recovery times." },
+      { "text": "Read replica only, with no application stack in the second Region.", "status": "skipped", "explanation": "Data replication alone does not provide a running application environment." }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "A critical SaaS application requires the lowest possible recovery time and near-continuous service through a Regional event. The company is willing to pay for full production capacity in more than one Region. Which DR pattern is most suitable?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Multi-site active-active architecture across Regions.", "status": "correct", "explanation": "Active-active runs production workloads in multiple Regions and offers the lowest RTO among the listed DR patterns." },
+      { "text": "Backup and restore using daily snapshots.", "status": "skipped", "explanation": "Daily snapshots have higher RTO and RPO than a critical near-continuous service requires." },
+      { "text": "Pilot light with application servers created only after failover.", "status": "skipped", "explanation": "Pilot light is faster than backup and restore but still requires scaling up the application during recovery." },
+      { "text": "Single Region Multi-AZ only.", "status": "skipped", "explanation": "Multi-AZ improves Regional availability but does not protect against a Regional event." }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "A company is defining DR requirements for a payment system. The business states that no more than 5 minutes of committed transactions can be lost during a disaster. Which metric is being defined?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Recovery Point Objective (RPO)", "status": "correct", "explanation": "RPO defines the maximum acceptable amount of data loss measured in time." },
+      { "text": "Recovery Time Objective (RTO)", "status": "skipped", "explanation": "RTO defines how long it may take to restore service, not how much data can be lost." },
+      { "text": "Mean Time Between Failures (MTBF)", "status": "skipped", "explanation": "MTBF estimates time between failures and is not the target for acceptable data loss." },
+      { "text": "Maximum Transmission Unit (MTU)", "status": "skipped", "explanation": "MTU is a network packet size setting and is unrelated to disaster recovery data loss." }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "A read-heavy product catalog stores data in a relational database. During campaigns, many users repeatedly request the same product details and the database becomes overloaded. Which addition can improve resilience by reducing database load?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use Amazon ElastiCache to cache frequently requested product data.", "status": "correct", "explanation": "ElastiCache can absorb repeated reads and reduce pressure on the database during traffic spikes." },
+      { "text": "Move all product reads to a single larger application instance.", "status": "skipped", "explanation": "A larger instance does not remove repeated database reads and can become a single point of failure." },
+      { "text": "Disable database indexes so writes are faster.", "status": "skipped", "explanation": "Removing indexes usually hurts read performance and does not provide a cache layer." },
+      { "text": "Store cached product data only in each user's browser session.", "status": "skipped", "explanation": "Browser session storage cannot protect the shared backend from cache misses across users and devices." }
+    ]
+  },
+  {
+    "id": 20,
+    "question": "A public API receives unpredictable traffic spikes from mobile clients. The backend can process requests asynchronously, and clients do not need an immediate completed result. Which design best protects the backend?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use Amazon API Gateway for the public endpoint and enqueue work to Amazon SQS for backend processing.", "status": "correct", "explanation": "API Gateway provides a managed front door while SQS buffers work so the backend can process at a sustainable rate." },
+      { "text": "Have mobile clients connect directly to private backend instances.", "status": "skipped", "explanation": "Direct client access to backend instances bypasses managed API controls and increases coupling." },
+      { "text": "Return an error whenever the backend is at capacity and ask users to retry manually.", "status": "skipped", "explanation": "Manual retries worsen spikes and do not provide buffering." },
+      { "text": "Run one always-on worker with a very large request timeout.", "status": "skipped", "explanation": "A single worker is a bottleneck and long timeouts do not make the design resilient." }
+    ]
+  },
+  {
+    "id": 21,
+    "question": "A ticketing system must process reservation requests in the order they are submitted for each event and avoid accepting duplicate reservation messages generated by client retries. Which queue type is most appropriate?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon SQS FIFO queue with message group IDs and deduplication.", "status": "correct", "explanation": "SQS FIFO queues support ordered processing within message groups and deduplication controls." },
+      { "text": "Amazon SQS standard queue with no idempotency handling.", "status": "skipped", "explanation": "Standard queues provide best-effort ordering and at-least-once delivery, so duplicates and ordering must be handled separately." },
+      { "text": "Amazon SNS topic with only email subscriptions.", "status": "skipped", "explanation": "SNS is a pub/sub service and email subscriptions are not designed for ordered reservation processing." },
+      { "text": "Amazon Route 53 weighted records for each event.", "status": "skipped", "explanation": "Route 53 DNS routing does not provide queue ordering or message deduplication." }
+    ]
+  },
+  {
+    "id": 22,
+    "question": "A worker fleet processes SQS messages. Some messages repeatedly fail because of invalid payloads, and the team needs to isolate these messages without blocking the queue. What should be configured?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Configure a dead-letter queue and an appropriate maximum receive count.", "status": "correct", "explanation": "A DLQ moves repeatedly failing messages aside for analysis while healthy messages continue processing." },
+      { "text": "Set the visibility timeout to zero for all messages.", "status": "skipped", "explanation": "A zero visibility timeout can cause immediate redelivery and does not isolate poison messages." },
+      { "text": "Delete every message before processing begins.", "status": "skipped", "explanation": "Deleting before processing can lose work if the processor fails." },
+      { "text": "Increase message retention to the maximum and use no failure handling.", "status": "skipped", "explanation": "Longer retention alone does not prevent failed messages from being retried repeatedly." }
+    ]
+  },
+  {
+    "id": 23,
+    "question": "A Lambda function consumes messages from an SQS queue and writes to a database with a strict connection limit. During large bursts, the function opens too many concurrent database connections. Which configuration can protect the database while preserving queued work?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Set reserved concurrency for the Lambda function to a value the database can handle.", "status": "correct", "explanation": "Reserved concurrency limits parallel Lambda executions while SQS retains messages for later processing." },
+      { "text": "Remove the SQS queue so all clients call the Lambda function synchronously.", "status": "skipped", "explanation": "Synchronous invocation removes buffering and can increase pressure on the database during spikes." },
+      { "text": "Increase the Lambda timeout to the maximum without limiting concurrency.", "status": "skipped", "explanation": "Longer timeouts do not reduce the number of simultaneous database connections." },
+      { "text": "Store database credentials in each message to create more connections.", "status": "skipped", "explanation": "Credentials in messages do not solve connection exhaustion and create security risk." }
+    ]
+  },
+  {
+    "id": 24,
+    "question": "A company needs to coordinate a month-long approval workflow with durable state, human review steps, retries, and auditability. Which Step Functions workflow type is the better default choice?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Standard workflow.", "status": "correct", "explanation": "Standard workflows are designed for long-running durable workflows with execution history." },
+      { "text": "Express workflow for every month-long approval.", "status": "skipped", "explanation": "Express workflows are optimized for high-volume short-duration workflows, not month-long executions." },
+      { "text": "A Lambda function that waits for a month before continuing.", "status": "skipped", "explanation": "Long waits inside Lambda are not durable orchestration and exceed normal function execution patterns." },
+      { "text": "An Amazon SNS email subscription as the workflow state store.", "status": "skipped", "explanation": "SNS can notify people or systems but does not store and coordinate workflow state." }
+    ]
+  },
+  {
+    "id": 25,
+    "question": "A product team wants independent services to react to customer-created events. New consumers should be added later without changing the customer service code. Which integration approach best supports this goal?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "type": "single",
+    "answers": [
+      { "text": "Publish customer events to an EventBridge event bus and let consumers use their own rules.", "status": "correct", "explanation": "EventBridge decouples producers from consumers and allows new targets to be added with rules." },
+      { "text": "Have the customer service import and call every consumer library directly.", "status": "skipped", "explanation": "Direct library calls force the producer to know every consumer and redeploy when consumers change." },
+      { "text": "Require each consumer to poll the customer service database tables directly.", "status": "skipped", "explanation": "Direct database polling couples consumers to the producer's schema and can add load." },
+      { "text": "Place all consumer logic inside the customer service process.", "status": "skipped", "explanation": "Combining consumer logic reduces service independence and fault isolation." }
+    ]
+  },
+  {
+    "id": 26,
+    "question": "An application uses Amazon RDS for MySQL. The main issue is heavy read traffic from reports, not failover time. Which option should be added to scale reads while keeping the primary focused on writes?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "type": "single",
+    "answers": [
+      { "text": "Create one or more read replicas and direct reporting queries to them.", "status": "correct", "explanation": "Read replicas are used to offload read traffic from the primary DB instance." },
+      { "text": "Enable Multi-AZ and send reporting queries to the standby instance.", "status": "skipped", "explanation": "A standard RDS Multi-AZ standby is for failover and is not used for application read traffic." },
+      { "text": "Store report results only on the application server local disk.", "status": "skipped", "explanation": "Local disk caching is not shared or durable across instance failures." },
+      { "text": "Disable automated backups to improve read throughput.", "status": "skipped", "explanation": "Disabling backups reduces recoverability and is not the correct way to scale reads." }
+    ]
+  },
+  {
+    "id": 27,
+    "question": "A global application uses Aurora and needs a disaster recovery copy in another Region with low-lag replication and faster cross-Region recovery than snapshot restore. Which Aurora capability should be considered?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
+    "type": "single",
+    "answers": [
+      { "text": "Aurora Global Database.", "status": "correct", "explanation": "Aurora Global Database is designed for globally distributed applications and cross-Region disaster recovery." },
+      { "text": "A manual DB snapshot copied once per week.", "status": "skipped", "explanation": "Weekly snapshots create a large RPO and slower recovery than continuous cross-Region replication." },
+      { "text": "A single-AZ Aurora cluster with larger storage.", "status": "skipped", "explanation": "Larger storage in one Region does not provide cross-Region disaster recovery." },
+      { "text": "An Auto Scaling group attached to the Aurora writer.", "status": "skipped", "explanation": "EC2 Auto Scaling groups do not manage Aurora writer instances." }
+    ]
+  },
+  {
+    "id": 28,
+    "question": "A web application stores user session data in memory on each EC2 instance. Users are frequently logged out when Auto Scaling replaces instances. Which change best supports a resilient stateless web tier?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Store session state in an external shared data store such as DynamoDB or ElastiCache.", "status": "correct", "explanation": "Externalizing session state lets instances be replaced without losing user sessions." },
+      { "text": "Disable Auto Scaling termination so instances are never replaced.", "status": "skipped", "explanation": "Preventing replacement keeps unhealthy instances and undermines resilience." },
+      { "text": "Use larger instance memory to keep more sessions local.", "status": "skipped", "explanation": "More local memory does not survive instance replacement." },
+      { "text": "Pin each user to an instance forever using hard-coded DNS records.", "status": "skipped", "explanation": "Hard-coded stickiness creates operational fragility and does not handle instance failure." }
+    ]
+  },
+  {
+    "id": 29,
+    "question": "A company is refactoring a monolithic application into services. It wants each service to scale independently and avoid cascading failures when a noncritical service is slow. Which design principle should be applied?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use loosely coupled service interfaces with asynchronous messaging for noncritical work.", "status": "correct", "explanation": "Loose coupling and async messaging help isolate failures and let services scale independently." },
+      { "text": "Use one shared process and one shared database schema for all services.", "status": "skipped", "explanation": "A shared process and schema keep components tightly coupled and harder to scale independently." },
+      { "text": "Make every service call every other service before returning a response.", "status": "skipped", "explanation": "Fan-out synchronous dependencies increase the chance of cascading failures." },
+      { "text": "Disable retries so failures are visible to users immediately.", "status": "skipped", "explanation": "Removing retries can expose transient failures instead of handling them gracefully." }
+    ]
+  },
+  {
+    "id": 30,
+    "question": "A batch ingestion job runs on a fixed schedule and occasionally has more work than one container can finish. The team wants managed container orchestration with the ability to run tasks without managing servers. Which service combination fits?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon ECS on AWS Fargate with scheduled or event-driven tasks.", "status": "correct", "explanation": "ECS with Fargate runs containers without managing EC2 hosts and can launch tasks as demand requires." },
+      { "text": "A single manually maintained EC2 instance running cron and Docker.", "status": "skipped", "explanation": "A single instance is operationally fragile and does not automatically scale or replace failed capacity." },
+      { "text": "Amazon Route 53 health checks to start containers.", "status": "skipped", "explanation": "Route 53 health checks do not orchestrate container task execution." },
+      { "text": "Amazon S3 multipart upload as the container scheduler.", "status": "skipped", "explanation": "S3 multipart upload is for object upload performance, not container orchestration." }
+    ]
+  },
+  {
+    "id": 31,
+    "question": "A workload uses a queue to absorb bursts, but workers often receive empty responses while polling. The team wants to reduce unnecessary polling and cost without changing the asynchronous design. What should be enabled?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "SQS long polling.", "status": "correct", "explanation": "Long polling waits for messages to arrive and reduces empty responses compared with short polling." },
+      { "text": "SQS message deletion before processing.", "status": "skipped", "explanation": "Deleting before processing risks losing messages and does not reduce empty receives." },
+      { "text": "A shorter message retention period.", "status": "skipped", "explanation": "Retention controls how long messages are kept and does not improve polling efficiency." },
+      { "text": "Disabling visibility timeouts.", "status": "skipped", "explanation": "Visibility timeouts protect in-flight messages and are not the cause of empty polling responses." }
+    ]
+  },
+  {
+    "id": 32,
+    "question": "An online store needs to process thumbnails after customers upload images. Upload success should not depend on thumbnail generation, and failed thumbnail jobs should be retried later. Which design is most resilient?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Store the image in S3, send a processing message to SQS, and let workers generate thumbnails from the queue.", "status": "correct", "explanation": "S3 durably stores the image and SQS decouples upload completion from retryable thumbnail processing." },
+      { "text": "Generate all thumbnails in the browser and never store originals.", "status": "skipped", "explanation": "Client-only processing is unreliable and losing originals prevents server-side recovery." },
+      { "text": "Generate thumbnails synchronously before acknowledging the upload.", "status": "skipped", "explanation": "Synchronous generation makes upload success depend on the thumbnail service." },
+      { "text": "Write image bytes directly to an SQS message as the system of record.", "status": "skipped", "explanation": "SQS is not intended as durable object storage for large image files." }
+    ]
+  },
+  {
+    "id": 33,
+    "question": "A web application is behind an Application Load Balancer and uses an Auto Scaling group. Instances sometimes pass EC2 status checks but fail the application health endpoint. What should be configured so failed application instances are replaced?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "type": "single",
+    "answers": [
+      { "text": "Enable Elastic Load Balancing health checks for the Auto Scaling group.", "status": "correct", "explanation": "Using ELB health checks lets Auto Scaling replace instances that fail load balancer application health checks." },
+      { "text": "Disable health checks so traffic continues to every instance.", "status": "skipped", "explanation": "Disabling health checks keeps unhealthy instances in service." },
+      { "text": "Use only manual SSH checks from an operator.", "status": "skipped", "explanation": "Manual checks slow recovery and are not automatic replacement." },
+      { "text": "Increase the ALB idle timeout until health checks pass.", "status": "skipped", "explanation": "Idle timeout does not fix instances that fail the application health endpoint." }
+    ]
+  },
+  {
+    "id": 34,
+    "question": "A team deploys a web application into one public subnet. It needs to tolerate failure of a single Availability Zone. What is the best architectural change?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "type": "single",
+    "answers": [
+      { "text": "Deploy instances in multiple Availability Zones and place them behind an ALB enabled in subnets in those AZs.", "status": "correct", "explanation": "Distributing targets and the load balancer across AZs removes the single-AZ failure point." },
+      { "text": "Move the single subnet to a larger CIDR block.", "status": "skipped", "explanation": "A larger subnet provides more IP addresses but still resides in one AZ." },
+      { "text": "Use a bigger instance type in the same subnet.", "status": "skipped", "explanation": "A bigger instance does not protect against AZ failure." },
+      { "text": "Assign multiple Elastic IP addresses to the same instance.", "status": "skipped", "explanation": "Multiple public IPs on one instance do not provide compute or AZ redundancy." }
+    ]
+  },
+  {
+    "id": 35,
+    "question": "A company wants deployments to be repeatable and recover from failed instances by launching known-good replacements instead of patching servers manually. Which practice best supports resilient infrastructure?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use immutable infrastructure with versioned machine images or containers and automated replacement.", "status": "correct", "explanation": "Immutable deployments reduce configuration drift and make recovery predictable by replacing rather than repairing instances." },
+      { "text": "Patch production servers manually over SSH after each incident.", "status": "skipped", "explanation": "Manual changes create drift and make recovery harder to reproduce." },
+      { "text": "Keep one long-lived instance and take no backups because it is stable.", "status": "skipped", "explanation": "A single long-lived instance is a single point of failure and lacks recoverability." },
+      { "text": "Disable automation during incidents so every step is approved by hand.", "status": "skipped", "explanation": "Purely manual recovery increases RTO and error risk." }
+    ]
+  },
+  {
+    "id": 36,
+    "question": "A streaming event application expects a major launch day spike. The architecture scales horizontally, but current AWS service quotas might cap the number of tasks and message throughput. What should the team do before launch?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Review relevant service quotas, request increases where needed, and load test against expected traffic.", "status": "correct", "explanation": "Quotas can limit scaling, so validating and increasing them before launch reduces availability risk." },
+      { "text": "Wait until throttling occurs, then request quota increases during the event.", "status": "skipped", "explanation": "Reactive quota requests can leave the service impaired during peak traffic." },
+      { "text": "Disable monitoring to reduce API calls during the launch.", "status": "skipped", "explanation": "Reducing visibility makes it harder to detect quota or scaling issues." },
+      { "text": "Move all traffic to a single larger instance to avoid quotas.", "status": "skipped", "explanation": "A single instance is still limited and reduces resilience." }
+    ]
+  },
+  {
+    "id": 37,
+    "question": "A microservices application has intermittent failures and slow requests across several services. The team needs end-to-end traces to see which downstream dependency is adding latency or returning errors. Which AWS service is designed for this visibility?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
+    "type": "single",
+    "answers": [
+      { "text": "AWS X-Ray.", "status": "correct", "explanation": "X-Ray traces requests through distributed applications and helps identify latency and fault sources." },
+      { "text": "Amazon Route 53 Registrar.", "status": "skipped", "explanation": "Route 53 Registrar manages domain registration and does not trace application requests." },
+      { "text": "AWS Backup vault lock.", "status": "skipped", "explanation": "Backup vault lock protects backup retention and does not provide service tracing." },
+      { "text": "Amazon S3 Transfer Acceleration.", "status": "skipped", "explanation": "Transfer Acceleration improves uploads to S3 and does not trace microservice calls." }
+    ]
+  },
+  {
+    "id": 38,
+    "question": "A company hosts a static website in S3 and wants users to access cached content from edge locations while reducing origin load. Which service should be added in front of the S3 origin?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon CloudFront distribution.", "status": "correct", "explanation": "CloudFront caches content at edge locations and can reduce requests to the S3 origin." },
+      { "text": "Amazon SQS FIFO queue.", "status": "skipped", "explanation": "SQS is a message queue and does not deliver or cache static web content." },
+      { "text": "AWS Step Functions state machine.", "status": "skipped", "explanation": "Step Functions orchestrates workflows and does not serve cached static assets to users." },
+      { "text": "RDS Multi-AZ deployment.", "status": "skipped", "explanation": "RDS Multi-AZ improves database availability and is unrelated to static content caching." }
+    ]
+  },
+  {
+    "id": 39,
+    "question": "A company needs a centrally managed backup service for EC2 EBS volumes, RDS databases, and other supported AWS resources. The solution should apply backup schedules and retention policies consistently. What should be used?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "type": "single",
+    "answers": [
+      { "text": "AWS Backup with backup plans and backup vaults.", "status": "correct", "explanation": "AWS Backup centrally manages backup policies across supported AWS services." },
+      { "text": "A spreadsheet listing manual snapshot times for each resource.", "status": "skipped", "explanation": "A manual spreadsheet does not enforce schedules or retention." },
+      { "text": "A single AMI of one application server.", "status": "skipped", "explanation": "An AMI protects only that server image and does not cover databases and other resources consistently." },
+      { "text": "CloudFront invalidations for every database table.", "status": "skipped", "explanation": "CloudFront invalidation removes cached objects and is not a backup mechanism." }
+    ]
+  },
+  {
+    "id": 40,
+    "question": "An RDS database needs point-in-time recovery to restore to a recent moment before an accidental data change. Which feature supports this requirement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "type": "single",
+    "answers": [
+      { "text": "Automated backups with transaction logs retained for the configured backup window.", "status": "correct", "explanation": "RDS automated backups support point-in-time restore within the retention period." },
+      { "text": "Multi-AZ failover alone.", "status": "skipped", "explanation": "Multi-AZ failover improves availability but replicates the data change to the standby." },
+      { "text": "A larger DB instance class.", "status": "skipped", "explanation": "Instance size does not provide rollback to a previous point in time." },
+      { "text": "A security group rule that blocks write traffic after the incident.", "status": "skipped", "explanation": "Blocking future writes does not restore data to a previous state." }
+    ]
+  },
+  {
+    "id": 41,
+    "question": "A serverless API uses API Gateway and Lambda. The business wants the API to remain highly available without managing servers across Availability Zones. Which statement best describes this design?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Managed regional services such as API Gateway and Lambda provide built-in high availability across multiple AZs within a Region.", "status": "correct", "explanation": "Using managed regional services reduces the need to operate servers or manually spread compute across AZs." },
+      { "text": "The design is single-AZ unless the Lambda function code manually selects multiple subnets.", "status": "skipped", "explanation": "Lambda and API Gateway are managed regional services; subnet selection is only relevant when attaching Lambda to a VPC." },
+      { "text": "The API must run on EC2 instances to be highly available.", "status": "skipped", "explanation": "Serverless managed services can be highly available without EC2 instances." },
+      { "text": "High availability requires storing all API requests on the local disk of one function instance.", "status": "skipped", "explanation": "Lambda execution environments are ephemeral and local storage is not a HA request store." }
+    ]
+  },
+  {
+    "id": 42,
+    "question": "A Lambda function processes batches of SQS messages. One bad message can cause the whole batch to be retried, delaying other valid messages. Which improvement reduces repeated processing of successful messages?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use partial batch response handling so only failed message IDs are returned for retry.", "status": "correct", "explanation": "Partial batch responses let Lambda delete successful records and retry only failed records from the batch." },
+      { "text": "Delete all messages at the start of the function before validation.", "status": "skipped", "explanation": "Deleting first can lose messages if processing later fails." },
+      { "text": "Increase the batch size until the bad message is hidden among more records.", "status": "skipped", "explanation": "Larger batches can increase the number of messages retried because of one failure." },
+      { "text": "Disable the event source mapping whenever a message fails.", "status": "skipped", "explanation": "Disabling processing stops all queue consumption and does not isolate the bad message." }
+    ]
+  },
+  {
+    "id": 43,
+    "question": "An inventory service receives more update requests than its downstream database can process during promotions. Requests can be processed asynchronously, and the system must smooth bursts. Which AWS service is the most appropriate buffer?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon SQS.", "status": "correct", "explanation": "SQS buffers messages so consumers can process work at a rate the downstream database can tolerate." },
+      { "text": "AWS Certificate Manager.", "status": "skipped", "explanation": "Certificate Manager handles TLS certificates and does not buffer application work." },
+      { "text": "Amazon Route 53 hosted zone.", "status": "skipped", "explanation": "Route 53 manages DNS and does not smooth backend processing bursts." },
+      { "text": "AWS CloudTrail organization trail.", "status": "skipped", "explanation": "CloudTrail records API activity and is not an application queue." }
+    ]
+  },
+  {
+    "id": 44,
+    "question": "An ECS service needs to increase the number of running tasks when CPU utilization rises and reduce them when demand falls. Which feature should be configured?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Amazon ECS Service Auto Scaling.", "status": "correct", "explanation": "ECS Service Auto Scaling adjusts desired task count based on scaling policies and metrics." },
+      { "text": "RDS read replica promotion.", "status": "skipped", "explanation": "Read replica promotion affects database recovery, not ECS task count." },
+      { "text": "S3 lifecycle transitions.", "status": "skipped", "explanation": "S3 lifecycle policies manage object storage classes and expiration, not containers." },
+      { "text": "Route 53 domain transfer lock.", "status": "skipped", "explanation": "Domain transfer lock protects registration and does not scale ECS services." }
+    ]
+  },
+  {
+    "id": 45,
+    "question": "A three-tier web application must expose only the load balancer to the internet. Web servers should not have public IP addresses, and the database should be isolated from public traffic. Which design best matches this requirement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "type": "single",
+    "answers": [
+      { "text": "Place an internet-facing ALB in public subnets, application instances in private subnets, and the database in private isolated subnets.", "status": "correct", "explanation": "This multi-tier pattern exposes the ALB while keeping compute and data tiers private." },
+      { "text": "Place the database in a public subnet and restrict access with a DNS name only.", "status": "skipped", "explanation": "DNS naming does not make a public database private or isolated." },
+      { "text": "Assign public IP addresses to all application instances for direct user access.", "status": "skipped", "explanation": "Direct public access to instances bypasses the load balancer and increases exposure." },
+      { "text": "Run all tiers on one instance in a public subnet.", "status": "skipped", "explanation": "One public instance creates a single point of failure and lacks tier isolation." }
+    ]
+  },
+  {
+    "id": 46,
+    "question": "A web service makes calls to a payment provider that occasionally times out. Retrying can create duplicate charges unless each request is recognized safely. What design should the application implement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use idempotency keys and retry logic with backoff for payment requests.", "status": "correct", "explanation": "Idempotency lets retries be safe while backoff reduces pressure on a struggling dependency." },
+      { "text": "Retry requests in a tight loop with a new payment ID each time.", "status": "skipped", "explanation": "New IDs can create duplicate charges and tight loops amplify downstream failures." },
+      { "text": "Disable all retries and fail every timeout permanently.", "status": "skipped", "explanation": "Disabling retries can turn transient network failures into user-visible failures." },
+      { "text": "Store payment state only in process memory.", "status": "skipped", "explanation": "In-memory state is lost on process or instance failure and cannot reliably deduplicate retries." }
+    ]
+  },
+  {
+    "id": 47,
+    "question": "A data platform wants to replay past business events into a newly added service for backfill and testing. The team prefers a managed event bus feature instead of maintaining a custom event archive. Which capability should be considered?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "type": "single",
+    "answers": [
+      { "text": "EventBridge archive and replay.", "status": "correct", "explanation": "EventBridge can archive events and replay them to support backfills and reprocessing." },
+      { "text": "Route 53 weighted routing.", "status": "skipped", "explanation": "Weighted DNS routing shifts traffic and cannot replay historical events." },
+      { "text": "ALB sticky sessions.", "status": "skipped", "explanation": "Sticky sessions affect request routing to targets and do not preserve event history." },
+      { "text": "RDS Multi-AZ automatic failover.", "status": "skipped", "explanation": "RDS Multi-AZ improves database availability and does not replay event bus messages." }
+    ]
+  },
+  {
+    "id": 48,
+    "question": "A workflow includes a payment step followed by a shipping step. If shipping fails after payment succeeds, the system must run a compensation step and record the final outcome. Which approach is most appropriate?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Use Step Functions with Catch paths to invoke compensation logic and persist execution history.", "status": "correct", "explanation": "Step Functions supports error handling paths and durable workflow history for multi-step processes." },
+      { "text": "Ignore the shipping failure because the payment step already completed.", "status": "skipped", "explanation": "Ignoring partial failure leaves the business process inconsistent." },
+      { "text": "Use DNS failover to undo the payment.", "status": "skipped", "explanation": "DNS failover cannot perform application-level compensation." },
+      { "text": "Run all steps in a shell script on one administrator laptop.", "status": "skipped", "explanation": "A laptop script is not a resilient managed workflow service." }
+    ]
+  },
+  {
+    "id": 49,
+    "question": "A DynamoDB table stores operational records that must be recoverable after accidental deletes or writes. The team wants a managed recovery feature for recent points in time. Which feature should be enabled?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+    "type": "single",
+    "answers": [
+      { "text": "DynamoDB point-in-time recovery.", "status": "correct", "explanation": "Point-in-time recovery allows restoring a DynamoDB table to a recent second within the recovery window." },
+      { "text": "A global secondary index only.", "status": "skipped", "explanation": "A GSI provides alternate query access patterns and does not restore deleted data." },
+      { "text": "Provisioned capacity autoscaling only.", "status": "skipped", "explanation": "Capacity scaling handles throughput, not recovery from accidental writes." },
+      { "text": "A VPC endpoint for DynamoDB only.", "status": "skipped", "explanation": "A VPC endpoint changes network access path and does not provide data recovery." }
+    ]
+  },
+  {
+    "id": 50,
+    "question": "A company needs to make sure backups cannot be deleted or shortened by a compromised administrator account during a retention period. Which AWS Backup feature helps meet this requirement?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "type": "single",
+    "answers": [
+      { "text": "AWS Backup Vault Lock.", "status": "correct", "explanation": "Backup Vault Lock helps enforce retention controls that prevent backups from being deleted early." },
+      { "text": "SQS visibility timeout.", "status": "skipped", "explanation": "SQS visibility timeout controls message redelivery and does not protect backups." },
+      { "text": "ALB cross-zone load balancing.", "status": "skipped", "explanation": "Load balancing does not enforce backup retention." },
+      { "text": "Lambda provisioned concurrency.", "status": "skipped", "explanation": "Provisioned concurrency prepares function capacity and does not protect backup vault contents." }
+    ]
+  },
+  {
+    "id": 51,
+    "question": "A company wants a multi-Region architecture for a public API. The application can serve traffic from either Region, and users should be sent to the Region with the lowest network latency during normal operation. Which Route 53 policy is most appropriate?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "type": "single",
+    "answers": [
+      { "text": "Latency-based routing with health checks.", "status": "correct", "explanation": "Latency-based routing sends users to the lowest-latency healthy endpoint among Regions." },
+      { "text": "Failover routing with one primary Region always selected.", "status": "skipped", "explanation": "Failover routing favors a primary endpoint and is not optimized for lowest latency in normal operation." },
+      { "text": "Simple routing to one Region only.", "status": "skipped", "explanation": "Simple routing to one endpoint does not use the second Region or latency data." },
+      { "text": "MX routing for API requests.", "status": "skipped", "explanation": "MX records route email delivery, not API traffic." }
+    ]
+  },
+  {
+    "id": 52,
+    "question": "A company wants to reduce the effect of an Availability Zone failure on an application that uses EC2 instances. Application code is stateless and stores durable data externally. Which deployment pattern is best?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      { "text": "Deploy instances across multiple Availability Zones behind a load balancer and use Auto Scaling.", "status": "correct", "explanation": "Multi-AZ placement with load balancing and Auto Scaling maintains capacity when one AZ has issues." },
+      { "text": "Deploy all instances to one Availability Zone and back up the AMI nightly.", "status": "skipped", "explanation": "Nightly AMI backups do not keep the application available during an AZ outage." },
+      { "text": "Use one very large instance and enable termination protection.", "status": "skipped", "explanation": "Termination protection does not protect against instance or AZ failure." },
+      { "text": "Keep state on each web instance and use no shared data store.", "status": "skipped", "explanation": "Instance-local state makes replacement and load distribution unreliable." }
+    ]
+  },
+  {
+    "id": 53,
+    "question": "A checkout service must accept orders during short traffic spikes while a fulfillment service processes them at a slower fixed rate. Failed fulfillment attempts should be isolated for later inspection. Which design choices meet these requirements? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Put accepted orders onto an Amazon SQS queue.", "status": "correct", "explanation": "SQS buffers orders and decouples checkout request handling from fulfillment processing rate." },
+      { "text": "Configure a dead-letter queue for messages that exceed the retry threshold.", "status": "correct", "explanation": "A DLQ isolates repeatedly failing messages so normal processing can continue." },
+      { "text": "Make checkout wait synchronously until fulfillment completes each order.", "status": "skipped", "explanation": "Synchronous waiting couples checkout availability to fulfillment capacity." },
+      { "text": "Store failed orders only in the memory of a fulfillment worker.", "status": "skipped", "explanation": "Worker memory is lost if the worker crashes and is not durable inspection storage." },
+      { "text": "Use one fulfillment worker instance with no scaling policy.", "status": "skipped", "explanation": "A single worker limits throughput and creates a single processing point of failure." }
+    ]
+  },
+  {
+    "id": 54,
+    "question": "A company is designing a highly available web application on EC2 with a relational database. It must tolerate the loss of one Availability Zone and automatically remove unhealthy web instances from service. Which components should be included? (Choose THREE)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "An Application Load Balancer enabled in subnets across multiple Availability Zones.", "status": "correct", "explanation": "The ALB distributes traffic to healthy targets across AZs." },
+      { "text": "An Auto Scaling group that spans multiple Availability Zones.", "status": "correct", "explanation": "A multi-AZ Auto Scaling group can maintain and replace web capacity across AZs." },
+      { "text": "Amazon RDS Multi-AZ for the relational database.", "status": "correct", "explanation": "RDS Multi-AZ provides a standby in another AZ with automatic failover." },
+      { "text": "A single EC2 instance with an Elastic IP address for all users.", "status": "skipped", "explanation": "One instance is a single point of failure and cannot tolerate an AZ outage." },
+      { "text": "A database deployed only to the same public subnet as the web server.", "status": "skipped", "explanation": "A single public subnet does not provide database HA or isolation." },
+      { "text": "Manual DNS changes after operators confirm a failure.", "status": "skipped", "explanation": "Manual failover increases RTO and does not automatically remove unhealthy instances." }
+    ]
+  },
+  {
+    "id": 55,
+    "question": "A user-registration service must publish an event to fraud, email, and analytics consumers. Each consumer needs its own retry behavior and should not block the others. Which choices support this architecture? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/sns/latest/dg/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Publish registration events to an Amazon SNS topic.", "status": "correct", "explanation": "SNS provides fanout from one publisher to multiple independent subscribers." },
+      { "text": "Subscribe separate SQS queues for each consumer to the SNS topic.", "status": "correct", "explanation": "A queue per consumer gives each service independent buffering and retry behavior." },
+      { "text": "Have the registration service call all consumers synchronously in one transaction.", "status": "skipped", "explanation": "Synchronous calls make registration depend on every consumer being healthy." },
+      { "text": "Use one shared queue that all consumers compete for when every consumer needs every event.", "status": "skipped", "explanation": "Competing consumers on one queue split messages rather than delivering each event to every service." },
+      { "text": "Write events to a local file on the registration server for consumers to read.", "status": "skipped", "explanation": "Local files are not durable or accessible to independent distributed consumers." }
+    ]
+  },
+  {
+    "id": 56,
+    "question": "A SaaS company wants to route application events to different targets based on event attributes. It also wants to add new event consumers without modifying producer services. Which choices are appropriate? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Use an EventBridge event bus for published application events.", "status": "correct", "explanation": "An event bus decouples producers from consumers and centralizes event ingestion." },
+      { "text": "Create EventBridge rules with event patterns that route matching events to targets.", "status": "correct", "explanation": "Rules evaluate event patterns and send matching events to selected targets." },
+      { "text": "Hard-code every consumer endpoint in each producer service.", "status": "skipped", "explanation": "Hard-coding consumers couples producers to downstream services and requires producer changes for new targets." },
+      { "text": "Use Route 53 CNAME records to inspect JSON event attributes.", "status": "skipped", "explanation": "DNS records do not inspect event payloads or route application events by content." },
+      { "text": "Store events in only one application server's local disk queue.", "status": "skipped", "explanation": "Local disk queues are not a managed, shared, highly available event bus." }
+    ]
+  },
+  {
+    "id": 57,
+    "question": "A workload requires a warm standby disaster recovery strategy in a secondary Region. The business wants faster recovery than pilot light but lower cost than full active-active. Which characteristics should be present? (Choose THREE)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "A scaled-down but functional copy of the application stack runs in the secondary Region.", "status": "correct", "explanation": "Warm standby keeps the full stack running at reduced capacity." },
+      { "text": "Data is replicated to the secondary Region on an ongoing basis.", "status": "correct", "explanation": "Ongoing replication reduces RPO and lets the standby environment use current data." },
+      { "text": "Traffic can be failed over to the secondary Region and capacity scaled up during recovery.", "status": "correct", "explanation": "Warm standby is designed to receive traffic after failover and scale to production capacity." },
+      { "text": "No infrastructure exists in the secondary Region until a disaster is declared.", "status": "skipped", "explanation": "That describes backup and restore, not warm standby." },
+      { "text": "Both Regions always run full production traffic at full capacity.", "status": "skipped", "explanation": "That is active-active and has higher ongoing cost than warm standby." },
+      { "text": "Only offline backups are retained with no application environment configured.", "status": "skipped", "explanation": "Offline backups alone do not provide a running standby application stack." }
+    ]
+  },
+  {
+    "id": 58,
+    "question": "A team is comparing disaster recovery patterns for several workloads. Which statements correctly match DR strategy tradeoffs? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Backup and restore generally has the lowest ongoing cost but higher RTO than warm standby.", "status": "correct", "explanation": "Backup and restore avoids running much standby capacity but takes longer to restore service." },
+      { "text": "Active-active generally provides the lowest RTO but requires production-capable environments in multiple locations.", "status": "correct", "explanation": "Active-active serves traffic from multiple sites and therefore costs more but recovers fastest." },
+      { "text": "Pilot light requires full production traffic to be served from every Region at all times.", "status": "skipped", "explanation": "Pilot light keeps only core components ready and does not serve full production traffic everywhere." },
+      { "text": "Warm standby is always cheaper than backup and restore because no resources run in the standby Region.", "status": "skipped", "explanation": "Warm standby runs a reduced environment, so it usually costs more than backup and restore." },
+      { "text": "RPO measures how long users wait before the service is restored.", "status": "skipped", "explanation": "RPO measures acceptable data loss; RTO measures restoration time." }
+    ]
+  },
+  {
+    "id": 59,
+    "question": "A company is enabling Amazon RDS Multi-AZ for a production database. Which statements describe this configuration? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "RDS maintains a standby DB instance in a different Availability Zone.", "status": "correct", "explanation": "Multi-AZ creates standby capacity in another AZ for high availability." },
+      { "text": "RDS can automatically fail over to the standby when certain failures occur.", "status": "correct", "explanation": "Automatic failover is a core benefit of RDS Multi-AZ deployments." },
+      { "text": "Applications should send read traffic to the standby DB instance for scaling.", "status": "skipped", "explanation": "The standby in a standard Multi-AZ DB instance is not used for application read scaling." },
+      { "text": "Multi-AZ eliminates the need for backups because the standby is a backup copy.", "status": "skipped", "explanation": "A standby improves availability but backups are still needed for recovery from data corruption or accidental changes." },
+      { "text": "Multi-AZ replicates the database to every AWS Region automatically.", "status": "skipped", "explanation": "RDS Multi-AZ is an Availability Zone HA feature within a Region, not automatic global replication." }
+    ]
+  },
+  {
+    "id": 60,
+    "question": "A team is designing an Aurora database for high availability. Which statements are accurate for Aurora resiliency? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Aurora stores copies of data across multiple Availability Zones in the cluster volume.", "status": "correct", "explanation": "Aurora's distributed storage is replicated across AZs for durability and availability." },
+      { "text": "Aurora Replicas can be used as failover targets for the writer instance.", "status": "correct", "explanation": "Aurora can promote a replica to become the writer during failover." },
+      { "text": "An Aurora cluster can only contain one DB instance in one Availability Zone.", "status": "skipped", "explanation": "Aurora clusters can include instances in multiple AZs." },
+      { "text": "Aurora requires manual copying of storage blocks to keep replicas synchronized.", "status": "skipped", "explanation": "Aurora manages its distributed storage and replication; manual block copying is not required." },
+      { "text": "Aurora failover is controlled by EC2 Auto Scaling launch templates.", "status": "skipped", "explanation": "Aurora failover is managed by the database service, not EC2 launch templates." }
+    ]
+  },
+  {
+    "id": 61,
+    "question": "A company stores compliance documents in Amazon S3 and needs a disaster recovery copy in another Region. It wants new object versions copied automatically after configuration. Which requirements must be met? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Enable versioning on the source and destination buckets.", "status": "correct", "explanation": "S3 replication requires versioning on both buckets." },
+      { "text": "Create an S3 replication rule that targets a bucket in the second Region.", "status": "correct", "explanation": "A replication rule defines what objects are copied and where they are copied." },
+      { "text": "Disable all object metadata so replication can run.", "status": "skipped", "explanation": "Replication does not require stripping object metadata." },
+      { "text": "Use an EBS snapshot lifecycle policy instead of S3 replication.", "status": "skipped", "explanation": "EBS snapshot policies apply to block volumes, not S3 objects." },
+      { "text": "Place both buckets in the same Availability Zone.", "status": "skipped", "explanation": "S3 buckets are regional and Cross-Region Replication targets another Region, not an AZ." }
+    ]
+  },
+  {
+    "id": 62,
+    "question": "A serverless order processor uses Lambda and asynchronous integrations. The team wants to handle transient failures without losing events and avoid duplicate side effects when retries occur. Which practices should be used? (Choose THREE)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Configure an on-failure destination or dead-letter queue for events that cannot be processed.", "status": "correct", "explanation": "Failure destinations or DLQs preserve failed events for later investigation and recovery." },
+      { "text": "Make handlers idempotent so repeated events do not create duplicate side effects.", "status": "correct", "explanation": "Retries are expected in distributed systems, so idempotency prevents duplicate writes or charges." },
+      { "text": "Use a queue between producers and Lambda when producers can outpace processing.", "status": "correct", "explanation": "A queue buffers bursts and lets Lambda process work at controlled concurrency." },
+      { "text": "Store all unprocessed events only in Lambda execution environment memory.", "status": "skipped", "explanation": "Execution environments are ephemeral and cannot be used as durable event storage." },
+      { "text": "Disable all retries so transient failures disappear from metrics.", "status": "skipped", "explanation": "Disabling retries loses resilience and hiding failures does not make them recoverable." },
+      { "text": "Use one global variable as the source of truth for completed orders.", "status": "skipped", "explanation": "A global variable is not durable or shared across concurrent Lambda environments." }
+    ]
+  },
+  {
+    "id": 63,
+    "question": "A mobile application stores user preferences in DynamoDB and must support low-latency reads and writes in two Regions. The application should continue operating locally if one Region is impaired. Which statements support this design? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Use DynamoDB global tables with replica tables in both Regions.", "status": "correct", "explanation": "Global tables replicate data across Regions and support local application access." },
+      { "text": "Design conflict handling and idempotent writes for multi-Region write patterns.", "status": "correct", "explanation": "Applications that write in multiple Regions should account for retries and write conflicts." },
+      { "text": "Use one regional table and ask users in the second Region to wait for manual restore.", "status": "skipped", "explanation": "Manual restore does not meet local low-latency operation during Regional impairment." },
+      { "text": "Use DAX alone to replicate writes across Regions.", "status": "skipped", "explanation": "DAX is an in-memory cache and is not multi-Region table replication." },
+      { "text": "Place a DynamoDB table in a specific customer-selected Availability Zone.", "status": "skipped", "explanation": "DynamoDB is a regional managed service and does not expose AZ-specific table placement." }
+    ]
+  },
+  {
+    "id": 64,
+    "question": "A company has primary and secondary endpoints for a public application. It wants DNS to return the secondary endpoint only when the primary endpoint fails health checks. Which Route 53 configurations are needed? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Create failover records that identify primary and secondary endpoints.", "status": "correct", "explanation": "Failover records define which endpoint is primary and which is used during failure." },
+      { "text": "Associate health checks so Route 53 can evaluate endpoint health.", "status": "correct", "explanation": "Health checks allow Route 53 to stop returning unhealthy primary records." },
+      { "text": "Use only simple routing with no health checks.", "status": "skipped", "explanation": "Simple routing alone cannot switch to a secondary endpoint based on health." },
+      { "text": "Configure MX records for the web application endpoint.", "status": "skipped", "explanation": "MX records are for email routing and do not provide web endpoint failover." },
+      { "text": "Store the failover decision in an EC2 instance's local hosts file.", "status": "skipped", "explanation": "Local hosts files do not provide managed public DNS failover." }
+    ]
+  },
+  {
+    "id": 65,
+    "question": "A stateless application on EC2 must scale with demand and recover automatically from instance or Availability Zone failures. Which Auto Scaling design choices help meet this requirement? (Choose THREE)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Configure the Auto Scaling group to use subnets in multiple Availability Zones.", "status": "correct", "explanation": "Multi-AZ subnets allow capacity to be distributed across failure domains." },
+      { "text": "Attach the group to a load balancer and use load balancer health checks.", "status": "correct", "explanation": "Load balancer health checks help remove and replace instances that fail application checks." },
+      { "text": "Use scaling policies based on demand metrics such as CPU or request count.", "status": "correct", "explanation": "Scaling policies adjust desired capacity as demand changes." },
+      { "text": "Keep desired capacity fixed at one instance to simplify operations.", "status": "skipped", "explanation": "One instance cannot provide instance-level fault tolerance or horizontal scaling." },
+      { "text": "Store user sessions only on the local disk of each instance.", "status": "skipped", "explanation": "Local session state prevents transparent replacement of instances." },
+      { "text": "Disable replacement of unhealthy instances during business hours.", "status": "skipped", "explanation": "Suppressing replacement keeps bad capacity in service and reduces availability." }
+    ]
+  },
+  {
+    "id": 66,
+    "question": "An insurance application has a claims workflow with several service calls, retries, timeouts, and manual review. The company wants durable orchestration rather than custom retry code in every service. Which choices are appropriate? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Model the process as an AWS Step Functions state machine.", "status": "correct", "explanation": "Step Functions provides managed orchestration for multi-step workflows." },
+      { "text": "Use Retry and Catch behavior in workflow states for transient and handled failures.", "status": "correct", "explanation": "Retry and Catch policies centralize workflow error handling and recovery paths." },
+      { "text": "Put every step in one Lambda function with nested sleep loops.", "status": "skipped", "explanation": "A monolithic function with sleeps is hard to recover, observe, and maintain." },
+      { "text": "Use an S3 bucket policy as the workflow engine.", "status": "skipped", "explanation": "S3 bucket policies control access and do not orchestrate business steps." },
+      { "text": "Remove all timeout handling so failed calls can wait forever.", "status": "skipped", "explanation": "Unbounded waits can exhaust resources and obscure failures." }
+    ]
+  },
+  {
+    "id": 67,
+    "question": "A company runs a containerized API on Amazon ECS with Fargate. The API must continue serving traffic if tasks fail or an Availability Zone is impaired. Which configurations help achieve this? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Run the ECS service with desired count greater than one across subnets in multiple Availability Zones.", "status": "correct", "explanation": "Multiple tasks across AZs reduce the impact of task or AZ failure." },
+      { "text": "Use an Application Load Balancer target group with health checks for the service.", "status": "correct", "explanation": "The load balancer routes traffic only to healthy tasks." },
+      { "text": "Pin all tasks to one subnet to reduce scheduling complexity.", "status": "skipped", "explanation": "One subnet usually means one AZ, which increases failure impact." },
+      { "text": "Set desired count to zero during normal operations.", "status": "skipped", "explanation": "Zero running tasks cannot serve live API traffic." },
+      { "text": "Use manual task restarts as the only recovery mechanism.", "status": "skipped", "explanation": "Manual recovery increases RTO and does not provide automatic task replacement." }
+    ]
+  },
+  {
+    "id": 68,
+    "question": "A company wants to reduce cascading failures in a microservices platform. Services should be independently deployable and should not all fail when one reporting service is slow. Which practices help? (Choose THREE)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Use asynchronous messaging for noncritical interactions.", "status": "correct", "explanation": "Async messaging prevents noncritical slow consumers from blocking request paths." },
+      { "text": "Keep services stateless where possible and store durable state externally.", "status": "correct", "explanation": "Stateless services can scale and recover more easily because instances are replaceable." },
+      { "text": "Define clear service contracts and avoid direct access to another service's private database tables.", "status": "correct", "explanation": "Clear contracts reduce hidden coupling and allow services to evolve independently." },
+      { "text": "Require every user request to synchronously call the reporting service.", "status": "skipped", "explanation": "A synchronous dependency on reporting can make reporting latency affect all users." },
+      { "text": "Deploy all services as one large process to ensure they fail together.", "status": "skipped", "explanation": "Combining services increases blast radius and reduces independent recovery." },
+      { "text": "Share one mutable in-memory cache as the only source of truth.", "status": "skipped", "explanation": "An in-memory cache is not durable and can create tight runtime coupling." }
+    ]
+  },
+  {
+    "id": 69,
+    "question": "A company must protect backups for several AWS services and also survive an account-level or Regional incident. Which AWS Backup practices support this requirement? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Use AWS Backup plans to schedule backups for supported resources.", "status": "correct", "explanation": "Backup plans centralize schedules and retention policies across supported resources." },
+      { "text": "Copy backups to another Region or account when required by the recovery plan.", "status": "correct", "explanation": "Cross-Region or cross-account backup copies improve resilience against broader failures or account compromise." },
+      { "text": "Rely on RDS Multi-AZ alone as a substitute for recoverable backups.", "status": "skipped", "explanation": "Multi-AZ improves availability but does not protect against accidental deletion or corruption that is replicated." },
+      { "text": "Store the only backup catalog on one administrator laptop.", "status": "skipped", "explanation": "A local laptop catalog is not a resilient managed backup control plane." },
+      { "text": "Delete old backups immediately regardless of retention requirements.", "status": "skipped", "explanation": "Deleting backups early can violate recovery and compliance requirements." }
+    ]
+  },
+  {
+    "id": 70,
+    "question": "A distributed application has intermittent failures that are hard to isolate. The operations team needs request-level visibility and enough telemetry to identify which downstream service is causing errors. Which practices should be used? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
+    "type": "multiple",
+    "answers": [
+      { "text": "Enable AWS X-Ray tracing for supported services and application code.", "status": "correct", "explanation": "X-Ray traces show service maps, segments, latency, and errors across distributed calls." },
+      { "text": "Propagate correlation identifiers through service calls and logs.", "status": "correct", "explanation": "Correlation IDs help connect logs and traces for the same request across services." },
+      { "text": "Turn off all application logging to reduce noise.", "status": "skipped", "explanation": "Removing logs reduces the evidence needed to diagnose failures." },
+      { "text": "Route all requests through one service without health checks.", "status": "skipped", "explanation": "A single unmonitored path increases blast radius and does not improve visibility." },
+      { "text": "Use only monthly manual incident reviews with no runtime telemetry.", "status": "skipped", "explanation": "Manual reviews without telemetry cannot isolate live intermittent failures effectively." }
+    ]
+  }
+]

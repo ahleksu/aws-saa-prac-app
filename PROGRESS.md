@@ -8,16 +8,16 @@
 
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
-- **Repo state:** fresh Angular 21 scaffold (commit `2b9c285 initial commit`); no domain code yet.
-- **Active phase:** P1 — Question Bank. P0 complete (12/12) as of 2026-05-10.
+- **Repo state:** P0 complete plus P1 question bank complete; latest commits tracked in git log.
+- **Active phase:** P2 — Quiz Page. P0 and P1 complete as of 2026-05-10.
 
 ## Phase Status Overview
 
 | Phase | Name | Status | Tasks Done | Notes |
 |---|---|---|---|---|
 | P0 | Scaffolding & Core | **Complete** | 12 / 12 | P0-T5 superseded by P0-T10; visual diff confirmed by user 2026-05-10; NG0913 fixed via P0-T12 |
-| P1 | Question Bank | **Not Started** | 0 / 8 | Highest leverage for exam prep |
-| P2 | Quiz Page | **Not Started** | 0 / 6 | Depends on P0 + P1-T3 minimum |
+| P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
+| P2 | Quiz Page | **Not Started** | 0 / 6 | Next phase; depends on P0 + P1 |
 | P3 | Result & Review | **Not Started** | 0 / 6 | Depends on P2 |
 | P4 | Polish & Readiness Gate | **Not Started** | 0 / 5 | Final exam-ready bar |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
@@ -52,16 +52,22 @@
 
 - [x] P1-T1: `scripts/validate-quiz.mjs` (Node ESM, no deps). Validates schema + single/multiple invariants (single = exactly 4 answers / 1 correct; multiple = ≥5 answers, ≥2 correct, stem must include `(Choose TWO)`/`(Choose THREE)` and correct count must match) + unique IDs per file + domain whitelist (4 SAA literals) + resource URL host whitelist (`docs.aws.amazon.com`, `aws.amazon.com`, `wa.aws.amazon.com`, https only). Accepts optional file/dir args (default scans `public/quiz/`). Positive run on empty seeds → 5/5 OK exit 0; negative run on `/tmp` fixture with 9 deliberate violations → exits 1 with all 9 errors anchored to `q[i] (id=N) ...`. — 2026-05-10
 - [x] P1-T2: `scripts/build-all-json.mjs` (Node ESM, no deps). Reads the 4 domain files in stable order (secure → resilient → performance → cost, matching §3 weights so `git diff all.json` is minimal), concatenates, re-sequences IDs `1..N`, writes `public/quiz/all.json` with 2-space indent + trailing newline. Two consecutive runs produce identical SHA (`cd0d4cc…` for the empty case) — idempotent; `git diff all.json` is empty after. Validator still passes (5/5 OK exit 0). — 2026-05-10
+- [x] P1-T3: Authored `secure.json` to 80 questions (60 single, 20 multiple), covering IAM, Organizations/SCPs, federation, VPC controls, WAF/Shield, GuardDuty/Macie, Secrets Manager, KMS, S3 data protection, backups, replication, and TLS. `node scripts/validate-quiz.mjs public/quiz/secure.json` clean; spot check found original scenario stems, AWS docs resources, and no exact duplicate stems. — 2026-05-10
+- [x] P1-T4: Authored `resilient.json` to 70 questions (52 single, 18 multiple), covering SQS/SNS/EventBridge, Step Functions, Lambda/ECS, ELB/Auto Scaling, Route 53 failover, RDS/Aurora HA, DynamoDB global tables/PITR, S3 replication, AWS Backup, DR patterns, and X-Ray. Validator clean; no exact duplicate stems. — 2026-05-10
+- [x] P1-T5: Authored `performance.json` to 65 questions (49 single, 16 multiple), covering S3/EBS/EFS/FSx performance, placement groups, scaling policies, Lambda tuning, RDS/Aurora/read replicas, DynamoDB/DAX, ElastiCache, CloudFront/Global Accelerator, Direct Connect, Kinesis, Firehose, Glue, Athena, EMR, and DataSync. Validator clean; no exact duplicate stems. — 2026-05-10
+- [x] P1-T6: Authored `cost.json` to 55 questions (42 single, 13 multiple), covering S3 lifecycle/storage classes, EBS/EFS right-sizing, Spot/Savings Plans/RI, Compute Optimizer, Lambda/Fargate, DynamoDB/RDS/Aurora cost controls, NAT gateway placement, VPC endpoints, CloudFront, Direct Connect/VPN, Transit Gateway, and peering. Validator clean; no exact duplicate stems. — 2026-05-10
+- [x] P1-T7: Regenerated `public/quiz/all.json` via `node scripts/build-all-json.mjs`; output contains 270 questions resequenced `1..270` in stable domain order. Full validator clean: `all.json` count=270, single=203, multiple=67, errors=0. — 2026-05-10
+- [x] P1-T8: Added `NOTICES.md` documenting AWS official sources, Skill Builder official practice set URL, public topic-seed samplers, reviewed GitHub repositories, and the no-verbatim-copy rule for third-party practice content. — 2026-05-10
 
 **Volume tracker** (target from PLAN §6.2):
 
 | Domain | File | Authored | Target | % |
 |---|---|---|---|---|
-| Secure | `secure.json` | 0 | 80 | 0% |
-| Resilient | `resilient.json` | 0 | 70 | 0% |
-| Performance | `performance.json` | 0 | 65 | 0% |
-| Cost | `cost.json` | 0 | 55 | 0% |
-| **All** | `all.json` | 0 | 270 | 0% |
+| Secure | `secure.json` | 80 | 80 | 100% |
+| Resilient | `resilient.json` | 70 | 70 | 100% |
+| Performance | `performance.json` | 65 | 65 | 100% |
+| Cost | `cost.json` | 55 | 55 | 100% |
+| **All** | `all.json` | 270 | 270 | 100% |
 
 <!-- Update the table after every authoring batch (recommended cadence: every 10 questions). -->
 
@@ -80,6 +86,7 @@
 - 2026-05-10 — Drop PrimeNG, use Tailwind v4 + plain HTML; charts via `chart.js` directly — keeps bundle small and aligns with this repo's existing stack. (PLAN §4)
 - 2026-05-10 — Mirror CLF question schema verbatim so `quiz.service.ts` logic ports without translation — but rebuild components on signals + OnPush per project rules. (PLAN §5, §8)
 - 2026-05-10 — **Reverse "no PrimeNG" decision**; adopt PrimeNG 21 (Aura/Noir preset, light-mode only) + PrimeIcons + `tailwindcss-primeui` + `@angular/animations`. Required to port CLF templates 1:1 inside the 5-day budget; bundle cost (~150-200kB gz) is well within the 500kB-warn / 1MB-error budget configured in `angular.json`. _(Supersedes the earlier "Drop PrimeNG" decision dated 2026-05-10.)_ (PLAN §4)
+- 2026-05-10 — Disable Angular CLI persistent cache in `angular.json` — plain `npm run build` repeatedly aborted with `SIGABRT` in the native LMDB cache path under Node 24/macOS; `CI=true npm run build` passed, proving the app build was clean. Disabling the cache makes normal local builds reliable with only a rebuild-speed tradeoff.
 
 ## Blockers
 <!-- Format: "YYYY-MM-DD — <blocker> — <what would unblock>" -->
@@ -89,10 +96,4 @@
 ## Open Questions for the User
 <!-- Surface these in chat at the next session start, not via docs. -->
 
-- 2026-05-10 — **P1-T3 sourcing strategy.** PLAN §6.1 lists 5 tiers. Only the exam guide is staged in `.context/`. To start authoring 80 Secure questions, pick one (or a mix):
-  - **A. Pure tier-3 (AWS docs + training-data knowledge).** Fastest. I author all 80 from scratch, grounded in `.context/AWS_SAA_EXAM_GUIDE.md` Domain 1 task statements + AWS service knowledge. `resource` URLs cite `docs.aws.amazon.com` per service area. Risk: solo-AI-grounded, no first-party verbatim citations.
-  - **B. Tier 1+3 (WebFetch AWS sample + author rest).** I WebFetch the AWS official SAA-C03 sample PDF (10 questions verbatim with attribution) and any whitepapers I cite, then author the rest. Slower (extra fetches) but more authoritative.
-  - **C. Tier 5 paraphrase from your local material.** You drop any owned Tutorials Dojo / Whizlabs / ExamPro notes into `.context/_sources/` (gitignored). I paraphrase per PLAN §6.1 tier-5 rules (re-derive distractors from AWS docs, cite the AWS doc as `resource`, never the third-party site). Highest authoring quality but blocked on you staging the material.
-  - **D. Adapt CLF security_compliance.json.** Sift CLF for SAA-relevant questions and re-author at associate difficulty. Risk: CLF is foundational; many CLF-Sec questions are below SAA depth.
-  - Most likely good answer: **A as primary, with B for the 10 official samples** if you want the citation. Reply with "A", "A+B", "C — material at <path>", or "D".
-- 2026-05-10 — **Schedule reality check (T-5 days).** Volume target is ≥270 questions across 4 domains. Even at a sustained 20 questions/hour of authoring time, that's ~13–14 hours. Are you OK with descoping to PLAN §6.2 minimums (or below) if P2/P3 UI work is at risk? Flag if you'd rather I cut Secure to 60 / Resilient to 50 / Performance to 45 / Cost to 40 (~195 total) to reserve more time for the quiz-loop UI in P2/P3. Reply "keep targets" or "descope to <numbers>".
+- None.

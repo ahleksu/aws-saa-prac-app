@@ -74,18 +74,18 @@
 - [x] **P1-T2** — Create `scripts/build-all-json.mjs` that concatenates the four domain files, re-sequences IDs (1..N), and writes `public/quiz/all.json`. Idempotent.
   - **Acceptance:** `node scripts/build-all-json.mjs` completes; `all.json` length equals sum of domain files; `validate-quiz.mjs` still passes after.
 
-- [ ] **P1-T3** — Author Domain 1 (Secure) questions until `secure.json` has ≥80 entries. Follow PLAN §6.3 workflow. **Sourcing priority order from PLAN §6.1 — start with AWS official sample + Skill Builder + AWS docs; only paraphrase from third-party sites, never copy verbatim.** Cite `docs.aws.amazon.com` URLs in `resource`.
+- [x] **P1-T3** — Author Domain 1 (Secure) questions until `secure.json` has ≥80 entries. Follow PLAN §6.3 workflow. **Sourcing priority order from PLAN §6.1 — start with AWS official sample + Skill Builder + AWS docs; only paraphrase from third-party sites, never copy verbatim.** Cite `docs.aws.amazon.com` URLs in `resource`.
   - **Acceptance:** `secure.json` ≥80 questions; `validate-quiz.mjs` passes; spot-check 5 random questions for distractor-explanation quality.
 
-- [ ] **P1-T4** — Author Domain 2 (Resilient) questions until `resilient.json` has ≥70 entries. Same workflow.
+- [x] **P1-T4** — Author Domain 2 (Resilient) questions until `resilient.json` has ≥70 entries. Same workflow.
 
-- [ ] **P1-T5** — Author Domain 3 (Performance) questions until `performance.json` has ≥65 entries. Same workflow.
+- [x] **P1-T5** — Author Domain 3 (Performance) questions until `performance.json` has ≥65 entries. Same workflow.
 
-- [ ] **P1-T6** — Author Domain 4 (Cost) questions until `cost.json` has ≥55 entries. Same workflow.
+- [x] **P1-T6** — Author Domain 4 (Cost) questions until `cost.json` has ≥55 entries. Same workflow.
 
-- [ ] **P1-T7** — Run `scripts/build-all-json.mjs` to regenerate `all.json`. Verify total ≥270.
+- [x] **P1-T7** — Run `scripts/build-all-json.mjs` to regenerate `all.json`. Verify total ≥270.
 
-- [ ] **P1-T8** — Add a `NOTICES.md` in repo root listing every external source used (AWS official, Skill Builder, any CC-licensed community repos). Required for §6.1 attribution discipline.
+- [x] **P1-T8** — Add a `NOTICES.md` in repo root listing every external source used (AWS official, Skill Builder, any CC-licensed community repos). Required for §6.1 attribution discipline.
 
 ---
 

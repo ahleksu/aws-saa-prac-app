@@ -1,1 +1,2442 @@
-[]
+[
+  {
+    "id": 1,
+    "question": "A company has one AWS account that is administered by a small operations team. The team wants to reduce the risk that the root user is used for daily administrative work while still preserving emergency access. Which action should a solutions architect recommend?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable MFA on the root user, store the credentials securely, and create least-privilege IAM roles for routine administration.",
+        "status": "correct",
+        "explanation": "AWS recommends protecting the root user with MFA and avoiding root for everyday tasks; administrators should use IAM identities or roles with scoped permissions."
+      },
+      {
+        "text": "Create access keys for the root user and use those keys only from a secured bastion host.",
+        "status": "skipped",
+        "explanation": "Root access keys are high risk and should not be used for normal operations, even from a hardened host."
+      },
+      {
+        "text": "Share the root password with all operations engineers and rotate it every 90 days.",
+        "status": "skipped",
+        "explanation": "Shared root credentials remove accountability and still leave the most privileged identity available for daily use."
+      },
+      {
+        "text": "Create one IAM user with AdministratorAccess and share that user's credentials with the operations team.",
+        "status": "skipped",
+        "explanation": "Shared IAM credentials do not provide individual accountability and do not follow least-privilege access practices."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "An application running on Amazon EC2 must read messages from an Amazon SQS queue. The current design stores an IAM user's access key in a configuration file on each instance. Which design improves security with the least operational overhead?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Attach an IAM role to the EC2 instances that grants the required SQS actions.",
+        "status": "correct",
+        "explanation": "An EC2 instance role provides temporary credentials automatically and removes the need to store long-term access keys on the instance."
+      },
+      {
+        "text": "Encrypt the access key file with a customer managed KMS key and keep using the IAM user.",
+        "status": "skipped",
+        "explanation": "Encrypting the file reduces exposure but still requires distributing and rotating long-term credentials."
+      },
+      {
+        "text": "Store the access key in an Amazon Machine Image and restrict AMI sharing.",
+        "status": "skipped",
+        "explanation": "Baking long-term credentials into an AMI increases the chance of credential sprawl and does not support automatic rotation."
+      },
+      {
+        "text": "Add the access key to an EC2 user data script that runs during instance launch.",
+        "status": "skipped",
+        "explanation": "User data is not a secure place for long-term credentials and does not remove the operational burden of key rotation."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "A workload in Account A needs to publish events to an Amazon EventBridge event bus in Account B. The security team wants short-lived credentials and no shared IAM user secrets. Which access pattern should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Create a role in Account B that trusts the workload role in Account A and allows the required EventBridge action.",
+        "status": "correct",
+        "explanation": "A cross-account IAM role lets the trusted principal assume temporary credentials in the target account for the permitted actions."
+      },
+      {
+        "text": "Create an IAM user in Account B and store the access keys in Account A.",
+        "status": "skipped",
+        "explanation": "Long-term IAM user keys introduce secret distribution and rotation risks that roles are designed to avoid."
+      },
+      {
+        "text": "Give the workload role in Account A AdministratorAccess so it can call Account B services.",
+        "status": "skipped",
+        "explanation": "Permissions in Account A do not grant access to Account B unless Account B explicitly trusts or authorizes that principal."
+      },
+      {
+        "text": "Create matching IAM groups in both accounts and add the workload role to both groups.",
+        "status": "skipped",
+        "explanation": "IAM groups are for IAM users, not roles, and they do not establish cross-account trust."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "A company allows a third-party monitoring provider to assume a role in its AWS account. The provider uses the same AWS account to support many customers. What should the company require to reduce the confused deputy risk?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Add a unique external ID condition to the role trust policy and require the provider to supply it when assuming the role.",
+        "status": "correct",
+        "explanation": "An external ID helps ensure the third party assumes the role only for the intended customer context."
+      },
+      {
+        "text": "Add the provider's root user ARN to the role permissions policy.",
+        "status": "skipped",
+        "explanation": "The trust policy controls who can assume the role; granting broad access to a provider root principal is not the right mitigation."
+      },
+      {
+        "text": "Require the provider to create an IAM user in the company's account.",
+        "status": "skipped",
+        "explanation": "An IAM user would reintroduce long-term credentials and does not address confused deputy protection for role assumption."
+      },
+      {
+        "text": "Disable AWS STS in all Regions except the company's primary Region.",
+        "status": "skipped",
+        "explanation": "Regional STS controls do not bind the third-party request to the intended customer relationship."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "A mobile app backend uses AWS Lambda functions that access Amazon DynamoDB tables. Developers currently pass database credentials to the functions through environment variables. The security team wants the functions to use AWS-native temporary credentials. What should the solutions architect configure?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Assign each Lambda function an execution role with the minimum DynamoDB permissions required.",
+        "status": "correct",
+        "explanation": "A Lambda execution role supplies temporary credentials to the function and can be scoped to the specific DynamoDB actions and resources."
+      },
+      {
+        "text": "Create an IAM access key for each developer and add the keys to Lambda environment variables.",
+        "status": "skipped",
+        "explanation": "Developer access keys are long-term credentials and should not be embedded in application runtime configuration."
+      },
+      {
+        "text": "Use the AWS account root credentials in AWS Systems Manager Parameter Store.",
+        "status": "skipped",
+        "explanation": "Root credentials should not be used by applications, and storing them in a parameter does not make them appropriate for runtime access."
+      },
+      {
+        "text": "Attach a security group to the DynamoDB table that allows the Lambda functions.",
+        "status": "skipped",
+        "explanation": "DynamoDB access is authorized through IAM policies, not security groups attached to tables."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "A company uses AWS Organizations with separate accounts for development, test, and production. Security leadership wants to prevent member accounts from disabling AWS CloudTrail or leaving the organization, even if a local account administrator has broad IAM permissions. Which controls should be part of the design? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Attach service control policies that deny the prohibited actions at the appropriate organizational units.",
+        "status": "correct",
+        "explanation": "SCPs set maximum available permissions for member accounts and can deny sensitive actions regardless of local IAM allows."
+      },
+      {
+        "text": "Place production and nonproduction accounts in separate organizational units so guardrails can be targeted.",
+        "status": "correct",
+        "explanation": "Organizational units allow different SCPs to be applied to groups of accounts based on environment or risk."
+      },
+      {
+        "text": "Create IAM groups named Development, Test, and Production in the management account.",
+        "status": "skipped",
+        "explanation": "IAM groups in the management account do not impose permission guardrails on principals in member accounts."
+      },
+      {
+        "text": "Store the root user password for each member account in AWS Secrets Manager.",
+        "status": "skipped",
+        "explanation": "Storing root passwords does not create preventive controls and does not stop administrators from calling allowed APIs."
+      },
+      {
+        "text": "Use security group outbound rules to block calls to the CloudTrail API endpoint.",
+        "status": "skipped",
+        "explanation": "Security groups control network traffic for attached resources, not organization-wide authorization to AWS service APIs."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "An engineering team needs read-only access to production logs in Amazon S3 for one week during an incident investigation. The access should expire automatically and should not require creating long-term IAM users. What should the team use?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Allow engineers to assume a time-limited IAM role that grants read-only access to the log bucket.",
+        "status": "correct",
+        "explanation": "Role sessions use temporary credentials and can provide scoped access for the duration needed."
+      },
+      {
+        "text": "Create IAM users for each engineer and delete the users after the investigation.",
+        "status": "skipped",
+        "explanation": "Temporary role access is lower overhead and avoids creating long-term identities for short-lived work."
+      },
+      {
+        "text": "Add the engineers' personal email addresses to the S3 bucket ACL.",
+        "status": "skipped",
+        "explanation": "S3 ACLs are not the preferred way to grant temporary workforce access and do not integrate with role sessions."
+      },
+      {
+        "text": "Disable S3 Block Public Access and create presigned URLs for the entire bucket.",
+        "status": "skipped",
+        "explanation": "Making a bucket public or broadly sharing object URLs is not appropriate for controlled incident access."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "A company wants application teams to deploy their own IAM roles but does not want them to grant permissions outside an approved maximum permission set. Which IAM feature should be used with the teams' role creation process?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Require a permissions boundary on roles that teams create.",
+        "status": "correct",
+        "explanation": "A permissions boundary limits the maximum permissions an identity-based policy can grant to a role or user."
+      },
+      {
+        "text": "Attach an S3 bucket policy to each application bucket.",
+        "status": "skipped",
+        "explanation": "Bucket policies control S3 resource access but do not cap the permissions that teams can grant to IAM roles."
+      },
+      {
+        "text": "Create an access key rotation policy for every developer.",
+        "status": "skipped",
+        "explanation": "Key rotation does not restrict the maximum permissions of roles created by developers."
+      },
+      {
+        "text": "Enable versioning on the IAM console.",
+        "status": "skipped",
+        "explanation": "There is no IAM console versioning feature that limits role permissions."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "A finance account owns an encrypted Amazon S3 bucket that must be read by a reporting role in a separate analytics account. The access must be granted without creating IAM users in the finance account. What should be configured?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Allow the analytics role in the S3 bucket policy and permit the role to use the required KMS key.",
+        "status": "correct",
+        "explanation": "Cross-account S3 access can be authorized with a bucket policy, and encrypted objects also require KMS key permissions."
+      },
+      {
+        "text": "Create a finance-account IAM user and copy its access keys into the analytics account.",
+        "status": "skipped",
+        "explanation": "Long-term access keys are unnecessary and less secure than cross-account role and resource policy access."
+      },
+      {
+        "text": "Add the analytics account ID to the finance account password policy.",
+        "status": "skipped",
+        "explanation": "Password policies affect IAM user passwords and do not grant resource access across accounts."
+      },
+      {
+        "text": "Disable S3 server-side encryption for the bucket before sharing the data.",
+        "status": "skipped",
+        "explanation": "Encryption does not need to be disabled; the correct design grants both S3 and KMS permissions."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "A startup is moving a customer-facing web application to AWS. The CTO asks which party is responsible for patching the guest operating system on Amazon EC2 instances that the startup manages. Which answer follows the AWS shared responsibility model?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "type": "single",
+    "answers": [
+      {
+        "text": "The customer is responsible for patching the guest operating system on self-managed EC2 instances.",
+        "status": "correct",
+        "explanation": "For infrastructure services such as EC2, AWS secures the underlying cloud infrastructure while the customer manages the guest OS and applications."
+      },
+      {
+        "text": "AWS is responsible for patching the customer's guest operating system because the instance runs in an AWS Region.",
+        "status": "skipped",
+        "explanation": "AWS manages the underlying infrastructure, but the customer controls and patches the guest OS on self-managed EC2 instances."
+      },
+      {
+        "text": "The responsibility transfers to AWS when the EC2 instance uses an IAM role.",
+        "status": "skipped",
+        "explanation": "Using an IAM role affects credentials and authorization, not operating system patch responsibility."
+      },
+      {
+        "text": "The responsibility belongs to AWS only if the instance is launched in a private subnet.",
+        "status": "skipped",
+        "explanation": "Subnet placement does not change the customer's responsibility for the guest OS on EC2."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "A company is centralizing workforce access for multiple AWS accounts. Users should sign in through the company's identity provider and receive account-specific permissions without separate IAM users in each account. Which design elements meet these requirements? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use IAM Identity Center to connect the external identity provider.",
+        "status": "correct",
+        "explanation": "IAM Identity Center supports centralized workforce sign-in and federation to AWS accounts and applications."
+      },
+      {
+        "text": "Assign permission sets to users or groups for the target AWS accounts.",
+        "status": "correct",
+        "explanation": "Permission sets define the account permissions that federated workforce users receive through IAM Identity Center."
+      },
+      {
+        "text": "Create separate IAM users in every account for each employee.",
+        "status": "skipped",
+        "explanation": "The requirement is to avoid separate IAM users and centralize workforce access."
+      },
+      {
+        "text": "Use S3 bucket ACLs to grant each employee access to the AWS console.",
+        "status": "skipped",
+        "explanation": "S3 ACLs do not provide console sign-in or account-level workforce authorization."
+      },
+      {
+        "text": "Share the management account root user credentials with the identity provider administrators.",
+        "status": "skipped",
+        "explanation": "Root credentials should not be shared and are not a federation mechanism."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "A developer accidentally added an Allow statement for s3:DeleteObject to an IAM role. A separate policy attached to the same role has an explicit Deny for s3:DeleteObject on the production bucket. What is the effective permission?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "The role cannot delete objects from the production bucket because the explicit Deny overrides the Allow.",
+        "status": "correct",
+        "explanation": "In IAM policy evaluation, an explicit Deny takes precedence over any Allow that would otherwise match."
+      },
+      {
+        "text": "The role can delete objects because the most recently attached policy wins.",
+        "status": "skipped",
+        "explanation": "IAM policy evaluation is not based on attachment order; explicit Deny has priority."
+      },
+      {
+        "text": "The role can delete objects if the Allow policy uses a wildcard resource.",
+        "status": "skipped",
+        "explanation": "A matching explicit Deny still overrides a wildcard Allow."
+      },
+      {
+        "text": "The request is randomly allowed or denied depending on policy propagation.",
+        "status": "skipped",
+        "explanation": "Once policies are in effect, the evaluation logic is deterministic; explicit Deny wins."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "question": "A platform team wants to let developers read application logs but prevent access to security audit logs in the same account. The logs are stored in separate S3 buckets. What is the best authorization approach?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Create a least-privilege IAM policy that allows read access only to the application log bucket ARN.",
+        "status": "correct",
+        "explanation": "Least-privilege policies should scope allowed actions to the specific resources that users need."
+      },
+      {
+        "text": "Grant AmazonS3FullAccess and rely on developers not to open the audit bucket.",
+        "status": "skipped",
+        "explanation": "Full S3 access violates least privilege and does not technically prevent access to audit logs."
+      },
+      {
+        "text": "Store both log types in one bucket and separate them only by object name prefixes.",
+        "status": "skipped",
+        "explanation": "Prefixes can be used in policies, but merging the data alone does not enforce access separation."
+      },
+      {
+        "text": "Disable IAM policy evaluation for the audit bucket.",
+        "status": "skipped",
+        "explanation": "IAM policy evaluation cannot be disabled to protect a bucket; access must be controlled with IAM and resource policies."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "question": "A company has many human users who need console access and many applications that need AWS API access. The security team wants to avoid static credentials where possible. Which principle should guide the design?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use federation and IAM roles so users and workloads obtain temporary credentials.",
+        "status": "correct",
+        "explanation": "AWS recommends using federation and roles to provide temporary credentials instead of relying on long-term access keys."
+      },
+      {
+        "text": "Create one access key per application environment and share it across all services in that environment.",
+        "status": "skipped",
+        "explanation": "Shared long-term access keys increase blast radius and complicate rotation and attribution."
+      },
+      {
+        "text": "Use the root user for console access and IAM users only for API access.",
+        "status": "skipped",
+        "explanation": "The root user should not be used for routine access, and IAM users with long-term credentials should be minimized."
+      },
+      {
+        "text": "Store all access keys in encrypted code repositories.",
+        "status": "skipped",
+        "explanation": "Encryption at rest in a repository does not make long-term keys the preferred authentication pattern."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "question": "A data processing job in Account A must assume a role in Account B. The role in Account B has a trust policy that names the role in Account A as a trusted principal. What else is required for the job to assume the role?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "The role in Account A must have an identity policy allowing sts:AssumeRole on the Account B role.",
+        "status": "correct",
+        "explanation": "Cross-account role assumption requires trust from the target role and permission for the source principal to call sts:AssumeRole."
+      },
+      {
+        "text": "The Account A root user must manually approve each role session in the console.",
+        "status": "skipped",
+        "explanation": "STS role assumption is controlled by policies and does not require manual root approval for each session."
+      },
+      {
+        "text": "Both accounts must use the same account alias.",
+        "status": "skipped",
+        "explanation": "Account aliases are sign-in conveniences and do not control role assumption permissions."
+      },
+      {
+        "text": "The role in Account B must include the job's private IP address in a security group.",
+        "status": "skipped",
+        "explanation": "Security groups control network traffic, not whether an IAM principal can call sts:AssumeRole."
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "A company tags IAM roles with CostCenter and Environment. It wants to allow deployment automation to manage only resources whose tags match the role's tags. Which authorization model best supports this requirement?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use attribute-based access control with IAM policy conditions that compare principal tags and resource tags.",
+        "status": "correct",
+        "explanation": "ABAC uses tags and policy conditions to make authorization decisions based on attributes such as environment or cost center."
+      },
+      {
+        "text": "Create a new AWS account for every resource tag value.",
+        "status": "skipped",
+        "explanation": "Separate accounts can help isolation, but they are not required to compare principal and resource tags for authorization."
+      },
+      {
+        "text": "Use security group tags to allow or deny IAM API calls.",
+        "status": "skipped",
+        "explanation": "Security group tags do not determine whether IAM principals can perform API actions."
+      },
+      {
+        "text": "Put all automation users into one IAM group with AdministratorAccess.",
+        "status": "skipped",
+        "explanation": "AdministratorAccess is not tag-aware least privilege and would allow actions beyond the matching resources."
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "A regulated company has separate AWS accounts for workloads and a central security account. It wants organization-wide preventive guardrails but also needs workload teams to manage their own least-privilege IAM policies. Which statements are true about service control policies? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "SCPs define the maximum permissions available to principals in member accounts.",
+        "status": "correct",
+        "explanation": "SCPs act as guardrails that limit what account principals can do, even when IAM policies allow broader access."
+      },
+      {
+        "text": "SCPs do not grant permissions by themselves; IAM or resource policies still must allow the action.",
+        "status": "correct",
+        "explanation": "An action is allowed only when it is permitted by applicable identity or resource policies and is not blocked by an SCP."
+      },
+      {
+        "text": "SCPs replace IAM identity policies for day-to-day least-privilege role design.",
+        "status": "skipped",
+        "explanation": "SCPs are organization guardrails and do not provide the detailed grants that IAM policies provide."
+      },
+      {
+        "text": "SCPs apply only to Amazon EC2 and Amazon S3 actions.",
+        "status": "skipped",
+        "explanation": "SCPs can be used with AWS service actions broadly, subject to Organizations support and policy syntax."
+      },
+      {
+        "text": "SCPs can be attached to security groups to restrict inbound traffic.",
+        "status": "skipped",
+        "explanation": "SCPs attach to organization roots, organizational units, or accounts, not to VPC security groups."
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "A company uses IAM Identity Center and wants the database administrator group to receive elevated AWS account permissions only when assigned through the central access portal. Which construct should define those account permissions?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "A permission set assigned to the group for the target AWS account.",
+        "status": "correct",
+        "explanation": "IAM Identity Center permission sets define what federated users and groups can do in assigned AWS accounts."
+      },
+      {
+        "text": "An S3 bucket policy attached to the identity store.",
+        "status": "skipped",
+        "explanation": "Bucket policies protect S3 resources and are not used to define IAM Identity Center account permissions."
+      },
+      {
+        "text": "A network ACL associated with the account's default VPC.",
+        "status": "skipped",
+        "explanation": "Network ACLs filter subnet traffic and do not define AWS account authorization for workforce identities."
+      },
+      {
+        "text": "A root user access key stored in the central access portal.",
+        "status": "skipped",
+        "explanation": "Root access keys should not be used for workforce federation or delegated administration."
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "A solutions architect is reviewing an IAM policy that allows s3:* on *. The application only reads two object prefixes in one bucket. What should the architect recommend?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Replace the broad permission with specific S3 read actions scoped to the required bucket and prefixes.",
+        "status": "correct",
+        "explanation": "Least privilege requires granting only the actions and resources the application needs."
+      },
+      {
+        "text": "Keep the wildcard policy because S3 bucket names are globally unique.",
+        "status": "skipped",
+        "explanation": "Global bucket name uniqueness does not justify allowing all S3 actions on all resources."
+      },
+      {
+        "text": "Move the application to a private subnet and keep the IAM policy unchanged.",
+        "status": "skipped",
+        "explanation": "Network placement does not reduce the authorization scope granted by the IAM policy."
+      },
+      {
+        "text": "Use an IAM password policy to prevent accidental S3 writes.",
+        "status": "skipped",
+        "explanation": "Password policies do not limit which S3 API actions a role can perform."
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "question": "A company wants to regularly identify unused IAM access keys and overly broad IAM permissions. Which practice best supports this goal?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Review IAM credential reports and access information to refine permissions and remove unused credentials.",
+        "status": "correct",
+        "explanation": "AWS IAM guidance includes using available access data to remove unused credentials and reduce permissions."
+      },
+      {
+        "text": "Disable CloudWatch metrics for IAM to avoid storing security metadata.",
+        "status": "skipped",
+        "explanation": "Disabling observability does not help identify unused credentials or excessive permissions."
+      },
+      {
+        "text": "Move all access keys into one shared AWS Secrets Manager secret.",
+        "status": "skipped",
+        "explanation": "Centralizing shared keys does not identify unused credentials and can worsen blast radius."
+      },
+      {
+        "text": "Give every user AdministratorAccess and rely on account-level billing alerts.",
+        "status": "skipped",
+        "explanation": "Billing alerts do not enforce least privilege or detect unused IAM credentials."
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "question": "A developer needs to run AWS CLI commands from a laptop for a two-hour maintenance window. The company federates users through IAM Identity Center. Which approach avoids creating long-term access keys?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use IAM Identity Center credentials for the AWS CLI profile with the assigned permission set.",
+        "status": "correct",
+        "explanation": "IAM Identity Center can provide temporary credentials for CLI access based on the user's assigned permissions."
+      },
+      {
+        "text": "Create an IAM user access key and delete it after the maintenance window.",
+        "status": "skipped",
+        "explanation": "Temporary federated credentials avoid the need to create and track long-term IAM user keys."
+      },
+      {
+        "text": "Copy the production EC2 instance profile credentials from instance metadata.",
+        "status": "skipped",
+        "explanation": "Instance role credentials are intended for the instance workload, not for human laptop access."
+      },
+      {
+        "text": "Use the AWS account root password with the CLI.",
+        "status": "skipped",
+        "explanation": "The CLI uses access credentials, and the root identity should not be used for routine maintenance work."
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "question": "A team is designing cross-account access for a build pipeline in Account A to deploy infrastructure in Account B. The design must avoid long-term secrets and must be auditable in CloudTrail as role sessions. Which elements are required? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "A deployment role in Account B with a trust policy that allows the pipeline role in Account A to assume it.",
+        "status": "correct",
+        "explanation": "The target account role must trust the source principal for cross-account role assumption."
+      },
+      {
+        "text": "An identity policy on the pipeline role in Account A allowing sts:AssumeRole on the deployment role.",
+        "status": "correct",
+        "explanation": "The source principal needs permission to call STS AssumeRole for the target role."
+      },
+      {
+        "text": "A shared IAM user access key stored as a pipeline environment variable.",
+        "status": "skipped",
+        "explanation": "Shared long-term keys violate the requirement to avoid long-term secrets."
+      },
+      {
+        "text": "A VPC peering connection between Account A and Account B.",
+        "status": "skipped",
+        "explanation": "VPC peering is a network path and is not required for AWS STS role assumption."
+      },
+      {
+        "text": "A matching IAM group name in both accounts.",
+        "status": "skipped",
+        "explanation": "IAM group names do not establish cross-account trust or grant STS permissions."
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "question": "A security administrator applies an SCP that denies ec2:RunInstances to an organizational unit. An IAM role in a member account has an identity policy allowing ec2:RunInstances. What happens when the role tries to launch an instance?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "The launch is denied because the SCP limits the maximum permissions in the account.",
+        "status": "correct",
+        "explanation": "An SCP denial prevents the action even when a member account IAM policy allows it."
+      },
+      {
+        "text": "The launch succeeds because IAM identity policies always override SCPs.",
+        "status": "skipped",
+        "explanation": "SCPs are evaluated as organization guardrails and can block actions allowed by IAM policies."
+      },
+      {
+        "text": "The launch succeeds only in private subnets.",
+        "status": "skipped",
+        "explanation": "Subnet choice does not affect whether an SCP denies the EC2 API action."
+      },
+      {
+        "text": "The launch is allowed if the user has multi-factor authentication enabled.",
+        "status": "skipped",
+        "explanation": "MFA can be used in policy conditions, but it does not override an unconditional SCP deny."
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "question": "A company wants to prevent all member accounts from disabling Amazon GuardDuty while still allowing teams to manage their application IAM roles. Which solution provides the broad preventive control with the least per-account maintenance?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Attach an SCP to the relevant organizational units that denies GuardDuty disable and delete actions.",
+        "status": "correct",
+        "explanation": "SCPs can centrally deny sensitive service actions across member accounts with less maintenance than individual IAM changes."
+      },
+      {
+        "text": "Ask each team to add an inline Deny policy to every role in its account.",
+        "status": "skipped",
+        "explanation": "Per-role inline policies are harder to maintain and can be missed as new roles are created."
+      },
+      {
+        "text": "Create an EC2 security group that blocks the GuardDuty console endpoint.",
+        "status": "skipped",
+        "explanation": "Security groups do not control authorization to AWS service APIs or console actions."
+      },
+      {
+        "text": "Store GuardDuty detector IDs in AWS Secrets Manager.",
+        "status": "skipped",
+        "explanation": "Storing detector IDs does not prevent users from disabling or deleting GuardDuty resources."
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "question": "A SaaS vendor needs read-only access to resource metadata in a customer's AWS account. The customer wants to protect against the vendor accidentally using another customer's identifier when assuming the role. Which trust policy controls should be included? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Trust the vendor's AWS account or designated vendor role as the principal.",
+        "status": "correct",
+        "explanation": "The role trust policy must identify who is allowed to assume the role."
+      },
+      {
+        "text": "Require a customer-specific external ID condition in the AssumeRole request.",
+        "status": "correct",
+        "explanation": "A unique external ID mitigates confused deputy risk for third-party cross-account access."
+      },
+      {
+        "text": "Trust all AWS accounts but rely on the permissions policy to limit read-only access.",
+        "status": "skipped",
+        "explanation": "A broad trust policy allows unintended principals to attempt role assumption and does not solve confused deputy risk."
+      },
+      {
+        "text": "Put the external ID in the role name and omit conditions.",
+        "status": "skipped",
+        "explanation": "A naming convention is not evaluated by STS as an authorization condition."
+      },
+      {
+        "text": "Give the vendor a customer root user access key for read-only operations.",
+        "status": "skipped",
+        "explanation": "Root access keys cannot be scoped to read-only and should not be shared with third parties."
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "question": "A web application runs on Amazon EC2 instances behind an Application Load Balancer. Only the load balancer should be able to initiate HTTP traffic to the instances. Which security group configuration should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Allow inbound HTTP on the instance security group from the load balancer security group.",
+        "status": "correct",
+        "explanation": "Security group referencing allows the instances to accept traffic only from resources associated with the load balancer security group."
+      },
+      {
+        "text": "Allow inbound HTTP on the instance security group from 0.0.0.0/0.",
+        "status": "skipped",
+        "explanation": "Opening the instances to all IPv4 addresses does not restrict traffic to the load balancer."
+      },
+      {
+        "text": "Allow inbound HTTP on the load balancer security group from the instance security group.",
+        "status": "skipped",
+        "explanation": "That rule controls traffic to the load balancer, not traffic from the load balancer to the instances."
+      },
+      {
+        "text": "Remove all outbound rules from the instance security group.",
+        "status": "skipped",
+        "explanation": "Removing outbound rules does not create the required inbound allow from the load balancer."
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "question": "A database runs on Amazon RDS in private subnets. Application servers in another private subnet tier must connect to the database on port 5432. No other resources should connect directly. What is the best control?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Configure the database security group to allow inbound port 5432 from the application security group.",
+        "status": "correct",
+        "explanation": "Referencing the application security group limits database access to instances associated with that group."
+      },
+      {
+        "text": "Configure the database security group to allow inbound port 5432 from the VPC CIDR block.",
+        "status": "skipped",
+        "explanation": "Allowing the whole VPC CIDR permits more resources than the application tier."
+      },
+      {
+        "text": "Place the database in a public subnet and restrict access by database password only.",
+        "status": "skipped",
+        "explanation": "Public subnet placement increases exposure and does not replace network-level access control."
+      },
+      {
+        "text": "Use a network ACL rule that allows port 5432 from 0.0.0.0/0.",
+        "status": "skipped",
+        "explanation": "A broad NACL rule does not limit access to the application tier and is less precise than security group referencing."
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "question": "A subnet must block traffic from a known malicious IPv4 CIDR before it reaches any instances. The operations team wants a stateless subnet-level control that can explicitly deny the CIDR. Which control should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Add a deny rule for the CIDR to the subnet's network ACL with an appropriate rule number.",
+        "status": "correct",
+        "explanation": "Network ACLs are stateless subnet controls that support explicit allow and deny rules evaluated by rule number."
+      },
+      {
+        "text": "Add a deny rule for the CIDR to every instance security group.",
+        "status": "skipped",
+        "explanation": "Security groups support allow rules, not explicit deny rules."
+      },
+      {
+        "text": "Add the CIDR to an IAM permissions boundary.",
+        "status": "skipped",
+        "explanation": "IAM permissions boundaries control identity permissions, not packet filtering at the subnet."
+      },
+      {
+        "text": "Store the CIDR in AWS Secrets Manager and reference it from the route table.",
+        "status": "skipped",
+        "explanation": "Secrets Manager does not feed route table deny rules or subnet packet filters."
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "question": "A security review finds that an EC2 security group allows SSH from 0.0.0.0/0. Administrators connect from a fixed corporate public CIDR. What change should be made first?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Restrict inbound SSH to the corporate public CIDR or use a managed access method that avoids public SSH exposure.",
+        "status": "correct",
+        "explanation": "Limiting the source range reduces exposure; managed access can further remove the need for internet-facing SSH."
+      },
+      {
+        "text": "Change the SSH port from 22 to an unused high-numbered port and keep 0.0.0.0/0.",
+        "status": "skipped",
+        "explanation": "Changing the port does not provide strong access control when the service remains open to the internet."
+      },
+      {
+        "text": "Add an outbound deny rule for SSH to the security group.",
+        "status": "skipped",
+        "explanation": "Security groups do not support deny rules, and the risk is inbound SSH exposure."
+      },
+      {
+        "text": "Enable S3 server-side encryption for the EC2 key pair file.",
+        "status": "skipped",
+        "explanation": "Protecting a key file does not reduce the public network exposure of the SSH service."
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "question": "A three-tier application is being deployed in a VPC. The web tier must receive internet traffic, the application tier must receive traffic only from the web tier, and the database tier must receive traffic only from the application tier. Which security group rules are appropriate? (Choose THREE)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Allow inbound HTTPS to the web tier from the internet or the public load balancer as required.",
+        "status": "correct",
+        "explanation": "The entry tier must accept user traffic, commonly from the internet through a load balancer."
+      },
+      {
+        "text": "Allow inbound application ports to the application tier from the web tier security group.",
+        "status": "correct",
+        "explanation": "Security group references restrict application tier access to the web tier."
+      },
+      {
+        "text": "Allow inbound database ports to the database tier from the application tier security group.",
+        "status": "correct",
+        "explanation": "The database tier should accept direct database connections only from the application tier."
+      },
+      {
+        "text": "Allow inbound database ports to the database tier from 0.0.0.0/0 for easier troubleshooting.",
+        "status": "skipped",
+        "explanation": "Opening database ports to the internet violates tier isolation and increases attack surface."
+      },
+      {
+        "text": "Use one shared security group for all three tiers with all ports open between members.",
+        "status": "skipped",
+        "explanation": "A shared open group collapses tier boundaries and does not enforce least-privilege network paths."
+      },
+      {
+        "text": "Disable outbound rules on the web tier so return traffic cannot leave the VPC.",
+        "status": "skipped",
+        "explanation": "Security groups are stateful and normal return traffic is expected; disabling outbound broadly can break required flows without enforcing the stated tier model."
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "question": "A solutions architect notices that a security group has an inbound rule allowing TCP 443 from a partner security group in the same VPC. The partner changes instance private IP addresses frequently. Why is the security group reference useful?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "It allows traffic from resources associated with the referenced security group without tracking individual IP addresses.",
+        "status": "correct",
+        "explanation": "Security group references dynamically match members of the referenced group, which avoids brittle IP-based rules."
+      },
+      {
+        "text": "It automatically encrypts all traffic between the two security groups.",
+        "status": "skipped",
+        "explanation": "Security group references control reachability; they do not provide encryption."
+      },
+      {
+        "text": "It converts stateful security group rules into stateless network ACL rules.",
+        "status": "skipped",
+        "explanation": "Security groups remain stateful; referencing another group does not create NACL rules."
+      },
+      {
+        "text": "It grants IAM permissions to the instances in the referenced security group.",
+        "status": "skipped",
+        "explanation": "Security groups do not grant AWS API permissions."
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "question": "A custom network ACL is applied to a private subnet. Administrators add an inbound allow rule for HTTPS from clients but forget about response traffic. Connections fail intermittently. What design consideration explains the issue?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Network ACLs are stateless, so both inbound and outbound rules must allow the required traffic including ephemeral response ports.",
+        "status": "correct",
+        "explanation": "NACLs do not automatically allow return traffic; rules are required in both directions."
+      },
+      {
+        "text": "Network ACLs are stateful, so only the inbound rule should be needed.",
+        "status": "skipped",
+        "explanation": "Security groups are stateful; network ACLs are stateless."
+      },
+      {
+        "text": "Network ACLs apply only to public subnets and are ignored by private subnets.",
+        "status": "skipped",
+        "explanation": "Network ACLs are associated with subnets regardless of whether the subnet is public or private."
+      },
+      {
+        "text": "Network ACLs require IAM roles on each instance before rules take effect.",
+        "status": "skipped",
+        "explanation": "NACL enforcement is a VPC networking function and is not enabled by instance IAM roles."
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "question": "An EC2 instance in a private subnet needs to download operating system updates from the internet. The company does not want the instance to be directly reachable from the internet. Which design meets this requirement?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Route outbound internet traffic from the private subnet through a NAT gateway in a public subnet.",
+        "status": "correct",
+        "explanation": "A NAT gateway allows instances in private subnets to initiate outbound internet connections without accepting unsolicited inbound internet traffic."
+      },
+      {
+        "text": "Attach an internet gateway directly to the private subnet.",
+        "status": "skipped",
+        "explanation": "Internet gateways attach to VPCs, and a public route plus public addressing would make direct internet routing possible."
+      },
+      {
+        "text": "Assign an Elastic IP address to the private instance and block all outbound traffic.",
+        "status": "skipped",
+        "explanation": "Blocking outbound traffic prevents updates, and public addressing is not needed for a private-subnet instance using NAT."
+      },
+      {
+        "text": "Use a network ACL to translate private addresses to public addresses.",
+        "status": "skipped",
+        "explanation": "Network ACLs filter traffic; they do not perform network address translation."
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "question": "A private-subnet application must call Amazon S3 without sending traffic over the public internet. The company wants the route to remain inside the AWS network and avoid NAT gateway data processing for S3 access. What should be deployed?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "A gateway VPC endpoint for Amazon S3 with an endpoint policy scoped to the required buckets.",
+        "status": "correct",
+        "explanation": "An S3 gateway endpoint provides private connectivity from a VPC to S3 and can be controlled with an endpoint policy."
+      },
+      {
+        "text": "A public IP address on each private-subnet instance.",
+        "status": "skipped",
+        "explanation": "Public IP addresses route traffic through the internet path and do not meet the private connectivity goal."
+      },
+      {
+        "text": "A larger NAT gateway in each Availability Zone.",
+        "status": "skipped",
+        "explanation": "NAT enables outbound internet access but does not avoid NAT processing for S3 traffic."
+      },
+      {
+        "text": "A VPC peering connection to the S3 service VPC.",
+        "status": "skipped",
+        "explanation": "Customers do not peer directly with an AWS service VPC for S3; VPC endpoints provide the private service access pattern."
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "question": "A security engineer is combining security groups and network ACLs for a new VPC. Which statements accurately describe these controls? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Security groups are stateful and allow return traffic for permitted connections.",
+        "status": "correct",
+        "explanation": "Security groups automatically allow response traffic for allowed inbound or outbound flows."
+      },
+      {
+        "text": "Network ACLs are stateless and evaluate numbered rules for inbound and outbound traffic separately.",
+        "status": "correct",
+        "explanation": "NACLs require rules in both directions and process rules by rule number until a match is found."
+      },
+      {
+        "text": "Security groups support explicit deny rules that override allow rules.",
+        "status": "skipped",
+        "explanation": "Security groups support allow rules only; explicit denies are available in network ACLs."
+      },
+      {
+        "text": "Network ACLs are attached to individual elastic network interfaces.",
+        "status": "skipped",
+        "explanation": "Network ACLs are associated with subnets, while security groups are associated with network interfaces."
+      },
+      {
+        "text": "Security groups are evaluated by rule number from lowest to highest.",
+        "status": "skipped",
+        "explanation": "Rule-number evaluation is a network ACL behavior, not a security group behavior."
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "question": "A private application needs to call AWS Secrets Manager from subnets that have no internet route. The company wants private connectivity to the service API. Which solution should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Create an interface VPC endpoint for Secrets Manager and allow the application security group to reach it.",
+        "status": "correct",
+        "explanation": "Interface endpoints use AWS PrivateLink to provide private IP access to supported AWS service APIs from a VPC."
+      },
+      {
+        "text": "Create a gateway VPC endpoint for Secrets Manager.",
+        "status": "skipped",
+        "explanation": "Gateway endpoints are used for supported services such as S3 and DynamoDB; Secrets Manager uses interface endpoints."
+      },
+      {
+        "text": "Add a public route through an internet gateway from the private subnets.",
+        "status": "skipped",
+        "explanation": "A public internet route conflicts with the requirement for private connectivity."
+      },
+      {
+        "text": "Store secrets in EC2 user data so the application does not call Secrets Manager.",
+        "status": "skipped",
+        "explanation": "Embedding secrets in user data is less secure and does not provide managed secret retrieval or rotation."
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "question": "An application stores database credentials in a plaintext configuration file on EC2 instances. The credentials must be retrieved securely at runtime and rotated automatically. Which service should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Secrets Manager",
+        "status": "correct",
+        "explanation": "Secrets Manager is designed to store, retrieve, and rotate secrets such as database credentials."
+      },
+      {
+        "text": "Amazon Macie",
+        "status": "skipped",
+        "explanation": "Macie helps discover and protect sensitive data in S3, not store and rotate application credentials."
+      },
+      {
+        "text": "AWS Shield Advanced",
+        "status": "skipped",
+        "explanation": "Shield Advanced provides DDoS protection and does not manage application secrets."
+      },
+      {
+        "text": "Amazon VPC Network Access Analyzer",
+        "status": "skipped",
+        "explanation": "Network analysis does not provide secure runtime secret storage or rotation."
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "question": "A Lambda function needs to authenticate to a third-party API. The API token must not be stored in source code or plain environment variables. The token also needs controlled access through IAM. What should the architect recommend?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Store the token in AWS Secrets Manager and allow the Lambda execution role to retrieve that secret.",
+        "status": "correct",
+        "explanation": "Secrets Manager protects secret values and IAM can control which execution roles are allowed to retrieve them."
+      },
+      {
+        "text": "Commit the token to a private Git repository and restrict repository access.",
+        "status": "skipped",
+        "explanation": "Source repositories are not appropriate secret stores and make rotation and runtime access control harder."
+      },
+      {
+        "text": "Place the token in a CloudWatch Logs log group with retention enabled.",
+        "status": "skipped",
+        "explanation": "Logs are for observability and should not be used to store credentials."
+      },
+      {
+        "text": "Add the token to an inbound security group description field.",
+        "status": "skipped",
+        "explanation": "Security group descriptions are metadata and do not provide secure secret storage."
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "question": "A public web application behind Amazon CloudFront is receiving SQL injection and cross-site scripting attempts. The company wants managed Layer 7 filtering before requests reach the origin. Which service should be added?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS WAF with managed rules associated with the CloudFront distribution.",
+        "status": "correct",
+        "explanation": "AWS WAF can inspect HTTP requests and apply managed rule groups for common web exploits at CloudFront."
+      },
+      {
+        "text": "A network ACL on the origin subnet that denies TCP port 443.",
+        "status": "skipped",
+        "explanation": "Blocking HTTPS would break the application and NACLs do not inspect SQL injection or XSS payloads."
+      },
+      {
+        "text": "AWS Secrets Manager rotation for the origin database password only.",
+        "status": "skipped",
+        "explanation": "Rotating credentials is useful but does not filter malicious web requests."
+      },
+      {
+        "text": "An IAM policy that denies cloudfront:UpdateDistribution.",
+        "status": "skipped",
+        "explanation": "Denying distribution updates does not inspect or block web exploit attempts."
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "question": "A private workload must access AWS services while minimizing exposure to the public internet. The architecture should support private service access and restrict which services can be called from the VPC. Which options help meet this goal? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use VPC endpoints for supported AWS services.",
+        "status": "correct",
+        "explanation": "VPC endpoints provide private connectivity from a VPC to supported AWS services without requiring public internet routing."
+      },
+      {
+        "text": "Apply endpoint policies that limit allowed actions and resources where supported.",
+        "status": "correct",
+        "explanation": "Endpoint policies can constrain what principals can do through the endpoint for supported services."
+      },
+      {
+        "text": "Assign public IPv4 addresses to all private workload instances.",
+        "status": "skipped",
+        "explanation": "Public addresses increase internet exposure and are not needed for private service access through endpoints."
+      },
+      {
+        "text": "Route all service traffic through a NAT gateway in a public subnet.",
+        "status": "skipped",
+        "explanation": "A NAT gateway supports outbound internet access from private subnets, but it does not provide private connectivity to AWS services or restrict service calls the way endpoint policies can."
+      },
+      {
+        "text": "Use IAM user access keys on each instance to force requests to stay private.",
+        "status": "skipped",
+        "explanation": "Credentials do not determine whether network traffic uses public or private paths."
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "question": "A company exposes an API through Amazon API Gateway. The API is seeing bursts from a small set of client IP addresses that exceed normal usage. The company wants a managed control that can rate-limit requests by IP. What should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS WAF rate-based rules associated with the API Gateway stage.",
+        "status": "correct",
+        "explanation": "AWS WAF supports rate-based rules that count requests from IP addresses and can block excessive request rates."
+      },
+      {
+        "text": "Amazon Macie classification jobs on API Gateway logs.",
+        "status": "skipped",
+        "explanation": "Macie classifies sensitive data in S3 and does not rate-limit API requests."
+      },
+      {
+        "text": "A KMS key policy that denies Encrypt requests from unknown IP addresses.",
+        "status": "skipped",
+        "explanation": "KMS key policies do not rate-limit API Gateway client requests."
+      },
+      {
+        "text": "An S3 lifecycle rule that expires API requests after one day.",
+        "status": "skipped",
+        "explanation": "Lifecycle rules manage S3 objects and cannot throttle live API traffic."
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "question": "A security team wants managed threat detection that analyzes account activity, DNS activity, and network flow data for signs of compromised credentials and malicious behavior. Which service should be enabled?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon GuardDuty",
+        "status": "correct",
+        "explanation": "GuardDuty is a managed threat detection service that analyzes supported data sources for malicious or unauthorized activity."
+      },
+      {
+        "text": "AWS Certificate Manager",
+        "status": "skipped",
+        "explanation": "ACM manages TLS certificates and does not provide threat detection findings."
+      },
+      {
+        "text": "Amazon Cognito",
+        "status": "skipped",
+        "explanation": "Cognito handles application user identity, not managed threat detection across AWS accounts."
+      },
+      {
+        "text": "Amazon S3 Object Lock",
+        "status": "skipped",
+        "explanation": "Object Lock protects objects from deletion or overwrite and does not analyze security telemetry."
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "question": "A data lake stores files in Amazon S3. The compliance team needs to identify buckets that contain personally identifiable information and receive findings when sensitive data is detected. Which service is designed for this use case?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Macie",
+        "status": "correct",
+        "explanation": "Macie uses machine learning and pattern matching to discover and report sensitive data in Amazon S3."
+      },
+      {
+        "text": "AWS Shield Standard",
+        "status": "skipped",
+        "explanation": "Shield Standard provides DDoS protection and does not classify sensitive data in S3."
+      },
+      {
+        "text": "AWS Direct Connect",
+        "status": "skipped",
+        "explanation": "Direct Connect provides dedicated network connectivity and does not inspect S3 object contents for PII."
+      },
+      {
+        "text": "IAM Access Analyzer only",
+        "status": "skipped",
+        "explanation": "Access analysis can identify unintended access, but Macie is the service designed to discover sensitive data in S3 objects."
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "question": "A consumer mobile application needs user sign-up, sign-in, and token-based access to backend APIs. The company does not want to build and operate its own user directory. Which AWS service should the architect choose?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Amazon Cognito",
+        "status": "correct",
+        "explanation": "Amazon Cognito provides customer identity features such as user pools, sign-up, sign-in, and tokens for applications."
+      },
+      {
+        "text": "AWS Organizations",
+        "status": "skipped",
+        "explanation": "Organizations manages AWS accounts and policies, not end-user registration and authentication for applications."
+      },
+      {
+        "text": "Amazon GuardDuty",
+        "status": "skipped",
+        "explanation": "GuardDuty detects threats and does not provide application user directories or authentication tokens."
+      },
+      {
+        "text": "AWS KMS",
+        "status": "skipped",
+        "explanation": "KMS manages cryptographic keys and does not provide user sign-up or authentication flows."
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "question": "An application uses a database password that must be rotated regularly with minimal manual work. The password is used by workloads in private subnets. Which design choices are appropriate? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Store the password in AWS Secrets Manager and configure rotation for the secret.",
+        "status": "correct",
+        "explanation": "Secrets Manager supports managed storage and rotation workflows for database credentials."
+      },
+      {
+        "text": "Allow the workload role to retrieve only the specific secret it needs.",
+        "status": "correct",
+        "explanation": "Least-privilege IAM access limits which secret values the workload can read."
+      },
+      {
+        "text": "Place the password in an AMI so every instance starts with the same credential.",
+        "status": "skipped",
+        "explanation": "Embedding passwords in AMIs makes rotation difficult and spreads the secret to every derived instance."
+      },
+      {
+        "text": "Email the password to operators after every rotation.",
+        "status": "skipped",
+        "explanation": "Email distribution is not a secure or automated credential retrieval pattern."
+      },
+      {
+        "text": "Disable IAM authorization on Secrets Manager to simplify application access.",
+        "status": "skipped",
+        "explanation": "Secrets Manager access should be controlled with IAM; disabling authorization is not a secure design."
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "question": "A company needs an encrypted connection from its on-premises data center to a VPC for a quick migration. The connection must be established over the internet and should use redundant tunnels when possible. Which service should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Site-to-Site VPN",
+        "status": "correct",
+        "explanation": "Site-to-Site VPN provides encrypted IPsec tunnels between an on-premises network and AWS over the internet."
+      },
+      {
+        "text": "AWS Direct Connect without a VPN",
+        "status": "skipped",
+        "explanation": "Direct Connect is a dedicated network connection and is not established as encrypted internet VPN tunnels by itself."
+      },
+      {
+        "text": "Amazon Cognito identity pools",
+        "status": "skipped",
+        "explanation": "Cognito identity pools provide application identity federation, not network connectivity from a data center to a VPC."
+      },
+      {
+        "text": "Amazon S3 Cross-Region Replication",
+        "status": "skipped",
+        "explanation": "S3 replication copies objects between buckets and does not connect an on-premises network to a VPC."
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "question": "A company requires consistent private connectivity from its data center to multiple VPCs and wants to bypass internet service providers in its network path. Which service is most appropriate?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Direct Connect with private or transit virtual interfaces as needed.",
+        "status": "correct",
+        "explanation": "Direct Connect provides a dedicated network connection from an internal network to AWS and supports VIF types for VPC access."
+      },
+      {
+        "text": "A public NAT gateway in every VPC.",
+        "status": "skipped",
+        "explanation": "NAT gateways provide outbound internet access for private subnets and do not create dedicated data center connectivity."
+      },
+      {
+        "text": "Amazon Macie for all S3 buckets.",
+        "status": "skipped",
+        "explanation": "Macie detects sensitive data in S3 and does not provide hybrid network connectivity."
+      },
+      {
+        "text": "AWS KMS multi-Region keys.",
+        "status": "skipped",
+        "explanation": "KMS keys protect data cryptographically and do not establish network paths."
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "question": "An internet-facing application needs protection against common network and transport layer DDoS events without adding a separate paid subscription. Which AWS protection is automatically available?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Shield Standard",
+        "status": "correct",
+        "explanation": "Shield Standard provides automatic protection against common DDoS events for supported AWS resources."
+      },
+      {
+        "text": "Amazon Macie",
+        "status": "skipped",
+        "explanation": "Macie discovers sensitive data in S3 and is not a DDoS protection service."
+      },
+      {
+        "text": "AWS Secrets Manager",
+        "status": "skipped",
+        "explanation": "Secrets Manager stores and rotates secrets; it does not absorb DDoS traffic."
+      },
+      {
+        "text": "AWS Organizations consolidated billing",
+        "status": "skipped",
+        "explanation": "Consolidated billing groups charges and does not provide DDoS mitigation."
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "question": "A workload team wants to reduce the blast radius of a compromised application server. The application has web, processing, and database components. Which architectural practice best supports this goal?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Segment the workload into tiers with separate subnets, security groups, and least-privilege access paths.",
+        "status": "correct",
+        "explanation": "Layered segmentation and least-privilege connectivity reduce lateral movement and limit the effect of a compromise."
+      },
+      {
+        "text": "Place all components in one public subnet to simplify inspection.",
+        "status": "skipped",
+        "explanation": "A flat public subnet increases exposure and does not reduce blast radius."
+      },
+      {
+        "text": "Use one IAM role with AdministratorAccess for all components.",
+        "status": "skipped",
+        "explanation": "A shared administrative role increases blast radius if any component is compromised."
+      },
+      {
+        "text": "Disable encryption to make packet inspection easier.",
+        "status": "skipped",
+        "explanation": "Disabling encryption weakens data protection and is not required for tier segmentation."
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "question": "A public application has an Application Load Balancer, Amazon Cognito for user sign-in, and AWS WAF. The team wants to improve protection against abusive HTTP clients and ensure only authenticated users reach protected application paths. Which actions support this goal? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use Cognito-based authentication for protected application routes.",
+        "status": "correct",
+        "explanation": "Cognito provides user authentication and tokens that can be integrated into application access flows."
+      },
+      {
+        "text": "Use AWS WAF rules to block or rate-limit unwanted HTTP request patterns.",
+        "status": "correct",
+        "explanation": "AWS WAF can inspect and control HTTP requests before they reach protected resources."
+      },
+      {
+        "text": "Store all user passwords in an EC2 instance file and synchronize it to each server.",
+        "status": "skipped",
+        "explanation": "Self-managed password files increase operational and security risk compared with managed user authentication."
+      },
+      {
+        "text": "Allow unauthenticated access and rely only on security group inbound rules.",
+        "status": "skipped",
+        "explanation": "Security groups control network reachability and do not authenticate application users."
+      },
+      {
+        "text": "Disable TLS so WAF can inspect all request content.",
+        "status": "skipped",
+        "explanation": "TLS should remain enabled for in-transit protection; AWS WAF can be used with supported TLS-terminating services."
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "question": "An application must call an external vendor API over the internet. The security team requires all outbound traffic to be inspected and logged from a central egress VPC. Which design best supports this requirement?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Route outbound traffic through centralized egress controls such as inspection appliances or managed firewall endpoints before reaching the internet.",
+        "status": "correct",
+        "explanation": "Centralized egress architecture supports consistent inspection, logging, and policy enforcement for outbound internet paths."
+      },
+      {
+        "text": "Assign public IP addresses to every workload instance and let each team manage its own egress rules.",
+        "status": "skipped",
+        "explanation": "Decentralized public egress makes consistent inspection and logging harder."
+      },
+      {
+        "text": "Use S3 bucket policies to inspect HTTPS traffic to the vendor.",
+        "status": "skipped",
+        "explanation": "S3 bucket policies authorize S3 access and cannot inspect outbound traffic to a third-party API."
+      },
+      {
+        "text": "Disable route tables so traffic cannot leave the VPC.",
+        "status": "skipped",
+        "explanation": "The application must reach the vendor API; the requirement is controlled egress, not no egress."
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "question": "A private workload uses Amazon DynamoDB and currently reaches the service through a NAT gateway. The company wants to reduce internet exposure and keep DynamoDB traffic on the AWS network. What should be configured?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "A gateway VPC endpoint for DynamoDB and route table entries for the private subnets.",
+        "status": "correct",
+        "explanation": "DynamoDB supports gateway endpoints, which route private subnet traffic to the service without a NAT gateway or internet path."
+      },
+      {
+        "text": "A public subnet for the DynamoDB table.",
+        "status": "skipped",
+        "explanation": "DynamoDB is an AWS managed service and is not placed in customer subnets."
+      },
+      {
+        "text": "An Elastic IP address on the DynamoDB table.",
+        "status": "skipped",
+        "explanation": "DynamoDB tables do not use customer-managed Elastic IP addresses."
+      },
+      {
+        "text": "A network ACL rule that forwards DynamoDB traffic to the nearest Region.",
+        "status": "skipped",
+        "explanation": "Network ACLs filter traffic and do not create service endpoints or forwarding paths."
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "question": "A company is designing a new VPC for workloads that process confidential data. The workloads do not need inbound internet access. What subnet design best supports secure architecture principles?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Place workloads in private subnets and expose only required entry points through controlled public-facing services.",
+        "status": "correct",
+        "explanation": "Private subnets reduce direct exposure while controlled entry points such as load balancers can mediate required access."
+      },
+      {
+        "text": "Place all workloads in public subnets and rely only on application passwords.",
+        "status": "skipped",
+        "explanation": "Public subnet placement increases network exposure and passwords alone are not a complete access control design."
+      },
+      {
+        "text": "Use the default VPC and allow all inbound traffic for operational convenience.",
+        "status": "skipped",
+        "explanation": "Broad inbound access conflicts with secure design and least-privilege network access."
+      },
+      {
+        "text": "Disable all security groups because private subnets already block all traffic.",
+        "status": "skipped",
+        "explanation": "Private subnets do not remove the need for security groups to control east-west and inbound traffic."
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "question": "A company wants to detect if private S3 buckets become publicly accessible because of a bucket policy change. Which design focus best fits a secure architecture review?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use preventive controls such as S3 Block Public Access and detective controls that monitor policy exposure.",
+        "status": "correct",
+        "explanation": "Secure architectures combine prevention and detection to reduce risk and identify unintended exposure."
+      },
+      {
+        "text": "Disable all bucket policies because S3 cannot support resource-based access control.",
+        "status": "skipped",
+        "explanation": "S3 supports bucket policies; the goal is to control and monitor them safely."
+      },
+      {
+        "text": "Make all buckets public and rely on object names that are hard to guess.",
+        "status": "skipped",
+        "explanation": "Obscurity is not an access control and does not meet the private bucket requirement."
+      },
+      {
+        "text": "Move the buckets into a private subnet.",
+        "status": "skipped",
+        "explanation": "S3 buckets are not placed in customer VPC subnets; access is controlled with policies and service settings."
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "question": "A central security account must monitor multiple workload accounts for threats and sensitive data in S3. The company wants managed findings rather than building custom classifiers and detectors. Which services should be enabled? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Amazon GuardDuty for threat detection findings.",
+        "status": "correct",
+        "explanation": "GuardDuty provides managed threat detection across supported AWS data sources."
+      },
+      {
+        "text": "Amazon Macie for sensitive data discovery in S3.",
+        "status": "correct",
+        "explanation": "Macie is designed to discover and report sensitive data stored in Amazon S3."
+      },
+      {
+        "text": "AWS Certificate Manager for classifying S3 objects.",
+        "status": "skipped",
+        "explanation": "ACM manages certificates and does not classify S3 object contents."
+      },
+      {
+        "text": "AWS Direct Connect for account activity threat detection.",
+        "status": "skipped",
+        "explanation": "Direct Connect provides network connectivity and does not generate managed threat findings."
+      },
+      {
+        "text": "S3 Lifecycle rules for detecting compromised credentials.",
+        "status": "skipped",
+        "explanation": "Lifecycle rules transition or expire objects and do not analyze credential misuse."
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "question": "A company needs to encrypt application data at rest and control which IAM roles can use the encryption key. The key material should be managed by an AWS service. Which service should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Key Management Service with a customer managed KMS key.",
+        "status": "correct",
+        "explanation": "AWS KMS provides managed cryptographic keys and policy-based control over key usage."
+      },
+      {
+        "text": "AWS Shield Standard with a custom DDoS key.",
+        "status": "skipped",
+        "explanation": "Shield protects against DDoS events and does not manage encryption keys for data at rest."
+      },
+      {
+        "text": "Amazon Cognito user pools.",
+        "status": "skipped",
+        "explanation": "Cognito manages application user identities and does not provide general-purpose data encryption keys."
+      },
+      {
+        "text": "A plaintext key stored in the application repository.",
+        "status": "skipped",
+        "explanation": "Plaintext keys in source control are not secure and do not provide managed key access control."
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "question": "An S3 bucket stores confidential reports. The company wants Amazon S3 to encrypt new objects automatically using keys managed by AWS without the team managing KMS key policies. Which option should be selected?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingServerSideEncryption.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use server-side encryption with Amazon S3 managed keys (SSE-S3).",
+        "status": "correct",
+        "explanation": "SSE-S3 encrypts S3 objects at rest with keys managed by Amazon S3."
+      },
+      {
+        "text": "Use client-side encryption and store the key in the object metadata.",
+        "status": "skipped",
+        "explanation": "Storing encryption keys with the encrypted object defeats key separation and adds client-side key management."
+      },
+      {
+        "text": "Disable default encryption and rely on HTTPS only.",
+        "status": "skipped",
+        "explanation": "HTTPS protects data in transit but does not provide encryption at rest for stored objects."
+      },
+      {
+        "text": "Use a network ACL to encrypt S3 objects in the subnet.",
+        "status": "skipped",
+        "explanation": "S3 buckets are not in customer subnets, and NACLs do not perform object encryption."
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "question": "A regulated workload requires control over who can administer an encryption key and who can use it to decrypt data. Which KMS configuration is most important?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Define a customer managed KMS key policy and grants that separate key administration from key usage.",
+        "status": "correct",
+        "explanation": "KMS key policies and grants control administrative and cryptographic permissions for customer managed keys."
+      },
+      {
+        "text": "Use a public S3 bucket policy to publish the key ID.",
+        "status": "skipped",
+        "explanation": "Publishing a key ID does not control who can administer or use the key."
+      },
+      {
+        "text": "Place the encrypted data in a public subnet.",
+        "status": "skipped",
+        "explanation": "Subnet placement does not determine KMS key administration or decryption authorization."
+      },
+      {
+        "text": "Use the same IAM user access key for all encryption and administration tasks.",
+        "status": "skipped",
+        "explanation": "Shared long-term credentials violate separation of duties and do not provide granular KMS control."
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "question": "A company is designing encryption for Amazon S3 objects that must use customer controlled KMS keys. Application roles need to put and get encrypted objects. Which permissions are typically required? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "S3 permissions for the required object actions on the bucket and object ARNs.",
+        "status": "correct",
+        "explanation": "The principal must be authorized to perform the relevant S3 operations on the bucket and objects."
+      },
+      {
+        "text": "KMS permissions to use the customer managed key for encryption and decryption as needed.",
+        "status": "correct",
+        "explanation": "For SSE-KMS, the principal also needs permission to use the KMS key for cryptographic operations required by S3."
+      },
+      {
+        "text": "Permission to disable S3 Block Public Access.",
+        "status": "skipped",
+        "explanation": "Public access settings are unrelated to normal encrypted object read and write operations."
+      },
+      {
+        "text": "The AWS account root user password embedded in the application.",
+        "status": "skipped",
+        "explanation": "Applications should not use root credentials, and root passwords are not required for KMS-protected S3 access."
+      },
+      {
+        "text": "Inbound TCP 443 allowed from the S3 bucket security group.",
+        "status": "skipped",
+        "explanation": "S3 buckets do not have security groups; access is controlled through IAM, resource policies, and network paths."
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "question": "A company wants to protect data in transit for a public web application and automate certificate provisioning for an Application Load Balancer. Which actions should be taken? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Request or import a public certificate in AWS Certificate Manager for the application domain.",
+        "status": "correct",
+        "explanation": "ACM manages public TLS certificates that can be used with integrated AWS services."
+      },
+      {
+        "text": "Attach the ACM certificate to an HTTPS listener on the Application Load Balancer.",
+        "status": "correct",
+        "explanation": "An ALB HTTPS listener uses the certificate to terminate TLS for client connections."
+      },
+      {
+        "text": "Disable TLS after the first request so later requests are faster.",
+        "status": "skipped",
+        "explanation": "Disabling TLS would stop protecting data in transit."
+      },
+      {
+        "text": "Store the private key in a public S3 bucket so every instance can download it.",
+        "status": "skipped",
+        "explanation": "Private keys must not be publicly exposed; ACM-integrated services avoid distributing keys to instances."
+      },
+      {
+        "text": "Use a network ACL rule to convert HTTP requests to HTTPS.",
+        "status": "skipped",
+        "explanation": "Network ACLs filter packets and cannot perform TLS termination or HTTP redirects."
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "question": "A database snapshot is encrypted with a customer managed KMS key. A reporting account must copy and use the snapshot. What must the source account provide?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Access to the encrypted snapshot and permission for the reporting account to use the KMS key as required.",
+        "status": "correct",
+        "explanation": "Encrypted data sharing requires both resource-level access and KMS key permissions for the consuming principal or account."
+      },
+      {
+        "text": "The plaintext KMS key material sent to the reporting account administrators.",
+        "status": "skipped",
+        "explanation": "KMS key material should not be exported or shared as plaintext for this access pattern."
+      },
+      {
+        "text": "A public IP address for the snapshot.",
+        "status": "skipped",
+        "explanation": "Snapshots are not accessed through public IP addresses."
+      },
+      {
+        "text": "A security group rule on the KMS key.",
+        "status": "skipped",
+        "explanation": "KMS keys are controlled by key policies, IAM, and grants, not security groups."
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "question": "A team wants automatic annual rotation for a symmetric customer managed KMS key used by a long-running application. The application should continue to decrypt older data. What should the team enable?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Automatic key rotation for the symmetric KMS key.",
+        "status": "correct",
+        "explanation": "KMS automatic rotation changes key material while retaining previous material to decrypt data encrypted under older versions."
+      },
+      {
+        "text": "Manual deletion of the KMS key every year followed by key recreation with the same alias.",
+        "status": "skipped",
+        "explanation": "Deleting a KMS key can make existing encrypted data unrecoverable and is not how safe rotation is performed."
+      },
+      {
+        "text": "S3 lifecycle expiration for the encrypted objects.",
+        "status": "skipped",
+        "explanation": "Lifecycle expiration deletes or transitions objects and does not rotate KMS key material."
+      },
+      {
+        "text": "A network ACL rule that rotates encryption traffic through new ports.",
+        "status": "skipped",
+        "explanation": "Network ACLs do not rotate cryptographic key material."
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "question": "A team uploads objects to Amazon S3 and wants every new object to be encrypted at rest even if upload clients omit encryption headers. What should be configured?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingServerSideEncryption.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Default server-side encryption on the S3 bucket.",
+        "status": "correct",
+        "explanation": "S3 bucket default encryption applies server-side encryption to new objects when requests do not specify encryption."
+      },
+      {
+        "text": "A route table entry for the S3 bucket.",
+        "status": "skipped",
+        "explanation": "Route tables do not configure encryption for S3 objects."
+      },
+      {
+        "text": "A CloudFront cache behavior with query strings disabled.",
+        "status": "skipped",
+        "explanation": "CloudFront cache settings do not enforce S3 server-side encryption for newly stored objects."
+      },
+      {
+        "text": "An IAM password policy requiring uppercase letters.",
+        "status": "skipped",
+        "explanation": "IAM password complexity does not affect whether S3 objects are encrypted at rest."
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "question": "A security team is designing KMS access for a multi-account environment. It wants workload roles to use keys but prevent those roles from changing key policies or scheduling key deletion. Which design choices help enforce separation of duties? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Grant workload roles only the cryptographic KMS actions they require.",
+        "status": "correct",
+        "explanation": "Limiting roles to actions such as encrypt, decrypt, or generate data key separates usage from administration."
+      },
+      {
+        "text": "Allow key administration actions only to a separate security administration role.",
+        "status": "correct",
+        "explanation": "A separate administrator role can manage key policy and lifecycle without giving workloads those powers."
+      },
+      {
+        "text": "Give every workload role kms:* on all keys so applications never fail.",
+        "status": "skipped",
+        "explanation": "Wildcard KMS administration and usage permissions violate separation of duties and least privilege."
+      },
+      {
+        "text": "Store KMS key policies in application environment variables.",
+        "status": "skipped",
+        "explanation": "Key policies are KMS resource policies, not runtime application environment variables."
+      },
+      {
+        "text": "Use one shared IAM user for both application decryption and key deletion.",
+        "status": "skipped",
+        "explanation": "A shared identity with both use and delete permissions defeats separation of duties and accountability."
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "question": "A company wants to require that all uploads to a sensitive S3 bucket use AWS KMS server-side encryption with a specific customer managed key. Which policy approach should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingServerSideEncryption.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Use an S3 bucket policy that denies PutObject requests that do not specify aws:kms and the required KMS key.",
+        "status": "correct",
+        "explanation": "A bucket policy can enforce required server-side encryption headers and key IDs for object uploads."
+      },
+      {
+        "text": "Use a security group rule that denies unencrypted S3 uploads.",
+        "status": "skipped",
+        "explanation": "S3 buckets do not use security groups, and security groups cannot inspect S3 encryption headers."
+      },
+      {
+        "text": "Use S3 lifecycle rules to encrypt objects after they have been stored for 30 days.",
+        "status": "skipped",
+        "explanation": "Lifecycle rules transition or expire objects and are not an enforcement point for upload encryption."
+      },
+      {
+        "text": "Use AWS Shield Advanced to block unencrypted PutObject requests.",
+        "status": "skipped",
+        "explanation": "Shield Advanced is for DDoS protection and does not enforce S3 object encryption settings."
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "question": "A records archive in Amazon S3 must prevent users, including administrators, from deleting or overwriting objects during a seven-year regulatory retention period. Which S3 feature is designed for this requirement?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "S3 Object Lock in compliance mode with an appropriate retention period.",
+        "status": "correct",
+        "explanation": "Object Lock compliance mode enforces write-once-read-many retention so protected object versions cannot be overwritten or deleted during the retention period."
+      },
+      {
+        "text": "S3 Transfer Acceleration with a seven-year acceleration window.",
+        "status": "skipped",
+        "explanation": "Transfer Acceleration improves upload performance and does not enforce retention."
+      },
+      {
+        "text": "A public-read bucket ACL with versioning disabled.",
+        "status": "skipped",
+        "explanation": "Public read access increases exposure and disabling versioning conflicts with object retention protections."
+      },
+      {
+        "text": "An IAM password policy that expires every seven years.",
+        "status": "skipped",
+        "explanation": "Password policy settings do not prevent S3 object deletion or overwrite."
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "question": "A legal team wants to preserve selected S3 objects until an investigation is complete. The end date is unknown, and normal lifecycle expiration should not remove the selected objects. Which feature should be applied?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Apply a legal hold to the selected object versions.",
+        "status": "correct",
+        "explanation": "S3 Object Lock legal holds prevent protected object versions from being overwritten or deleted until the hold is removed."
+      },
+      {
+        "text": "Configure a lifecycle expiration rule for the selected objects.",
+        "status": "skipped",
+        "explanation": "Lifecycle expiration is used to delete objects after a defined time and does not preserve them for an unknown legal period."
+      },
+      {
+        "text": "Move the objects to a public bucket with read-only ACLs.",
+        "status": "skipped",
+        "explanation": "Public access does not protect objects from deletion and increases data exposure."
+      },
+      {
+        "text": "Disable server-side encryption for the selected objects.",
+        "status": "skipped",
+        "explanation": "Encryption settings do not provide legal preservation and should not be weakened for investigations."
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "question": "A financial application encrypts data with AWS KMS and stores encrypted records in Amazon S3. The company wants defense in depth for key use and object access. Which controls are relevant? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Limit KMS key usage to the specific application roles that need cryptographic operations.",
+        "status": "correct",
+        "explanation": "KMS policies and IAM permissions should restrict which principals can use the key."
+      },
+      {
+        "text": "Limit S3 object access to the same authorized application roles.",
+        "status": "correct",
+        "explanation": "Encrypted S3 access requires both data access permissions and, for SSE-KMS, key usage permissions."
+      },
+      {
+        "text": "Make the S3 bucket public because the objects are encrypted.",
+        "status": "skipped",
+        "explanation": "Encryption does not replace access control; public buckets can still expose encrypted data and metadata."
+      },
+      {
+        "text": "Grant kms:Decrypt to every principal in the organization for operational convenience.",
+        "status": "skipped",
+        "explanation": "Broad decrypt permissions undermine the protection provided by encryption."
+      },
+      {
+        "text": "Store the KMS key ID in a public DNS TXT record as the primary control.",
+        "status": "skipped",
+        "explanation": "A key ID is not a secret and publishing it does not enforce authorization."
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "question": "A company uses CloudFront for a public website. It needs an HTTPS certificate for a custom domain and wants AWS to handle renewal for eligible public certificates. Which service should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Certificate Manager",
+        "status": "correct",
+        "explanation": "ACM provisions and manages public TLS certificates for integrated AWS services such as CloudFront."
+      },
+      {
+        "text": "AWS Key Management Service",
+        "status": "skipped",
+        "explanation": "KMS manages cryptographic keys for data protection but does not issue public website TLS certificates."
+      },
+      {
+        "text": "Amazon Macie",
+        "status": "skipped",
+        "explanation": "Macie discovers sensitive data in S3 and does not manage TLS certificates."
+      },
+      {
+        "text": "AWS Organizations",
+        "status": "skipped",
+        "explanation": "Organizations manages accounts and guardrails, not public certificates for web endpoints."
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "question": "A data protection policy requires S3 objects to remain encrypted at rest and protected in transit. The application accesses S3 from private subnets. Which design choices help meet the policy? (Choose THREE)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingServerSideEncryption.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Enable default server-side encryption on the bucket.",
+        "status": "correct",
+        "explanation": "Default server-side encryption helps ensure new S3 objects are encrypted at rest."
+      },
+      {
+        "text": "Require HTTPS requests to the bucket with a bucket policy condition.",
+        "status": "correct",
+        "explanation": "A bucket policy can deny requests that are not using secure transport."
+      },
+      {
+        "text": "Use a VPC endpoint for S3 where private access from the VPC is required.",
+        "status": "correct",
+        "explanation": "An S3 VPC endpoint keeps access from the VPC to S3 on the AWS network and can reduce reliance on public internet routing."
+      },
+      {
+        "text": "Disable TLS because server-side encryption already protects the objects.",
+        "status": "skipped",
+        "explanation": "Encryption at rest does not protect data while it is moving over the network."
+      },
+      {
+        "text": "Make the bucket public to avoid signing requests.",
+        "status": "skipped",
+        "explanation": "Public access weakens authorization and is unrelated to encryption in transit or at rest."
+      },
+      {
+        "text": "Store the bucket encryption key in object tags.",
+        "status": "skipped",
+        "explanation": "Encryption keys should not be stored in object tags, which are object metadata."
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "question": "A company imported a third-party TLS certificate into AWS Certificate Manager for use with a load balancer. What operational responsibility remains with the company?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Renew and reimport the third-party certificate before it expires.",
+        "status": "correct",
+        "explanation": "ACM can manage renewal for eligible ACM-issued certificates, but imported certificates require the customer to handle renewal and reimport."
+      },
+      {
+        "text": "Patch the ACM service hosts in the AWS Region.",
+        "status": "skipped",
+        "explanation": "AWS manages the infrastructure for ACM; customers are not responsible for patching ACM service hosts."
+      },
+      {
+        "text": "Disable HTTPS listeners during renewal windows.",
+        "status": "skipped",
+        "explanation": "The correct operation is to renew and replace the certificate before expiration, not disable TLS service."
+      },
+      {
+        "text": "Move the load balancer into the KMS key policy.",
+        "status": "skipped",
+        "explanation": "A KMS key policy does not renew an imported public TLS certificate for a load balancer."
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "question": "A company is selecting between AWS managed keys and customer managed KMS keys for a regulated application. Which requirements point to customer managed keys? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "The team must control the key policy and delegate key administration separately from key use.",
+        "status": "correct",
+        "explanation": "Customer managed keys provide direct control over key policies and administrative permissions."
+      },
+      {
+        "text": "The team needs to enable and audit key rotation settings for the key.",
+        "status": "correct",
+        "explanation": "Customer managed keys give customers more control and visibility over key lifecycle settings such as rotation."
+      },
+      {
+        "text": "The team wants no ability to view or manage key policies.",
+        "status": "skipped",
+        "explanation": "Avoiding key policy management is more aligned with AWS managed keys, not customer managed keys."
+      },
+      {
+        "text": "The application must avoid IAM authorization entirely.",
+        "status": "skipped",
+        "explanation": "KMS key use is controlled by key policies, IAM, and grants; avoiding authorization is not a valid requirement."
+      },
+      {
+        "text": "The team wants to store plaintext key material in application logs.",
+        "status": "skipped",
+        "explanation": "Plaintext key material should not be logged and is not a reason to use customer managed KMS keys."
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "question": "A company must keep a copy of critical S3 objects in a second AWS Region for compliance. New objects should be copied automatically after they are written. Which feature should be configured?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "S3 Cross-Region Replication from the source bucket to a destination bucket in the second Region.",
+        "status": "correct",
+        "explanation": "S3 Cross-Region Replication automatically copies new objects to a bucket in another AWS Region."
+      },
+      {
+        "text": "S3 Transfer Acceleration on the source bucket only.",
+        "status": "skipped",
+        "explanation": "Transfer Acceleration can improve transfers to S3 but does not create a second-Region copy."
+      },
+      {
+        "text": "An S3 lifecycle expiration rule on the source bucket.",
+        "status": "skipped",
+        "explanation": "Expiration rules delete objects and do not replicate them to another Region."
+      },
+      {
+        "text": "A NAT gateway in the source VPC.",
+        "status": "skipped",
+        "explanation": "NAT gateways provide outbound network access and do not copy S3 objects between Regions."
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "question": "An S3 bucket stores application logs that must be retained for one year and then deleted automatically. The company wants a native S3 control with minimal operational overhead. What should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "An S3 Lifecycle configuration with an expiration action after one year.",
+        "status": "correct",
+        "explanation": "S3 Lifecycle expiration actions automatically delete objects after the configured age."
+      },
+      {
+        "text": "A manual monthly script that deletes objects from an administrator laptop.",
+        "status": "skipped",
+        "explanation": "Manual deletion has more operational overhead and is less reliable than a native lifecycle rule."
+      },
+      {
+        "text": "AWS WAF rules associated with the bucket.",
+        "status": "skipped",
+        "explanation": "AWS WAF does not manage object retention or expiration in S3."
+      },
+      {
+        "text": "A KMS key rotation schedule for the bucket.",
+        "status": "skipped",
+        "explanation": "KMS key rotation changes key material and does not delete S3 objects after a retention period."
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "question": "A team enabled S3 Cross-Region Replication today on a bucket that already contains years of objects. Only new objects are appearing in the destination bucket. The team also needs to copy the existing objects. What should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "S3 Batch Replication for the existing objects.",
+        "status": "correct",
+        "explanation": "Live replication applies to new objects after configuration, while S3 Batch Replication can replicate existing objects."
+      },
+      {
+        "text": "A bucket policy that allows s3:GetObject to the destination bucket.",
+        "status": "skipped",
+        "explanation": "A bucket policy alone does not start replication of existing objects."
+      },
+      {
+        "text": "A network ACL that allows port 443 between the two bucket subnets.",
+        "status": "skipped",
+        "explanation": "S3 buckets are not in customer subnets and NACLs do not initiate object replication."
+      },
+      {
+        "text": "Automatic KMS key rotation on the source bucket key.",
+        "status": "skipped",
+        "explanation": "Key rotation does not copy existing S3 objects to a destination bucket."
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "question": "A compliance archive uses S3 Object Lock. The security team is choosing between governance mode and compliance mode. Which statements are correct? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Compliance mode prevents protected object versions from being overwritten or deleted by any user during retention.",
+        "status": "correct",
+        "explanation": "Compliance mode is the stricter Object Lock mode and enforces retention for the protected object version."
+      },
+      {
+        "text": "Governance mode can allow specially authorized users to bypass retention controls.",
+        "status": "correct",
+        "explanation": "Governance mode protects objects while allowing principals with specific permissions to bypass governance retention."
+      },
+      {
+        "text": "Both modes require objects to be stored in public buckets.",
+        "status": "skipped",
+        "explanation": "Object Lock does not require public buckets and should be used with appropriate private access controls."
+      },
+      {
+        "text": "Compliance mode is designed to speed up object replication.",
+        "status": "skipped",
+        "explanation": "Compliance mode enforces retention; it is not a replication performance feature."
+      },
+      {
+        "text": "Governance mode disables S3 versioning for protected objects.",
+        "status": "skipped",
+        "explanation": "Object Lock works with object versions and does not disable versioning."
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "question": "A company wants centralized policy-based backups across supported AWS services and needs to manage backup retention from one service. Which AWS service should be used?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "AWS Backup",
+        "status": "correct",
+        "explanation": "AWS Backup provides centralized backup policy management and retention for supported AWS resources."
+      },
+      {
+        "text": "AWS WAF",
+        "status": "skipped",
+        "explanation": "AWS WAF filters web requests and does not manage backups or retention policies."
+      },
+      {
+        "text": "Amazon Cognito",
+        "status": "skipped",
+        "explanation": "Cognito manages user identity for applications and does not provide centralized backup policy management."
+      },
+      {
+        "text": "AWS Site-to-Site VPN",
+        "status": "skipped",
+        "explanation": "Site-to-Site VPN provides encrypted network connectivity and does not create or retain backups."
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "question": "A company is building a secure document repository on Amazon S3. It must protect against accidental deletion, support recovery from unintended overwrites, and enforce retention for regulated documents. Which controls should be included? (Choose THREE)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Enable S3 Versioning on the bucket.",
+        "status": "correct",
+        "explanation": "Versioning preserves previous object versions so unintended overwrites and deletes can be recovered."
+      },
+      {
+        "text": "Use S3 Object Lock retention for regulated document versions.",
+        "status": "correct",
+        "explanation": "Object Lock enforces retention on protected object versions."
+      },
+      {
+        "text": "Use least-privilege bucket and IAM policies for write and delete actions.",
+        "status": "correct",
+        "explanation": "Restricting write and delete permissions reduces the chance and blast radius of accidental or unauthorized changes."
+      },
+      {
+        "text": "Disable all server-side encryption so recovery tools can read older objects.",
+        "status": "skipped",
+        "explanation": "Encryption should remain enabled; recovery does not require disabling data protection."
+      },
+      {
+        "text": "Make the bucket public so auditors can verify retention without credentials.",
+        "status": "skipped",
+        "explanation": "Public access is not required for auditability and would expose sensitive documents."
+      },
+      {
+        "text": "Use a single shared administrator account for all delete operations.",
+        "status": "skipped",
+        "explanation": "Shared administrator credentials reduce accountability and increase risk."
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "question": "A company needs to encrypt traffic between clients and an Application Load Balancer using a company-owned domain name. Which configuration is required on the load balancer?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Create an HTTPS listener that uses an ACM certificate for the domain.",
+        "status": "correct",
+        "explanation": "An HTTPS listener with a valid certificate enables TLS for client connections to the load balancer."
+      },
+      {
+        "text": "Create a TCP listener and attach an S3 bucket policy.",
+        "status": "skipped",
+        "explanation": "An S3 bucket policy does not configure TLS termination on an Application Load Balancer."
+      },
+      {
+        "text": "Attach a KMS key directly to the HTTP listener.",
+        "status": "skipped",
+        "explanation": "ALB uses certificates for TLS listeners; KMS keys are not attached directly to HTTP listeners for client TLS."
+      },
+      {
+        "text": "Disable certificate validation so clients accept any certificate.",
+        "status": "skipped",
+        "explanation": "TLS security depends on valid certificates that clients can verify."
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "question": "A company is designing retention and replication for S3 audit logs. Logs must be encrypted, retained for seven years, and copied to a separate account in another Region. Which controls should be used? (Choose THREE)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Enable server-side encryption for the log bucket.",
+        "status": "correct",
+        "explanation": "Server-side encryption protects audit log objects at rest."
+      },
+      {
+        "text": "Configure S3 Object Lock or retention controls appropriate for the seven-year requirement.",
+        "status": "correct",
+        "explanation": "Retention controls prevent protected logs from being deleted before the required period ends."
+      },
+      {
+        "text": "Configure S3 replication to a destination bucket in the separate account and Region.",
+        "status": "correct",
+        "explanation": "S3 replication can copy objects across accounts and Regions for compliance and resilience."
+      },
+      {
+        "text": "Disable versioning so log objects cannot have multiple versions.",
+        "status": "skipped",
+        "explanation": "Versioning is required for replication and supports recovery and retention patterns."
+      },
+      {
+        "text": "Store log decryption keys in the same public bucket for auditor convenience.",
+        "status": "skipped",
+        "explanation": "Keys must not be publicly exposed or stored with the protected data."
+      },
+      {
+        "text": "Use an internet gateway as the replication destination.",
+        "status": "skipped",
+        "explanation": "Replication destinations are S3 buckets, not internet gateways."
+      }
+    ]
+  }
+]
