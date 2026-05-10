@@ -36,14 +36,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "S3 Glacier Instant Retrieval",
-        "status": "correct",
-        "explanation": "S3 Glacier Instant Retrieval is designed for archive data that is rarely accessed but still needs millisecond retrieval."
-      },
-      {
         "text": "S3 Glacier Deep Archive",
         "status": "skipped",
         "explanation": "S3 Glacier Deep Archive has the lowest archive storage cost, but retrieval takes longer and does not provide millisecond access."
+      },
+      {
+        "text": "S3 Glacier Instant Retrieval",
+        "status": "correct",
+        "explanation": "S3 Glacier Instant Retrieval is designed for archive data that is rarely accessed but still needs millisecond retrieval."
       },
       {
         "text": "Amazon EFS Infrequent Access",
@@ -65,11 +65,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Create an S3 Lifecycle rule that transitions older logs to an archive storage class and expires them after seven years.",
-        "status": "correct",
-        "explanation": "S3 Lifecycle rules can transition objects to lower-cost storage classes and delete them after a configured retention period."
-      },
-      {
         "text": "Enable S3 Versioning and rely on noncurrent versions to reduce cost.",
         "status": "skipped",
         "explanation": "Versioning keeps additional object versions and usually increases storage unless paired with lifecycle rules."
@@ -78,6 +73,11 @@
         "text": "Use S3 Replication to copy logs to another Region after 90 days.",
         "status": "skipped",
         "explanation": "Replication improves geographic placement or compliance but adds replicated storage and transfer costs."
+      },
+      {
+        "text": "Create an S3 Lifecycle rule that transitions older logs to an archive storage class and expires them after seven years.",
+        "status": "correct",
+        "explanation": "S3 Lifecycle rules can transition objects to lower-cost storage classes and delete them after a configured retention period."
       },
       {
         "text": "Move the logs to Amazon EBS snapshots after 90 days.",
@@ -94,11 +94,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Migrate the volumes to gp3 and provision only the required IOPS, throughput, and capacity.",
-        "status": "correct",
-        "explanation": "gp3 separates performance from capacity, allowing the workload to avoid overprovisioning volume size just to obtain IOPS."
-      },
-      {
         "text": "Migrate every volume to io2 Block Express.",
         "status": "skipped",
         "explanation": "io2 Block Express is designed for high-performance, high-durability workloads and is typically more expensive than necessary for general-purpose volumes."
@@ -112,6 +107,11 @@
         "text": "Move the block volumes to S3 Standard-IA.",
         "status": "skipped",
         "explanation": "S3 Standard-IA is object storage and cannot replace an attached EBS block volume for an EC2 file system."
+      },
+      {
+        "text": "Migrate the volumes to gp3 and provision only the required IOPS, throughput, and capacity.",
+        "status": "correct",
+        "explanation": "gp3 separates performance from capacity, allowing the workload to avoid overprovisioning volume size just to obtain IOPS."
       }
     ]
   },
@@ -152,14 +152,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Enable Requester Pays on the bucket.",
-        "status": "correct",
-        "explanation": "Requester Pays shifts eligible request and data transfer charges to the requester instead of the bucket owner."
-      },
-      {
         "text": "Enable S3 Transfer Acceleration on the bucket.",
         "status": "skipped",
         "explanation": "Transfer Acceleration can improve long-distance transfer performance, but it does not shift charges to the requester."
+      },
+      {
+        "text": "Enable Requester Pays on the bucket.",
+        "status": "correct",
+        "explanation": "Requester Pays shifts eligible request and data transfer charges to the requester instead of the bucket owner."
       },
       {
         "text": "Enable S3 Object Lock governance mode.",
@@ -181,11 +181,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS DataSync",
-        "status": "correct",
-        "explanation": "DataSync is built for managed data movement between on-premises storage and AWS storage services, including scheduling, validation, and bandwidth controls."
-      },
-      {
         "text": "AWS Transfer Family",
         "status": "skipped",
         "explanation": "Transfer Family is best when users or partners need managed SFTP, FTPS, FTP, or AS2 endpoints, not automated NFS-to-S3 synchronization."
@@ -194,6 +189,11 @@
         "text": "AWS Snowball Edge",
         "status": "skipped",
         "explanation": "Snowball Edge is useful for large offline transfers or edge workloads, but it is not the best choice for recurring nightly online synchronization."
+      },
+      {
+        "text": "AWS DataSync",
+        "status": "correct",
+        "explanation": "DataSync is built for managed data movement between on-premises storage and AWS storage services, including scheduling, validation, and bandwidth controls."
       },
       {
         "text": "Amazon S3 Requester Pays",
@@ -210,11 +210,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Order AWS Snowball Edge devices and import the data to S3.",
-        "status": "correct",
-        "explanation": "Snowball Edge can move hundreds of terabytes by shipping devices, avoiding long WAN transfer times and bandwidth impact."
-      },
-      {
         "text": "Run a single-threaded aws s3 sync job over the existing internet link.",
         "status": "skipped",
         "explanation": "The existing link is the bottleneck and would extend the migration timeline while affecting operations."
@@ -228,6 +223,11 @@
         "text": "Use Amazon CloudFront as the migration destination.",
         "status": "skipped",
         "explanation": "CloudFront is a content delivery network and cache; it is not a bulk data migration destination for S3 archives."
+      },
+      {
+        "text": "Order AWS Snowball Edge devices and import the data to S3.",
+        "status": "correct",
+        "explanation": "Snowball Edge can move hundreds of terabytes by shipping devices, avoiding long WAN transfer times and bandwidth impact."
       }
     ]
   },
@@ -268,14 +268,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Create an Amazon FSx for Lustre scratch file system linked to the S3 dataset for each processing cycle.",
-        "status": "correct",
-        "explanation": "FSx for Lustre scratch file systems are suited to temporary, high-performance processing when data can be recreated or reloaded."
-      },
-      {
         "text": "Use Amazon EFS One Zone-IA as the main high-throughput scratch layer.",
         "status": "skipped",
         "explanation": "EFS One Zone-IA lowers file storage cost but is not optimized for the very high throughput HPC scratch pattern."
+      },
+      {
+        "text": "Create an Amazon FSx for Lustre scratch file system linked to the S3 dataset for each processing cycle.",
+        "status": "correct",
+        "explanation": "FSx for Lustre scratch file systems are suited to temporary, high-performance processing when data can be recreated or reloaded."
       },
       {
         "text": "Attach one io2 EBS volume to every compute instance and manually copy input data to each node.",
@@ -297,6 +297,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Transition all raw objects to S3 Glacier Deep Archive after 30 days.",
+        "status": "skipped",
+        "explanation": "Deep Archive is lower cost for long-term archives, but it does not provide immediate retrieval."
+      },
+      {
         "text": "Use S3 Intelligent-Tiering for raw objects whose access patterns vary.",
         "status": "correct",
         "explanation": "Intelligent-Tiering can reduce storage cost for changing access patterns while preserving immediate retrieval in the frequent and infrequent tiers."
@@ -305,11 +310,6 @@
         "text": "Add an S3 Lifecycle expiration rule that deletes raw objects after five years.",
         "status": "correct",
         "explanation": "Lifecycle expiration directly enforces the retention requirement and avoids paying for data after it is no longer needed."
-      },
-      {
-        "text": "Transition all raw objects to S3 Glacier Deep Archive after 30 days.",
-        "status": "skipped",
-        "explanation": "Deep Archive is lower cost for long-term archives, but it does not provide immediate retrieval."
       },
       {
         "text": "Enable Requester Pays on the bucket.",
@@ -331,16 +331,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Convert suitable gp2 and provisioned IOPS volumes to gp3 with only the needed performance settings.",
-        "status": "correct",
-        "explanation": "gp3 allows independent provisioning of capacity, IOPS, and throughput, which helps avoid paying for unused performance."
-      },
-      {
-        "text": "Right-size volume capacity after confirming file system and application requirements.",
-        "status": "correct",
-        "explanation": "Reducing unused provisioned capacity lowers recurring EBS storage charges when the workload does not need the extra space."
-      },
-      {
         "text": "Move every volume to io2 Block Express.",
         "status": "skipped",
         "explanation": "io2 Block Express is intended for demanding high-performance workloads and would usually increase cost for general-purpose needs."
@@ -354,6 +344,16 @@
         "text": "Increase gp2 volume size to obtain more baseline IOPS.",
         "status": "skipped",
         "explanation": "Increasing gp2 capacity can raise performance but also raises storage cost and does not address overprovisioning."
+      },
+      {
+        "text": "Convert suitable gp2 and provisioned IOPS volumes to gp3 with only the needed performance settings.",
+        "status": "correct",
+        "explanation": "gp3 allows independent provisioning of capacity, IOPS, and throughput, which helps avoid paying for unused performance."
+      },
+      {
+        "text": "Right-size volume capacity after confirming file system and application requirements.",
+        "status": "correct",
+        "explanation": "Reducing unused provisioned capacity lowers recurring EBS storage charges when the workload does not need the extra space."
       }
     ]
   },
@@ -365,6 +365,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Keep all S3 objects permanently in S3 Standard to avoid retrieval fees.",
+        "status": "skipped",
+        "explanation": "Keeping all data in S3 Standard ignores lower-cost tiers and retention policies for data that is rarely accessed or no longer needed."
+      },
+      {
         "text": "Use S3 Lifecycle policies to transition and expire objects based on retention needs.",
         "status": "correct",
         "explanation": "Lifecycle policies reduce S3 storage cost by moving data to appropriate storage classes and deleting it when no longer required."
@@ -375,16 +380,6 @@
         "explanation": "EFS lifecycle management can move infrequently accessed files to a lower-cost storage class without changing the file system path."
       },
       {
-        "text": "Configure AWS Backup lifecycle rules for supported long-term recovery points.",
-        "status": "correct",
-        "explanation": "AWS Backup lifecycle rules help lower backup storage cost by transitioning and expiring supported backups automatically."
-      },
-      {
-        "text": "Keep all S3 objects permanently in S3 Standard to avoid retrieval fees.",
-        "status": "skipped",
-        "explanation": "Keeping all data in S3 Standard ignores lower-cost tiers and retention policies for data that is rarely accessed or no longer needed."
-      },
-      {
         "text": "Provision maximum EFS throughput to reduce storage charges.",
         "status": "skipped",
         "explanation": "Throughput configuration affects performance billing, not the amount of stored data, and maximum throughput can increase cost."
@@ -393,6 +388,11 @@
         "text": "Route all S3 access through a NAT gateway to centralize traffic.",
         "status": "skipped",
         "explanation": "Sending S3 traffic through NAT gateways can add data processing charges and is not a storage-cost optimization."
+      },
+      {
+        "text": "Configure AWS Backup lifecycle rules for supported long-term recovery points.",
+        "status": "correct",
+        "explanation": "AWS Backup lifecycle rules help lower backup storage cost by transitioning and expiring supported backups automatically."
       }
     ]
   },
@@ -404,11 +404,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "S3 One Zone-IA",
-        "status": "correct",
-        "explanation": "S3 One Zone-IA is lower cost for infrequently accessed data that can tolerate storage in a single Availability Zone."
-      },
-      {
         "text": "S3 Standard",
         "status": "skipped",
         "explanation": "S3 Standard stores data across multiple Availability Zones and costs more than needed for regenerable, infrequently accessed thumbnails."
@@ -417,6 +412,11 @@
         "text": "S3 Glacier Deep Archive",
         "status": "skipped",
         "explanation": "Deep Archive is for long-term archive data and does not provide the immediate access expected for thumbnails."
+      },
+      {
+        "text": "S3 One Zone-IA",
+        "status": "correct",
+        "explanation": "S3 One Zone-IA is lower cost for infrequently accessed data that can tolerate storage in a single Availability Zone."
       },
       {
         "text": "Amazon EFS Standard",
@@ -433,11 +433,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Transfer Family",
-        "status": "correct",
-        "explanation": "Transfer Family provides managed file transfer endpoints for protocols such as SFTP and can store transferred files in S3."
-      },
-      {
         "text": "AWS DataSync",
         "status": "skipped",
         "explanation": "DataSync is designed for managed data movement between storage systems, not partner-facing SFTP endpoints."
@@ -451,6 +446,11 @@
         "text": "Amazon S3 Inventory",
         "status": "skipped",
         "explanation": "S3 Inventory reports object metadata and does not receive supplier file transfers."
+      },
+      {
+        "text": "AWS Transfer Family",
+        "status": "correct",
+        "explanation": "Transfer Family provides managed file transfer endpoints for protocols such as SFTP and can store transferred files in S3."
       }
     ]
   },
@@ -491,14 +491,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Compute Savings Plans",
-        "status": "correct",
-        "explanation": "Compute Savings Plans apply to eligible usage across EC2, Fargate, and Lambda and provide flexibility across instance families and Regions."
-      },
-      {
         "text": "EC2 Dedicated Hosts",
         "status": "skipped",
         "explanation": "Dedicated Hosts address licensing and isolation needs, not flexible discounts across multiple compute services."
+      },
+      {
+        "text": "Compute Savings Plans",
+        "status": "correct",
+        "explanation": "Compute Savings Plans apply to eligible usage across EC2, Fargate, and Lambda and provide flexibility across instance families and Regions."
       },
       {
         "text": "Spot Instances for the entire baseline",
@@ -520,11 +520,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "EC2 Instance Savings Plan for the selected instance family and Region",
-        "status": "correct",
-        "explanation": "EC2 Instance Savings Plans provide discounted rates for a committed spend tied to a specific instance family in a Region."
-      },
-      {
         "text": "Compute Savings Plan with no commitment amount",
         "status": "skipped",
         "explanation": "Savings Plans require a committed hourly spend; without a commitment there is no discount."
@@ -533,6 +528,11 @@
         "text": "Spot Instances for all production capacity",
         "status": "skipped",
         "explanation": "Spot Instances can be interrupted and do not match a continuous fixed production baseline requirement."
+      },
+      {
+        "text": "EC2 Instance Savings Plan for the selected instance family and Region",
+        "status": "correct",
+        "explanation": "EC2 Instance Savings Plans provide discounted rates for a committed spend tied to a specific instance family in a Region."
       },
       {
         "text": "On-Demand Instances for the full three-year period",
@@ -549,11 +549,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use scheduled scaling to increase capacity before the morning peak and decrease capacity afterward.",
-        "status": "correct",
-        "explanation": "Scheduled scaling matches capacity to predictable demand, reducing idle instance hours outside the peak window."
-      },
-      {
         "text": "Set the Auto Scaling group minimum capacity to the peak size all day.",
         "status": "skipped",
         "explanation": "Keeping peak capacity all day wastes compute spend during predictable low-traffic periods."
@@ -567,6 +562,11 @@
         "text": "Replace the Auto Scaling group with a single larger EC2 instance.",
         "status": "skipped",
         "explanation": "A single large instance reduces elasticity and may cost more while also reducing availability."
+      },
+      {
+        "text": "Use scheduled scaling to increase capacity before the morning peak and decrease capacity afterward.",
+        "status": "correct",
+        "explanation": "Scheduled scaling matches capacity to predictable demand, reducing idle instance hours outside the peak window."
       }
     ]
   },
@@ -607,14 +607,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Deploy the API logic on AWS Lambda.",
-        "status": "correct",
-        "explanation": "Lambda charges based on requests and execution duration, which fits bursty workloads with long idle periods."
-      },
-      {
         "text": "Run a fixed pair of On-Demand EC2 instances all month.",
         "status": "skipped",
         "explanation": "Always-on EC2 instances incur compute charges during idle periods."
+      },
+      {
+        "text": "Deploy the API logic on AWS Lambda.",
+        "status": "correct",
+        "explanation": "Lambda charges based on requests and execution duration, which fits bursty workloads with long idle periods."
       },
       {
         "text": "Buy a three-year EC2 Instance Savings Plan for peak month-end usage.",
@@ -636,11 +636,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Compute Optimizer",
-        "status": "correct",
-        "explanation": "Compute Optimizer analyzes resource utilization and provides recommendations for rightsizing supported AWS resources."
-      },
-      {
         "text": "AWS Transfer Family",
         "status": "skipped",
         "explanation": "Transfer Family manages file transfer endpoints and does not analyze EC2 instance sizing."
@@ -649,6 +644,11 @@
         "text": "Amazon S3 Storage Lens",
         "status": "skipped",
         "explanation": "S3 Storage Lens analyzes S3 storage usage, not EC2 compute utilization."
+      },
+      {
+        "text": "AWS Compute Optimizer",
+        "status": "correct",
+        "explanation": "Compute Optimizer analyzes resource utilization and provides recommendations for rightsizing supported AWS resources."
       },
       {
         "text": "AWS Certificate Manager",
@@ -665,11 +665,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Resize or change the instance family to the lowest-cost type that meets the measured requirements.",
-        "status": "correct",
-        "explanation": "Rightsizing instance family and size based on measured demand reduces compute spend while preserving required performance."
-      },
-      {
         "text": "Increase the instance size to improve utilization.",
         "status": "skipped",
         "explanation": "Increasing size would usually lower utilization further and raise cost."
@@ -683,6 +678,11 @@
         "text": "Add more EBS provisioned IOPS to reduce CPU utilization.",
         "status": "skipped",
         "explanation": "The scenario indicates low CPU and network usage, not a storage I/O bottleneck."
+      },
+      {
+        "text": "Resize or change the instance family to the lowest-cost type that meets the measured requirements.",
+        "status": "correct",
+        "explanation": "Rightsizing instance family and size based on measured demand reduces compute spend while preserving required performance."
       }
     ]
   },
@@ -693,16 +693,6 @@
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
     "type": "multiple",
     "answers": [
-      {
-        "text": "Use Spot Instances for the worker fleet.",
-        "status": "correct",
-        "explanation": "Spot Instances are cost-effective for interruptible, fault-tolerant worker workloads."
-      },
-      {
-        "text": "Use multiple instance types and capacity pools for the worker fleet.",
-        "status": "correct",
-        "explanation": "Diversifying across capacity pools improves the chance of obtaining Spot capacity and reduces interruption concentration."
-      },
       {
         "text": "Use one specific instance type in one Availability Zone for every worker.",
         "status": "skipped",
@@ -717,6 +707,16 @@
         "text": "Disable checkpointing so every interruption restarts from the beginning.",
         "status": "skipped",
         "explanation": "Removing checkpointing increases wasted compute after interruptions and undermines the cost benefit of Spot."
+      },
+      {
+        "text": "Use Spot Instances for the worker fleet.",
+        "status": "correct",
+        "explanation": "Spot Instances are cost-effective for interruptible, fault-tolerant worker workloads."
+      },
+      {
+        "text": "Use multiple instance types and capacity pools for the worker fleet.",
+        "status": "correct",
+        "explanation": "Diversifying across capacity pools improves the chance of obtaining Spot capacity and reduces interruption concentration."
       }
     ]
   },
@@ -728,24 +728,24 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Apply a Savings Plan to the predictable baseline usage.",
-        "status": "correct",
-        "explanation": "Savings Plans reduce cost for steady committed compute usage that is expected to run continuously."
-      },
-      {
-        "text": "Use Auto Scaling with Spot capacity for interruption-tolerant stateless burst workers.",
-        "status": "correct",
-        "explanation": "Spot capacity can reduce cost for burst capacity when the application can handle interruptions."
-      },
-      {
         "text": "Run the entire fleet as On-Demand at peak size all day.",
         "status": "skipped",
         "explanation": "Keeping peak On-Demand capacity constantly running wastes money during normal traffic periods."
       },
       {
+        "text": "Apply a Savings Plan to the predictable baseline usage.",
+        "status": "correct",
+        "explanation": "Savings Plans reduce cost for steady committed compute usage that is expected to run continuously."
+      },
+      {
         "text": "Use Spot Instances for the entire baseline with no fallback.",
         "status": "skipped",
         "explanation": "The baseline must be continuously available, so relying only on interruptible capacity is not appropriate."
+      },
+      {
+        "text": "Use Auto Scaling with Spot capacity for interruption-tolerant stateless burst workers.",
+        "status": "correct",
+        "explanation": "Spot capacity can reduce cost for burst capacity when the application can handle interruptions."
       },
       {
         "text": "Replace Auto Scaling with manual scaling tickets.",
@@ -762,16 +762,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Schedule nonproduction instances to stop or hibernate when they are not in use.",
-        "status": "correct",
-        "explanation": "Stopping or hibernating idle instances reduces compute charges during periods when the environment is not needed."
-      },
-      {
-        "text": "Use Compute Optimizer recommendations to right-size oversized instances.",
-        "status": "correct",
-        "explanation": "Rightsizing based on utilization data can reduce recurring instance spend without redesigning the application."
-      },
-      {
         "text": "Keep all development instances running to preserve convenience.",
         "status": "skipped",
         "explanation": "Leaving idle nonproduction instances running creates avoidable compute cost."
@@ -782,9 +772,19 @@
         "explanation": "Upsizing instances without evidence of memory pressure would likely increase cost."
       },
       {
+        "text": "Schedule nonproduction instances to stop or hibernate when they are not in use.",
+        "status": "correct",
+        "explanation": "Stopping or hibernating idle instances reduces compute charges during periods when the environment is not needed."
+      },
+      {
         "text": "Purchase Dedicated Hosts for the development environment.",
         "status": "skipped",
         "explanation": "Dedicated Hosts are not a general cost-reduction tool for idle nonproduction workloads."
+      },
+      {
+        "text": "Use Compute Optimizer recommendations to right-size oversized instances.",
+        "status": "correct",
+        "explanation": "Rightsizing based on utilization data can reduce recurring instance spend without redesigning the application."
       }
     ]
   },
@@ -825,14 +825,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use DynamoDB on-demand capacity mode.",
-        "status": "correct",
-        "explanation": "On-demand capacity avoids provisioning decisions and is well suited to new or unpredictable workloads."
-      },
-      {
         "text": "Provision the maximum expected read and write capacity for the launch month.",
         "status": "skipped",
         "explanation": "Provisioning for an uncertain peak can create high unused capacity if demand is lower than expected."
+      },
+      {
+        "text": "Use DynamoDB on-demand capacity mode.",
+        "status": "correct",
+        "explanation": "On-demand capacity avoids provisioning decisions and is well suited to new or unpredictable workloads."
       },
       {
         "text": "Use reserved capacity before traffic patterns are known.",
@@ -854,11 +854,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use provisioned capacity with auto scaling based on the observed workload.",
-        "status": "correct",
-        "explanation": "Provisioned capacity with auto scaling can be more cost-effective for predictable traffic while still adjusting to expected variation."
-      },
-      {
         "text": "Keep on-demand mode forever regardless of traffic predictability.",
         "status": "skipped",
         "explanation": "On-demand is convenient for unpredictable workloads, but provisioned capacity can reduce cost when usage is stable and predictable."
@@ -867,6 +862,11 @@
         "text": "Disable auto scaling and set capacity below the daily peak.",
         "status": "skipped",
         "explanation": "Underprovisioning can throttle the application and does not meet the performance requirement."
+      },
+      {
+        "text": "Use provisioned capacity with auto scaling based on the observed workload.",
+        "status": "correct",
+        "explanation": "Provisioned capacity with auto scaling can be more cost-effective for predictable traffic while still adjusting to expected variation."
       },
       {
         "text": "Move old items to an EC2 instance store volume.",
@@ -883,11 +883,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Purchase DynamoDB reserved capacity for the predictable provisioned throughput.",
-        "status": "correct",
-        "explanation": "DynamoDB reserved capacity can discount predictable provisioned capacity commitments."
-      },
-      {
         "text": "Switch to on-demand capacity for the steady baseline.",
         "status": "skipped",
         "explanation": "On-demand mode is useful for unpredictable traffic, but it is not usually the lowest-cost option for a steady committed baseline."
@@ -901,6 +896,11 @@
         "text": "Disable backups and point-in-time recovery for all tables.",
         "status": "skipped",
         "explanation": "Removing protection controls may reduce some cost but can violate recovery requirements and does not address throughput pricing."
+      },
+      {
+        "text": "Purchase DynamoDB reserved capacity for the predictable provisioned throughput.",
+        "status": "correct",
+        "explanation": "DynamoDB reserved capacity can discount predictable provisioned capacity commitments."
       }
     ]
   },
@@ -941,14 +941,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Purchase a Reserved DB Instance that matches the database engine, Region, and instance class needs.",
-        "status": "correct",
-        "explanation": "Reserved DB Instances provide discounted pricing for predictable RDS instance usage over a commitment term."
-      },
-      {
         "text": "Use only On-Demand pricing for the full three-year period.",
         "status": "skipped",
         "explanation": "On-Demand pricing preserves flexibility but misses discounts for a stable long-running database."
+      },
+      {
+        "text": "Purchase a Reserved DB Instance that matches the database engine, Region, and instance class needs.",
+        "status": "correct",
+        "explanation": "Reserved DB Instances provide discounted pricing for predictable RDS instance usage over a commitment term."
       },
       {
         "text": "Add multiple read replicas even though the workload is not read constrained.",
@@ -970,11 +970,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Delete obsolete manual snapshots and set backup retention to match the 30-day requirement.",
-        "status": "correct",
-        "explanation": "Manual snapshots persist until deleted, so removing unneeded snapshots and aligning retention with requirements reduces storage cost."
-      },
-      {
         "text": "Create read replicas from every old snapshot.",
         "status": "skipped",
         "explanation": "Read replicas would add running database costs and do not reduce snapshot storage."
@@ -983,6 +978,11 @@
         "text": "Copy all snapshots to another Region for cost optimization.",
         "status": "skipped",
         "explanation": "Cross-Region copies add replicated snapshot storage and transfer costs unless required for resilience."
+      },
+      {
+        "text": "Delete obsolete manual snapshots and set backup retention to match the 30-day requirement.",
+        "status": "correct",
+        "explanation": "Manual snapshots persist until deleted, so removing unneeded snapshots and aligning retention with requirements reduces storage cost."
       },
       {
         "text": "Increase the backup retention period to the maximum value.",
@@ -999,11 +999,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Add an Amazon ElastiCache cache for frequently read catalog data.",
-        "status": "correct",
-        "explanation": "Caching repeated reads can reduce database CPU and the need for larger database instances or extra read replicas."
-      },
-      {
         "text": "Increase the RDS instance class whenever catalog reads rise.",
         "status": "skipped",
         "explanation": "Scaling the database can handle load but may cost more than caching frequently repeated reads."
@@ -1017,6 +1012,11 @@
         "text": "Move the RDS storage volume to S3 Standard-IA.",
         "status": "skipped",
         "explanation": "RDS storage is managed by the service and cannot be moved to an S3 storage class."
+      },
+      {
+        "text": "Add an Amazon ElastiCache cache for frequently read catalog data.",
+        "status": "correct",
+        "explanation": "Caching repeated reads can reduce database CPU and the need for larger database instances or extra read replicas."
       }
     ]
   },
@@ -1028,19 +1028,14 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use on-demand capacity for the new table until traffic patterns are understood.",
-        "status": "correct",
-        "explanation": "On-demand capacity avoids overprovisioning for workloads with unknown or highly variable demand."
-      },
-      {
-        "text": "Use provisioned capacity with appropriate scaling or commitments for the mature predictable table.",
-        "status": "correct",
-        "explanation": "Stable DynamoDB usage can often be optimized with provisioned capacity, auto scaling, and reserved capacity for the baseline."
-      },
-      {
         "text": "Create global tables for every table to reduce write capacity cost.",
         "status": "skipped",
         "explanation": "Global tables replicate data across Regions and usually add cost; they are for multi-Region availability and locality requirements."
+      },
+      {
+        "text": "Use on-demand capacity for the new table until traffic patterns are understood.",
+        "status": "correct",
+        "explanation": "On-demand capacity avoids overprovisioning for workloads with unknown or highly variable demand."
       },
       {
         "text": "Set the provisioned capacity of the new table to the largest possible launch estimate.",
@@ -1051,6 +1046,11 @@
         "text": "Store session records forever to avoid delete operations.",
         "status": "skipped",
         "explanation": "Keeping expired session data forever increases storage and can increase query cost over time."
+      },
+      {
+        "text": "Use provisioned capacity with appropriate scaling or commitments for the mature predictable table.",
+        "status": "correct",
+        "explanation": "Stable DynamoDB usage can often be optimized with provisioned capacity, auto scaling, and reserved capacity for the baseline."
       }
     ]
   },
@@ -1062,16 +1062,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Purchase Reserved DB Instances for the steady production databases.",
-        "status": "correct",
-        "explanation": "Reserved DB Instances discount predictable RDS instance usage when the database is expected to run for the commitment term."
-      },
-      {
-        "text": "Delete obsolete manual snapshots for test databases after confirming retention requirements.",
-        "status": "correct",
-        "explanation": "Manual snapshots remain billable until deleted, so removing unneeded test snapshots lowers storage cost."
-      },
-      {
         "text": "Convert every production database to Multi-AZ only to lower cost.",
         "status": "skipped",
         "explanation": "Multi-AZ improves availability but adds resources and is not a cost-reduction feature by itself."
@@ -1080,6 +1070,16 @@
         "text": "Create read replicas for each test database.",
         "status": "skipped",
         "explanation": "Read replicas add instance and storage cost and do not address unused test snapshot storage."
+      },
+      {
+        "text": "Purchase Reserved DB Instances for the steady production databases.",
+        "status": "correct",
+        "explanation": "Reserved DB Instances discount predictable RDS instance usage when the database is expected to run for the commitment term."
+      },
+      {
+        "text": "Delete obsolete manual snapshots for test databases after confirming retention requirements.",
+        "status": "correct",
+        "explanation": "Manual snapshots remain billable until deleted, so removing unneeded test snapshots lowers storage cost."
       },
       {
         "text": "Increase all DB instance classes to improve discount eligibility.",
@@ -1125,14 +1125,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Enable DynamoDB time to live on an expiration attribute.",
-        "status": "correct",
-        "explanation": "DynamoDB TTL automatically deletes expired items, reducing storage for data that no longer has business value."
-      },
-      {
         "text": "Create a global secondary index for every token attribute.",
         "status": "skipped",
         "explanation": "Additional indexes can increase write and storage cost and do not remove expired items."
+      },
+      {
+        "text": "Enable DynamoDB time to live on an expiration attribute.",
+        "status": "correct",
+        "explanation": "DynamoDB TTL automatically deletes expired items, reducing storage for data that no longer has business value."
       },
       {
         "text": "Move active tokens to S3 Glacier Deep Archive.",
@@ -1154,24 +1154,14 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use Reserved DB Instances for the steady production database capacity.",
-        "status": "correct",
-        "explanation": "Reserved DB Instances reduce cost for predictable long-running RDS instance usage."
-      },
-      {
-        "text": "Cache frequently read product catalog data with ElastiCache.",
-        "status": "correct",
-        "explanation": "Caching repeated reads can reduce database load and defer larger database instances or extra replicas."
-      },
-      {
-        "text": "Delete obsolete test snapshots after validating retention requirements.",
-        "status": "correct",
-        "explanation": "Old manual snapshots continue to incur storage cost until removed."
-      },
-      {
         "text": "Add read replicas for every table regardless of read demand.",
         "status": "skipped",
         "explanation": "Read replicas add cost and should be used when there is a clear read scaling or availability need."
+      },
+      {
+        "text": "Use Reserved DB Instances for the steady production database capacity.",
+        "status": "correct",
+        "explanation": "Reserved DB Instances reduce cost for predictable long-running RDS instance usage."
       },
       {
         "text": "Disable all database backups in production.",
@@ -1179,9 +1169,19 @@
         "explanation": "Disabling production backups can violate recovery requirements and availability objectives."
       },
       {
+        "text": "Cache frequently read product catalog data with ElastiCache.",
+        "status": "correct",
+        "explanation": "Caching repeated reads can reduce database load and defer larger database instances or extra replicas."
+      },
+      {
         "text": "Increase the production DB instance size before measuring utilization.",
         "status": "skipped",
         "explanation": "Upsizing without utilization evidence is likely to increase cost unnecessarily."
+      },
+      {
+        "text": "Delete obsolete test snapshots after validating retention requirements.",
+        "status": "correct",
+        "explanation": "Old manual snapshots continue to incur storage cost until removed."
       }
     ]
   },
@@ -1193,11 +1193,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Create an S3 gateway VPC endpoint and route S3 traffic through it.",
-        "status": "correct",
-        "explanation": "A gateway endpoint for S3 lets private subnet resources reach S3 without using a NAT gateway for that traffic."
-      },
-      {
         "text": "Add another NAT gateway in the same Availability Zone.",
         "status": "skipped",
         "explanation": "Another NAT gateway does not remove NAT processing charges for S3 traffic."
@@ -1206,6 +1201,11 @@
         "text": "Send the traffic through an internet gateway from private subnets.",
         "status": "skipped",
         "explanation": "Private subnets cannot directly use an internet gateway without public addressing, and this does not provide the private S3 path."
+      },
+      {
+        "text": "Create an S3 gateway VPC endpoint and route S3 traffic through it.",
+        "status": "correct",
+        "explanation": "A gateway endpoint for S3 lets private subnet resources reach S3 without using a NAT gateway for that traffic."
       },
       {
         "text": "Create a Site-to-Site VPN connection for S3 access.",
@@ -1222,11 +1222,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Add a DynamoDB gateway VPC endpoint and update route tables.",
-        "status": "correct",
-        "explanation": "Gateway endpoints support DynamoDB and avoid sending that service traffic through NAT gateways."
-      },
-      {
         "text": "Move the DynamoDB table into the VPC subnet.",
         "status": "skipped",
         "explanation": "DynamoDB is a managed regional service and is not placed inside customer subnets."
@@ -1240,6 +1235,11 @@
         "text": "Route DynamoDB traffic through AWS Direct Connect.",
         "status": "skipped",
         "explanation": "Direct Connect is for connectivity between on-premises networks and AWS, not for avoiding NAT charges inside a VPC."
+      },
+      {
+        "text": "Add a DynamoDB gateway VPC endpoint and update route tables.",
+        "status": "correct",
+        "explanation": "Gateway endpoints support DynamoDB and avoid sending that service traffic through NAT gateways."
       }
     ]
   },
@@ -1280,14 +1280,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Direct Connect",
-        "status": "correct",
-        "explanation": "Direct Connect provides dedicated connectivity and can offer lower data transfer rates for sustained hybrid traffic."
-      },
-      {
         "text": "AWS Client VPN for every transfer worker",
         "status": "skipped",
         "explanation": "Client VPN is for user VPN connectivity and is not optimized for sustained bulk data transfer economics."
+      },
+      {
+        "text": "AWS Direct Connect",
+        "status": "correct",
+        "explanation": "Direct Connect provides dedicated connectivity and can offer lower data transfer rates for sustained hybrid traffic."
       },
       {
         "text": "NAT gateways in every VPC",
@@ -1309,11 +1309,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Create a VPC peering connection between the two VPCs.",
-        "status": "correct",
-        "explanation": "VPC peering provides direct private connectivity between two VPCs without requiring a transit hub when only one-to-one routing is needed."
-      },
-      {
         "text": "Deploy AWS Transit Gateway only for these two VPCs.",
         "status": "skipped",
         "explanation": "Transit Gateway is useful for hub-and-spoke or transitive routing but can add unnecessary attachment and processing cost for a simple two-VPC case."
@@ -1322,6 +1317,11 @@
         "text": "Route the traffic through NAT gateways in both VPCs.",
         "status": "skipped",
         "explanation": "NAT gateways are for outbound access from private subnets and are not designed for private VPC-to-VPC routing."
+      },
+      {
+        "text": "Create a VPC peering connection between the two VPCs.",
+        "status": "correct",
+        "explanation": "VPC peering provides direct private connectivity between two VPCs without requiring a transit hub when only one-to-one routing is needed."
       },
       {
         "text": "Send traffic over separate internet gateways using public IP addresses.",
@@ -1338,11 +1338,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Place the chatty EC2 workers and database in the same Availability Zone when the availability requirement allows it.",
-        "status": "correct",
-        "explanation": "Avoiding unnecessary cross-AZ traffic can reduce regional data transfer charges for high-volume internal communication."
-      },
-      {
         "text": "Move the workers to a different Region from the database.",
         "status": "skipped",
         "explanation": "Cross-Region traffic generally increases latency and data transfer cost for a chatty workload."
@@ -1356,6 +1351,11 @@
         "text": "Use S3 Glacier Deep Archive as the database network layer.",
         "status": "skipped",
         "explanation": "S3 Glacier Deep Archive is archival object storage and cannot act as a database network path."
+      },
+      {
+        "text": "Place the chatty EC2 workers and database in the same Availability Zone when the availability requirement allows it.",
+        "status": "correct",
+        "explanation": "Avoiding unnecessary cross-AZ traffic can reduce regional data transfer charges for high-volume internal communication."
       }
     ]
   },
@@ -1396,14 +1396,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Interface VPC endpoints powered by AWS PrivateLink",
-        "status": "correct",
-        "explanation": "Interface endpoints provide private access to supported AWS services and can reduce or avoid NAT gateway data processing for that service traffic."
-      },
-      {
         "text": "An internet gateway attached to the private subnet route table",
         "status": "skipped",
         "explanation": "An internet gateway does not provide private service access and does not satisfy the security requirement."
+      },
+      {
+        "text": "Interface VPC endpoints powered by AWS PrivateLink",
+        "status": "correct",
+        "explanation": "Interface endpoints provide private access to supported AWS services and can reduce or avoid NAT gateway data processing for that service traffic."
       },
       {
         "text": "VPC Flow Logs as a replacement network path",
@@ -1425,16 +1425,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Create an S3 gateway endpoint and route S3 traffic to the endpoint.",
-        "status": "correct",
-        "explanation": "An S3 gateway endpoint keeps S3 traffic off the NAT gateway, avoiding NAT processing charges for that high-volume service traffic."
-      },
-      {
-        "text": "Use NAT gateways in the same AZ as the resources that need internet access and route locally where NAT is still required.",
-        "status": "correct",
-        "explanation": "Routing to a NAT gateway in the same AZ avoids unnecessary cross-AZ data transfer for traffic that must still use NAT."
-      },
-      {
         "text": "Continue sending all private subnet traffic through the single cross-AZ NAT gateway.",
         "status": "skipped",
         "explanation": "This keeps both NAT processing charges for S3 traffic and cross-AZ transfer for traffic from the other AZ."
@@ -1445,9 +1435,19 @@
         "explanation": "EBS is block storage and would not be a cost-effective replacement for shared S3 object access."
       },
       {
+        "text": "Create an S3 gateway endpoint and route S3 traffic to the endpoint.",
+        "status": "correct",
+        "explanation": "An S3 gateway endpoint keeps S3 traffic off the NAT gateway, avoiding NAT processing charges for that high-volume service traffic."
+      },
+      {
         "text": "Send S3 traffic through AWS Direct Connect to an on-premises router and back to AWS.",
         "status": "skipped",
         "explanation": "Hairpinning S3 traffic through on-premises networks adds complexity and does not reduce VPC egress cost for this workload."
+      },
+      {
+        "text": "Use NAT gateways in the same AZ as the resources that need internet access and route locally where NAT is still required.",
+        "status": "correct",
+        "explanation": "Routing to a NAT gateway in the same AZ avoids unnecessary cross-AZ data transfer for traffic that must still use NAT."
       }
     ]
   },
@@ -1459,6 +1459,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Forward all headers, cookies, and query strings for every request even when they are not needed.",
+        "status": "skipped",
+        "explanation": "Forwarding unnecessary request attributes can fragment the cache and reduce cache hit ratio."
+      },
+      {
         "text": "Cache static and cacheable dynamic responses at CloudFront edge locations.",
         "status": "correct",
         "explanation": "Caching at edge locations reduces repeated requests and data transfer from the regional origin."
@@ -1467,11 +1472,6 @@
         "text": "Set appropriate cache keys and TTLs so identical requests can reuse cached objects.",
         "status": "correct",
         "explanation": "Good cache configuration improves hit ratio, which lowers origin traffic and related cost."
-      },
-      {
-        "text": "Forward all headers, cookies, and query strings for every request even when they are not needed.",
-        "status": "skipped",
-        "explanation": "Forwarding unnecessary request attributes can fragment the cache and reduce cache hit ratio."
       },
       {
         "text": "Disable caching by setting every object TTL to zero.",
@@ -1493,21 +1493,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use an S3 gateway VPC endpoint for private subnet access to S3.",
-        "status": "correct",
-        "explanation": "A gateway endpoint can keep S3 traffic from private subnets off NAT gateways."
-      },
-      {
-        "text": "Serve cacheable static assets through CloudFront.",
-        "status": "correct",
-        "explanation": "CloudFront can reduce repeated origin data transfer and improve delivery for public users."
-      },
-      {
-        "text": "Place highly chatty internal components in the same Availability Zone when the availability design permits it.",
-        "status": "correct",
-        "explanation": "Avoiding unnecessary cross-AZ traffic can reduce data transfer charges for internal communication."
-      },
-      {
         "text": "Route all S3 traffic through a NAT gateway for consistent billing.",
         "status": "skipped",
         "explanation": "NAT gateway processing adds cost for high-volume S3 traffic when an endpoint can be used."
@@ -1521,6 +1506,21 @@
         "text": "Move all components to separate Regions to isolate tiers.",
         "status": "skipped",
         "explanation": "Separating chatty tiers across Regions usually increases latency and inter-Region transfer cost."
+      },
+      {
+        "text": "Use an S3 gateway VPC endpoint for private subnet access to S3.",
+        "status": "correct",
+        "explanation": "A gateway endpoint can keep S3 traffic from private subnets off NAT gateways."
+      },
+      {
+        "text": "Serve cacheable static assets through CloudFront.",
+        "status": "correct",
+        "explanation": "CloudFront can reduce repeated origin data transfer and improve delivery for public users."
+      },
+      {
+        "text": "Place highly chatty internal components in the same Availability Zone when the availability design permits it.",
+        "status": "correct",
+        "explanation": "Avoiding unnecessary cross-AZ traffic can reduce data transfer charges for internal communication."
       }
     ]
   },
@@ -1532,11 +1532,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Transit Gateway",
-        "status": "correct",
-        "explanation": "Transit Gateway acts as a regional hub for connecting VPCs and on-premises networks, reducing operational complexity as the number of networks grows."
-      },
-      {
         "text": "A full mesh of VPC peering connections for all future networks",
         "status": "skipped",
         "explanation": "VPC peering is useful for simple one-to-one connectivity but becomes operationally complex as many networks require full connectivity."
@@ -1545,6 +1540,11 @@
         "text": "One NAT gateway shared by all VPCs",
         "status": "skipped",
         "explanation": "NAT gateways provide outbound internet access and are not a transitive routing hub for VPCs and on-premises networks."
+      },
+      {
+        "text": "AWS Transit Gateway",
+        "status": "correct",
+        "explanation": "Transit Gateway acts as a regional hub for connecting VPCs and on-premises networks, reducing operational complexity as the number of networks grows."
       },
       {
         "text": "CloudFront distributions between private VPC subnets",
@@ -1561,11 +1561,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Site-to-Site VPN over the internet",
-        "status": "correct",
-        "explanation": "For low-volume or variable hybrid traffic, Site-to-Site VPN can avoid the fixed dedicated port costs of Direct Connect."
-      },
-      {
         "text": "A dedicated AWS Direct Connect port sized for peak future traffic",
         "status": "skipped",
         "explanation": "A dedicated port can be cost-effective for sustained high-volume traffic, but fixed port charges are not justified by a few gigabytes per week."
@@ -1579,6 +1574,11 @@
         "text": "A Transit Gateway attachment without any hybrid connection",
         "status": "skipped",
         "explanation": "Transit Gateway can route between attachments, but it does not by itself connect the branch office to AWS."
+      },
+      {
+        "text": "AWS Site-to-Site VPN over the internet",
+        "status": "correct",
+        "explanation": "For low-volume or variable hybrid traffic, Site-to-Site VPN can avoid the fixed dedicated port costs of Direct Connect."
       }
     ]
   },
@@ -1619,14 +1619,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use VPC peering for direct private connectivity.",
-        "status": "correct",
-        "explanation": "VPC peering is appropriate for direct one-to-one private connectivity when transitive routing is not required."
-      },
-      {
         "text": "Use Transit Gateway even though only two VPCs need direct communication.",
         "status": "skipped",
         "explanation": "Transit Gateway can be useful at scale, but it may add unnecessary attachment and processing costs for a simple two-VPC requirement."
+      },
+      {
+        "text": "Use VPC peering for direct private connectivity.",
+        "status": "correct",
+        "explanation": "VPC peering is appropriate for direct one-to-one private connectivity when transitive routing is not required."
       },
       {
         "text": "Use public IP addresses and internet gateways for the shared service.",
@@ -1648,24 +1648,24 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use gateway endpoints for supported high-volume S3 or DynamoDB traffic.",
-        "status": "correct",
-        "explanation": "Gateway endpoints can keep supported service traffic off NAT gateways and reduce NAT data processing charges."
-      },
-      {
-        "text": "Use interface endpoints for supported AWS services when endpoint cost is lower than NAT processing and public routing.",
-        "status": "correct",
-        "explanation": "Interface endpoints provide private service access and can be cost-effective for high-volume service traffic compared with NAT paths."
-      },
-      {
         "text": "Send every AWS service call through a single NAT gateway in another Availability Zone.",
         "status": "skipped",
         "explanation": "Centralizing all service traffic through a cross-AZ NAT gateway can add both NAT processing and cross-AZ transfer costs."
       },
       {
+        "text": "Use gateway endpoints for supported high-volume S3 or DynamoDB traffic.",
+        "status": "correct",
+        "explanation": "Gateway endpoints can keep supported service traffic off NAT gateways and reduce NAT data processing charges."
+      },
+      {
         "text": "Replace all private subnets with public subnets to remove endpoint planning.",
         "status": "skipped",
         "explanation": "Making all workloads public can violate private access requirements and is not a cost optimization strategy by itself."
+      },
+      {
+        "text": "Use interface endpoints for supported AWS services when endpoint cost is lower than NAT processing and public routing.",
+        "status": "correct",
+        "explanation": "Interface endpoints provide private service access and can be cost-effective for high-volume service traffic compared with NAT paths."
       },
       {
         "text": "Use CloudFront as the private endpoint for all AWS API calls.",

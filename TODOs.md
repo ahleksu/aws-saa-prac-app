@@ -22,7 +22,7 @@
 - [x] **P0-T4** — Create `public/quiz/` and seed empty `all.json`, `secure.json`, `resilient.json`, `performance.json`, `cost.json` each containing `[]`.
   - **Acceptance:** `curl http://localhost:4200/quiz/secure.json` returns `[]` while dev server is running.
 
-- [x] **P0-T5** — Create `src/app/pages/home/home.ts` (component file, kebab-case selector `app-home`). Use `OnPush`, signals, no `standalone: true`. Render the four domain cards + an "All Domains" card. Wire each to navigate to `/quiz?type={slug}`. Use Tailwind classes only (no PrimeNG).
+- [x] **P0-T5** — Create `src/app/pages/home/home.ts` (component file, kebab-case selector `app-home`). Use `OnPush`, signals, no `standalone: true`. Render the four domain cards + an "All Domains" card. Wire each to navigate to `/quiz?type={slug}`. Use Tailwind classes only (no PrimeNG). **Superseded by P0-T10 after visual verification required CLF/PrimeNG parity.**
   - **Acceptance:** AXE clean on `/`. Cards keyboard-navigable.
 
 - [x] **P0-T6** — Create stub components for `QuizComponent`, `ResultComponent`, `ReviewAnswersComponent` (just `<h1>` titles for now). Wire them into `src/app/app.routes.ts` per PLAN §7. Add a `**` redirect to `/`.
@@ -57,7 +57,7 @@
   - `ng build --configuration development` succeeds; `ng build` (production) inside 500kB initial-warning / 1MB error budgets.
   - Manual `npm start` walk: `/` matches CLF reference (hero, social row, 5 cards with hover scale, disclaimer, support footer); `/quiz?type=secure`, `/result`, `/review` still render their stubs under the new theme.
   - Run AXE in DevTools on `/`; fix all serious/critical issues.
-  - **Acceptance:** all four bullets green → tick `[x]`, flip P0 to **Complete (8 / 11 — P0-T5 superseded)** in PROGRESS.md, mark Blocker as RESOLVED, commit `fix(P0): align UX with CLF reference`.
+  - **Acceptance:** all four bullets green → tick `[x]`, flip P0 to **Complete** in PROGRESS.md with P0-T5 marked superseded, mark Blocker as RESOLVED, commit `fix(P0): align UX with CLF reference`.
 
 - [x] **P0-T12** — Resolve `NG0913` oversized-image warning surfaced during user's manual verification of P0-T11. `ahleksu-notion-face.png` was 2400×2400 (570 KB) but rendered ~120×120. Resize source to 240×240 (16 KB; 2× retina) and switch the `<img>` in `home.ts` to `NgOptimizedImage` (`ngSrc` + explicit `width`/`height`) per `.claude/CLAUDE.md`'s static-image rule.
   - **Acceptance:** browser console clean of NG0913 on `/`; `tsc --noEmit`, `npm test`, and `ng build` all still pass within budgets.
@@ -116,8 +116,8 @@
 
 > Goal: visual feedback after a run, plus a filterable review of every question.
 
-- [x] **P3-T1** — Install `chart.js` only (`npm i chart.js`). Do **not** install PrimeNG.
-  - **Note:** `chart.js` is installed. PrimeNG was adopted earlier during P0 UX alignment, superseding the original "Do not install PrimeNG" constraint.
+- [x] **P3-T1** — Ensure `chart.js` is installed for direct chart components. Do not use the PrimeNG chart wrapper.
+  - **Note:** `chart.js` is installed. PrimeNG UI components were adopted earlier during P0 UX alignment; charts still use Chart.js directly.
 
 - [x] **P3-T2** — Create `src/app/shared/donut-chart.ts` standalone component. `input()` for `{labels, data, colors}`. `effect()` initializes Chart.js instance; cleans up via `DestroyRef.onDestroy()`.
 
@@ -136,13 +136,21 @@
 
 - [ ] **P4-T1** — Run AXE in DevTools on `/`, `/quiz?type=secure`, `/result`, `/review`. Fix all serious/critical issues.
 
-- [ ] **P4-T2** — Mobile pass: 360px width minimum. Verify Quiz page is usable thumb-friendly.
+- [x] **P4-T2** — Mobile pass: 360px width minimum. Verify Quiz page is usable thumb-friendly.
+  - **Note:** User-confirmed mobile pass on 2026-05-10.
 
 - [x] **P4-T3** — `npm run build` succeeds within budgets. If component CSS exceeds 4kB, split or move to global styles.
 
-- [ ] **P4-T4** — Take one full mock run (`type=all`, 65 questions). Capture pain points → file follow-up tasks here.
+- [x] **P4-T4** — Take one full mock run (`type=all`, 65 questions). Capture pain points → file follow-up tasks here.
+  - **Note:** User-confirmed full mock run on 2026-05-10; no new pain-point task was requested.
 
 - [ ] **P4-T5** — Definition of Done checklist (PLAN §14) all ticked. Tag the commit `v1.0-exam-ready`.
+
+- [x] **P4-T6** — Fix SAA answer-position bias. Rebalance `secure`, `resilient`, `performance`, and `cost` JSON so correct answers are distributed across positions; regenerate `all.json`; add runtime answer shuffling and validator guardrails for duplicate answer text, extreme first-answer bias, and all-leading multiple-choice correct sets.
+  - **Acceptance:** `node scripts/validate-quiz.mjs` passes; answer-position audit no longer reports `270/270` first-answer correctness; runtime specs prove answers shuffle while domain question order is preserved.
+
+- [x] **P4-T7** — Manager verification before branch publication. Read-only review branch diff for scope, Angular rules, context-file accuracy, and run `node scripts/validate-quiz.mjs`, `npm test -- --watch=false`, `npm run build`, plus answer-position audit.
+  - **Acceptance:** Manager approves before feature branch is pushed to `origin`; do not push directly to `origin/main`.
 
 ---
 

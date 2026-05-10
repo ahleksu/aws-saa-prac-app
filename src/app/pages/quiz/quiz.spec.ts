@@ -10,58 +10,15 @@ function makeQuestion(
   id: number,
   domain: QuestionDomain,
   type: Question['type'] = 'single',
+  correctOptions: readonly string[] = type === 'single' ? ['A'] : ['A', 'B'],
 ): Question {
-  const answers =
-    type === 'single'
-      ? [
-          {
-            text: answerText(id, 'A'),
-            status: 'correct' as const,
-            explanation: explanationText(id, 'A'),
-          },
-          {
-            text: answerText(id, 'B'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'B'),
-          },
-          {
-            text: answerText(id, 'C'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'C'),
-          },
-          {
-            text: answerText(id, 'D'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'D'),
-          },
-        ]
-      : [
-          {
-            text: answerText(id, 'A'),
-            status: 'correct' as const,
-            explanation: explanationText(id, 'A'),
-          },
-          {
-            text: answerText(id, 'B'),
-            status: 'correct' as const,
-            explanation: explanationText(id, 'B'),
-          },
-          {
-            text: answerText(id, 'C'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'C'),
-          },
-          {
-            text: answerText(id, 'D'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'D'),
-          },
-          {
-            text: answerText(id, 'E'),
-            status: 'skipped' as const,
-            explanation: explanationText(id, 'E'),
-          },
-        ];
+  const options = type === 'single' ? ['A', 'B', 'C', 'D'] : ['A', 'B', 'C', 'D', 'E'];
+  const correct = new Set(correctOptions);
+  const answers = options.map((option) => ({
+    text: answerText(id, option),
+    status: correct.has(option) ? ('correct' as const) : ('skipped' as const),
+    explanation: explanationText(id, option),
+  }));
 
   return {
     id,
@@ -79,6 +36,10 @@ function answerText(id: number, option: string): string {
 
 function explanationText(id: number, option: string): string {
   return `Question ${id} Answer ${option} explanation`;
+}
+
+function answerTexts(question: Question): string[] {
+  return question.answers.map((answer) => answer.text);
 }
 
 describe('Quiz', () => {
@@ -113,7 +74,12 @@ describe('Quiz', () => {
     }).compileComponents();
   });
 
-  it('loads the selected domain type and shows question 1 of N', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('loads the selected domain type, preserves question order, and shuffles answers', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     const questions = [
       makeQuestion(1, 'Design Secure Architectures'),
       makeQuestion(2, 'Design Secure Architectures'),
@@ -124,14 +90,29 @@ describe('Quiz', () => {
     fixture = TestBed.createComponent(Quiz);
     fixture.detectChanges();
 
+    const storedQuestions = firstStoredQuestions();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(quizService.loadQuestions).toHaveBeenCalledWith('secure');
-    expect(quizService.setQuestions).toHaveBeenCalledWith(questions);
+    expect(storedQuestions).not.toBe(questions);
+    expect(storedQuestions.map((question) => question.id)).toEqual([1, 2, 3]);
+    expect(answerTexts(storedQuestions[0])).toEqual([
+      answerText(1, 'B'),
+      answerText(1, 'C'),
+      answerText(1, 'D'),
+      answerText(1, 'A'),
+    ]);
+    expect(answerTexts(questions[0])).toEqual([
+      answerText(1, 'A'),
+      answerText(1, 'B'),
+      answerText(1, 'C'),
+      answerText(1, 'D'),
+    ]);
     expect(compiled.textContent).toContain('Question 1 of 3');
     expect(compiled.textContent).toContain('Question stem 1');
   });
 
-  it('loads all questions and stores a 65-question shuffled exam run', () => {
+  it('loads all questions and stores a 65-question shuffled exam run with shuffled answers', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     const questions = Array.from({ length: 70 }, (_, index) =>
       makeQuestion(index + 1, 'Design Resilient Architectures'),
     );
@@ -145,7 +126,22 @@ describe('Quiz', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(quizService.loadQuestions).toHaveBeenCalledWith('all');
     expect(storedQuestions).toHaveLength(65);
+    expect(storedQuestions.map((question) => question.id)).toEqual(
+      Array.from({ length: 65 }, (_, index) => index + 2),
+    );
+    expect(answerTexts(storedQuestions[0])).toEqual([
+      answerText(2, 'B'),
+      answerText(2, 'C'),
+      answerText(2, 'D'),
+      answerText(2, 'A'),
+    ]);
     expect(questions).toHaveLength(70);
+    expect(answerTexts(questions[1])).toEqual([
+      answerText(2, 'A'),
+      answerText(2, 'B'),
+      answerText(2, 'C'),
+      answerText(2, 'D'),
+    ]);
     expect(compiled.textContent).toContain('Question 1 of 65');
   });
 
@@ -157,8 +153,10 @@ describe('Quiz', () => {
     fixture = TestBed.createComponent(Quiz);
     fixture.detectChanges();
 
+    const storedQuestions = firstStoredQuestions();
     expect(quizService.loadQuestions).toHaveBeenCalledWith('all');
-    expect(quizService.setQuestions).toHaveBeenCalledWith(questions);
+    expect(storedQuestions).toHaveLength(1);
+    expect(storedQuestions[0].id).toBe(1);
   });
 
   it('enables Check Answer after a single-choice selection', () => {
@@ -228,6 +226,61 @@ describe('Quiz', () => {
     expect(answerCard(answerText(1, 'B')).textContent).toContain('Correct answer');
     expect(answerCard(answerText(1, 'C')).textContent).toContain('Your incorrect selection');
     expect(compiled.textContent).toContain(explanationText(1, 'C'));
+  });
+
+  it('marks a single-choice question correct when the correct answer starts at D after shuffling', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    quizService.loadQuestions.mockReturnValue(
+      of([makeQuestion(1, 'Design Secure Architectures', 'single', ['D'])]),
+    );
+
+    fixture = TestBed.createComponent(Quiz);
+    fixture.detectChanges();
+
+    expect(answerTexts(firstStoredQuestions()[0])).toEqual([
+      answerText(1, 'B'),
+      answerText(1, 'C'),
+      answerText(1, 'D'),
+      answerText(1, 'A'),
+    ]);
+
+    input(answerText(1, 'D')).click();
+    fixture.detectChanges();
+    button('Check Answer').click();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Correct answer. Good job!');
+    expect(answerCard(answerText(1, 'D')).textContent).toContain('Correct answer');
+  });
+
+  it('keeps multiple-choice scoring order-independent after answers are shuffled', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    quizService.loadQuestions.mockReturnValue(
+      of([makeQuestion(1, 'Design Secure Architectures', 'multiple', ['B', 'D'])]),
+    );
+
+    fixture = TestBed.createComponent(Quiz);
+    fixture.detectChanges();
+
+    expect(answerTexts(firstStoredQuestions()[0])).toEqual([
+      answerText(1, 'B'),
+      answerText(1, 'C'),
+      answerText(1, 'D'),
+      answerText(1, 'E'),
+      answerText(1, 'A'),
+    ]);
+
+    input(answerText(1, 'D')).click();
+    input(answerText(1, 'B')).click();
+    fixture.detectChanges();
+    button('Check Answer').click();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Correct answer. Good job!');
+    expect(answerCard(answerText(1, 'B')).textContent).toContain('Correct answer');
+    expect(answerCard(answerText(1, 'D')).textContent).toContain('Correct answer');
   });
 
   it('restores submitted state when navigating back and forward', () => {
@@ -331,6 +384,8 @@ describe('Quiz', () => {
     });
 
     const state = router.navigate.mock.calls[0][1].state as QuizResultNavigationState;
+    expect(quizService.setQuestions).toHaveBeenLastCalledWith(firstStoredQuestions());
+    expect(state.questions.map(answerTexts)).toEqual(firstStoredQuestions().map(answerTexts));
     expect(state.questions[1]).toEqual(
       expect.objectContaining({
         id: 2,
@@ -365,7 +420,8 @@ describe('Quiz', () => {
     button('Finish Test').click();
     fixture.detectChanges();
 
-    expect(quizService.setQuestions).toHaveBeenCalledWith(questions);
+    const storedQuestions = firstStoredQuestions();
+    expect(quizService.setQuestions).toHaveBeenLastCalledWith(storedQuestions);
     expect(quizService.setUserAnswers).toHaveBeenCalledWith({
       1: { selected: [answerText(1, 'A')], isCorrect: true, submitted: true },
       2: { selected: [answerText(2, 'B')], isCorrect: false, submitted: true },
@@ -385,6 +441,7 @@ describe('Quiz', () => {
 
     const state = router.navigate.mock.calls[0][1].state as QuizResultNavigationState;
     expect(typeof state.timestamp).toBe('number');
+    expect(state.questions.map(answerTexts)).toEqual(storedQuestions.map(answerTexts));
     expect(state.questions).toEqual([
       expect.objectContaining({
         id: 1,
@@ -400,6 +457,10 @@ describe('Quiz', () => {
       }),
     ]);
   });
+
+  function firstStoredQuestions(): Question[] {
+    return quizService.setQuestions.mock.calls[0][0] as Question[];
+  }
 
   function button(label: string): HTMLButtonElement {
     const compiled = fixture.nativeElement as HTMLElement;

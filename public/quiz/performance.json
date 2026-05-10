@@ -36,14 +36,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use multipart upload and upload parts in parallel.",
-        "status": "correct",
-        "explanation": "Multipart upload lets large objects be split into parts that can be uploaded concurrently and retried independently."
-      },
-      {
         "text": "Use S3 Select to upload only the columns that changed.",
         "status": "skipped",
         "explanation": "S3 Select retrieves subsets of existing object data and does not accelerate object uploads."
+      },
+      {
+        "text": "Use multipart upload and upload parts in parallel.",
+        "status": "correct",
+        "explanation": "Multipart upload lets large objects be split into parts that can be uploaded concurrently and retried independently."
       },
       {
         "text": "Enable S3 Object Lock for the destination bucket.",
@@ -65,11 +65,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Enable S3 Transfer Acceleration and use the acceleration endpoint for uploads.",
-        "status": "correct",
-        "explanation": "Transfer Acceleration routes uploads through AWS edge locations and the AWS backbone, which can reduce latency for distant clients."
-      },
-      {
         "text": "Enable S3 Inventory reports for the bucket.",
         "status": "skipped",
         "explanation": "S3 Inventory creates object metadata reports and does not change the network path for uploads."
@@ -78,6 +73,11 @@
         "text": "Convert the bucket to S3 One Zone-IA.",
         "status": "skipped",
         "explanation": "One Zone-IA changes storage availability and cost characteristics, not global upload routing."
+      },
+      {
+        "text": "Enable S3 Transfer Acceleration and use the acceleration endpoint for uploads.",
+        "status": "correct",
+        "explanation": "Transfer Acceleration routes uploads through AWS edge locations and the AWS backbone, which can reduce latency for distant clients."
       },
       {
         "text": "Add an Amazon EBS volume as a cache in front of S3.",
@@ -94,6 +94,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Use one sequential object key prefix so list operations are always ordered.",
+        "status": "skipped",
+        "explanation": "A single hot prefix is not the best design for high aggregate request throughput."
+      },
+      {
         "text": "Use multiple S3 prefixes that reflect independent ingestion partitions.",
         "status": "correct",
         "explanation": "Multiple active prefixes allow S3 request performance to scale across more request paths."
@@ -102,11 +107,6 @@
         "text": "Use multipart upload for the 50 GB objects.",
         "status": "correct",
         "explanation": "Multipart upload improves large-object throughput and permits failed parts to be retried without restarting the whole upload."
-      },
-      {
-        "text": "Use one sequential object key prefix so list operations are always ordered.",
-        "status": "skipped",
-        "explanation": "A single hot prefix is not the best design for high aggregate request throughput."
       },
       {
         "text": "Store all new objects in S3 Glacier Deep Archive first.",
@@ -128,11 +128,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "io2 Block Express",
-        "status": "correct",
-        "explanation": "io2 Block Express is designed for the highest EBS IOPS, throughput, durability, and low-latency requirements."
-      },
-      {
         "text": "sc1",
         "status": "skipped",
         "explanation": "Cold HDD volumes are for infrequently accessed throughput workloads and are not appropriate for low-latency database I/O."
@@ -146,6 +141,11 @@
         "text": "Magnetic standard",
         "status": "skipped",
         "explanation": "Previous-generation magnetic volumes do not meet modern high-performance database I/O requirements."
+      },
+      {
+        "text": "io2 Block Express",
+        "status": "correct",
+        "explanation": "io2 Block Express is designed for the highest EBS IOPS, throughput, durability, and low-latency requirements."
       }
     ]
   },
@@ -186,16 +186,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use io2 or io2 Block Express for the latency-sensitive database.",
-        "status": "correct",
-        "explanation": "Provisioned IOPS SSD volumes are designed for demanding random I/O and low-latency database workloads."
-      },
-      {
-        "text": "Use st1 for the sequential log analytics workload.",
-        "status": "correct",
-        "explanation": "Throughput Optimized HDD volumes are designed for large, sequential workloads such as logs and analytics."
-      },
-      {
         "text": "Use sc1 for the database because it provides the lowest storage latency.",
         "status": "skipped",
         "explanation": "sc1 is cold HDD storage and is not intended for latency-sensitive random database I/O."
@@ -209,6 +199,16 @@
         "text": "Use S3 Glacier Instant Retrieval as a mounted block device for the log analytics workload.",
         "status": "skipped",
         "explanation": "S3 Glacier Instant Retrieval is object storage and is not mounted as an EC2 block device."
+      },
+      {
+        "text": "Use io2 or io2 Block Express for the latency-sensitive database.",
+        "status": "correct",
+        "explanation": "Provisioned IOPS SSD volumes are designed for demanding random I/O and low-latency database workloads."
+      },
+      {
+        "text": "Use st1 for the sequential log analytics workload.",
+        "status": "correct",
+        "explanation": "Throughput Optimized HDD volumes are designed for large, sequential workloads such as logs and analytics."
       }
     ]
   },
@@ -220,14 +220,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon EFS with Elastic Throughput",
-        "status": "correct",
-        "explanation": "EFS provides shared file storage across AZs, and Elastic Throughput automatically scales throughput with workload demand."
-      },
-      {
         "text": "Amazon EBS gp3 attached to every instance at the same time",
         "status": "skipped",
         "explanation": "EBS is primarily single-instance block storage and is not a shared multi-AZ POSIX file system for hundreds of instances."
+      },
+      {
+        "text": "Amazon EFS with Elastic Throughput",
+        "status": "correct",
+        "explanation": "EFS provides shared file storage across AZs, and Elastic Throughput automatically scales throughput with workload demand."
       },
       {
         "text": "Amazon S3 mounted as a block file system through the EC2 console",
@@ -249,11 +249,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Max I/O",
-        "status": "correct",
-        "explanation": "Max I/O is intended for highly parallel workloads that need greater aggregate throughput and operations per second."
-      },
-      {
         "text": "General Purpose",
         "status": "skipped",
         "explanation": "General Purpose favors lower latency and is the default for many workloads, but Max I/O is the better fit for extreme parallelism."
@@ -262,6 +257,11 @@
         "text": "Burst Balance",
         "status": "skipped",
         "explanation": "Burst balance is a metric related to burst credits, not an EFS performance mode."
+      },
+      {
+        "text": "Max I/O",
+        "status": "correct",
+        "explanation": "Max I/O is intended for highly parallel workloads that need greater aggregate throughput and operations per second."
       },
       {
         "text": "Cold HDD",
@@ -278,11 +278,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon FSx for Lustre",
-        "status": "correct",
-        "explanation": "FSx for Lustre provides a high-performance parallel file system and can integrate with S3 for compute-intensive workloads."
-      },
-      {
         "text": "Amazon EFS Infrequent Access",
         "status": "skipped",
         "explanation": "EFS IA reduces cost for infrequently accessed files but is not the best match for high-performance parallel training storage."
@@ -296,6 +291,11 @@
         "text": "Amazon FSx for Windows File Server",
         "status": "skipped",
         "explanation": "FSx for Windows File Server provides SMB file shares for Windows workloads, not a Lustre parallel file system."
+      },
+      {
+        "text": "Amazon FSx for Lustre",
+        "status": "correct",
+        "explanation": "FSx for Lustre provides a high-performance parallel file system and can integrate with S3 for compute-intensive workloads."
       }
     ]
   },
@@ -336,24 +336,24 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use AWS DataSync to transfer the NFS data set to Amazon EFS or Amazon S3.",
-        "status": "correct",
-        "explanation": "DataSync is built for online transfers between on-premises storage and AWS storage services."
-      },
-      {
-        "text": "Use AWS Storage Gateway File Gateway for low-latency on-premises file access backed by AWS storage.",
-        "status": "correct",
-        "explanation": "File Gateway can present file protocols locally while storing data durably in AWS."
-      },
-      {
         "text": "Use Amazon Route 53 Resolver to copy the files into AWS.",
         "status": "skipped",
         "explanation": "Route 53 Resolver handles DNS resolution and does not migrate or cache file data."
       },
       {
+        "text": "Use AWS DataSync to transfer the NFS data set to Amazon EFS or Amazon S3.",
+        "status": "correct",
+        "explanation": "DataSync is built for online transfers between on-premises storage and AWS storage services."
+      },
+      {
         "text": "Use Amazon SQS FIFO queues as the file system between the data center and AWS.",
         "status": "skipped",
         "explanation": "SQS is a message queue and does not provide file transfer or file-system access."
+      },
+      {
+        "text": "Use AWS Storage Gateway File Gateway for low-latency on-premises file access backed by AWS storage.",
+        "status": "correct",
+        "explanation": "File Gateway can present file protocols locally while storing data durably in AWS."
       },
       {
         "text": "Use an EBS snapshot shared with the on-premises storage array.",
@@ -370,14 +370,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Storage Gateway File Gateway",
-        "status": "correct",
-        "explanation": "File Gateway provides local file protocol access with a cache while storing data in AWS-backed storage."
-      },
-      {
         "text": "Amazon CloudFront",
         "status": "skipped",
         "explanation": "CloudFront caches HTTP and HTTPS content at edge locations, not SMB file shares in a branch office."
+      },
+      {
+        "text": "AWS Storage Gateway File Gateway",
+        "status": "correct",
+        "explanation": "File Gateway provides local file protocol access with a cache while storing data in AWS-backed storage."
       },
       {
         "text": "AWS Transit Gateway",
@@ -399,11 +399,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Compute optimized instances, such as the C family",
-        "status": "correct",
-        "explanation": "Compute optimized instances are intended for workloads that benefit from high-performance processors."
-      },
-      {
         "text": "Memory optimized instances, such as the R family",
         "status": "skipped",
         "explanation": "Memory optimized instances help memory-intensive applications, which is not the primary bottleneck in this scenario."
@@ -412,6 +407,11 @@
         "text": "Storage optimized instances, such as the I family",
         "status": "skipped",
         "explanation": "Storage optimized instances focus on local storage I/O and are not the first fit for CPU-bound rendering."
+      },
+      {
+        "text": "Compute optimized instances, such as the C family",
+        "status": "correct",
+        "explanation": "Compute optimized instances are intended for workloads that benefit from high-performance processors."
       },
       {
         "text": "Burstable instances, such as the T family, for sustained full CPU utilization",
@@ -428,11 +428,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Memory optimized instances, such as the R or X family",
-        "status": "correct",
-        "explanation": "Memory optimized instances are designed for workloads that need large memory capacity relative to compute."
-      },
-      {
         "text": "Accelerated computing instances with GPUs for every query",
         "status": "skipped",
         "explanation": "GPU acceleration helps specific parallel compute workloads but does not directly solve general RAM pressure."
@@ -446,6 +441,11 @@
         "text": "Storage optimized HDD instances only",
         "status": "skipped",
         "explanation": "More local disk throughput does not remove the paging caused by insufficient memory."
+      },
+      {
+        "text": "Memory optimized instances, such as the R or X family",
+        "status": "correct",
+        "explanation": "Memory optimized instances are designed for workloads that need large memory capacity relative to compute."
       }
     ]
   },
@@ -486,14 +486,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Partition placement group",
-        "status": "correct",
-        "explanation": "Partition placement groups divide instances into logical partitions backed by separate hardware, which suits distributed replicated systems."
-      },
-      {
         "text": "Cluster placement group",
         "status": "skipped",
         "explanation": "Cluster placement groups optimize low-latency networking but increase placement concentration rather than partition isolation."
+      },
+      {
+        "text": "Partition placement group",
+        "status": "correct",
+        "explanation": "Partition placement groups divide instances into logical partitions backed by separate hardware, which suits distributed replicated systems."
       },
       {
         "text": "Capacity Reservation group",
@@ -515,11 +515,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Target tracking scaling based on ALB request count per target",
-        "status": "correct",
-        "explanation": "Target tracking can adjust capacity to keep a chosen metric, such as ALB requests per target, near a configured value."
-      },
-      {
         "text": "Manual scaling once per week",
         "status": "skipped",
         "explanation": "Manual scaling cannot react continuously to changing daily request volume."
@@ -528,6 +523,11 @@
         "text": "A lifecycle hook that terminates instances when requests increase",
         "status": "skipped",
         "explanation": "Lifecycle hooks control instance launch or termination workflows and are not scaling policies."
+      },
+      {
+        "text": "Target tracking scaling based on ALB request count per target",
+        "status": "correct",
+        "explanation": "Target tracking can adjust capacity to keep a chosen metric, such as ALB requests per target, near a configured value."
       },
       {
         "text": "A scheduled action that always sets desired capacity to one",
@@ -544,11 +544,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Step scaling",
-        "status": "correct",
-        "explanation": "Step scaling supports multiple adjustment steps based on how far the metric breaches the alarm threshold."
-      },
-      {
         "text": "Instance refresh",
         "status": "skipped",
         "explanation": "Instance refresh replaces instances during updates and does not define metric breach adjustments."
@@ -562,6 +557,11 @@
         "text": "Termination policy",
         "status": "skipped",
         "explanation": "Termination policies influence which instances are removed, not how much the group scales when metrics breach thresholds."
+      },
+      {
+        "text": "Step scaling",
+        "status": "correct",
+        "explanation": "Step scaling supports multiple adjustment steps based on how far the metric breaches the alarm threshold."
       }
     ]
   },
@@ -573,16 +573,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use a target tracking policy tied to a utilization or load metric.",
-        "status": "correct",
-        "explanation": "Target tracking automatically adjusts capacity to keep a chosen metric near a target value."
-      },
-      {
-        "text": "Use scheduled scaling for known weekday peak periods.",
-        "status": "correct",
-        "explanation": "Scheduled scaling is appropriate when demand changes are predictable by time."
-      },
-      {
         "text": "Disable health checks so instances remain in service during surges.",
         "status": "skipped",
         "explanation": "Health checks protect availability and disabling them does not improve scaling responsiveness."
@@ -593,9 +583,19 @@
         "explanation": "If maximum capacity equals desired capacity, the group cannot scale out for unexpected surges."
       },
       {
+        "text": "Use a target tracking policy tied to a utilization or load metric.",
+        "status": "correct",
+        "explanation": "Target tracking automatically adjusts capacity to keep a chosen metric near a target value."
+      },
+      {
         "text": "Use an IAM permission boundary as the scaling trigger.",
         "status": "skipped",
         "explanation": "Permission boundaries limit IAM permissions and are not Auto Scaling demand signals."
+      },
+      {
+        "text": "Use scheduled scaling for known weekday peak periods.",
+        "status": "correct",
+        "explanation": "Scheduled scaling is appropriate when demand changes are predictable by time."
       }
     ]
   },
@@ -636,14 +636,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Provisioned concurrency",
-        "status": "correct",
-        "explanation": "Provisioned concurrency keeps initialized execution environments ready, reducing cold-start latency for configured versions or aliases."
-      },
-      {
         "text": "Reserved concurrency set to zero",
         "status": "skipped",
         "explanation": "Reserved concurrency of zero throttles the function and would stop it from serving requests."
+      },
+      {
+        "text": "Provisioned concurrency",
+        "status": "correct",
+        "explanation": "Provisioned concurrency keeps initialized execution environments ready, reducing cold-start latency for configured versions or aliases."
       },
       {
         "text": "A larger dead-letter queue",
@@ -665,11 +665,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon ECS on AWS Fargate",
-        "status": "correct",
-        "explanation": "Fargate runs ECS tasks without requiring the customer to manage the underlying EC2 instances."
-      },
-      {
         "text": "Amazon EC2 Dedicated Hosts only",
         "status": "skipped",
         "explanation": "Dedicated Hosts increase host-level control and management responsibility, which conflicts with the no-EC2-management goal."
@@ -678,6 +673,11 @@
         "text": "Amazon S3 Batch Operations",
         "status": "skipped",
         "explanation": "S3 Batch Operations performs actions on S3 objects and does not run containerized web services."
+      },
+      {
+        "text": "Amazon ECS on AWS Fargate",
+        "status": "correct",
+        "explanation": "Fargate runs ECS tasks without requiring the customer to manage the underlying EC2 instances."
       },
       {
         "text": "AWS Storage Gateway Volume Gateway",
@@ -694,11 +694,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Batch",
-        "status": "correct",
-        "explanation": "AWS Batch schedules batch jobs and provisions compute resources based on job queue demand."
-      },
-      {
         "text": "Amazon Route 53",
         "status": "skipped",
         "explanation": "Route 53 provides DNS and routing services, not batch job scheduling and compute fleet scaling."
@@ -712,6 +707,11 @@
         "text": "AWS Config",
         "status": "skipped",
         "explanation": "AWS Config records resource configuration and compliance, not high-throughput batch job execution."
+      },
+      {
+        "text": "AWS Batch",
+        "status": "correct",
+        "explanation": "AWS Batch schedules batch jobs and provisions compute resources based on job queue demand."
       }
     ]
   },
@@ -752,6 +752,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Place every component on a single burstable instance to reduce network hops.",
+        "status": "skipped",
+        "explanation": "A single burstable instance creates a capacity bottleneck and does not support elastic high-performance architecture."
+      },
+      {
         "text": "Select instance families that match the dominant workload bottleneck.",
         "status": "correct",
         "explanation": "Choosing compute, memory, storage, or accelerated instance families according to the bottleneck is central to performance efficiency."
@@ -765,11 +770,6 @@
         "text": "Use Auto Scaling policies so stateless services can add capacity when demand increases.",
         "status": "correct",
         "explanation": "Auto Scaling lets elastic services maintain performance as demand changes."
-      },
-      {
-        "text": "Place every component on a single burstable instance to reduce network hops.",
-        "status": "skipped",
-        "explanation": "A single burstable instance creates a capacity bottleneck and does not support elastic high-performance architecture."
       },
       {
         "text": "Use a spread placement group for the tightly coupled messaging nodes to minimize latency.",
@@ -786,19 +786,14 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Increase memory to provide more proportional CPU for the resizing code.",
-        "status": "correct",
-        "explanation": "Lambda CPU allocation increases with memory, which can reduce duration for CPU-bound resizing."
-      },
-      {
-        "text": "Configure provisioned concurrency for the latency-critical alias.",
-        "status": "correct",
-        "explanation": "Provisioned concurrency keeps execution environments initialized and can reduce cold-start outliers."
-      },
-      {
         "text": "Reduce memory to the minimum value to increase CPU sharing.",
         "status": "skipped",
         "explanation": "Reducing memory also reduces proportional CPU allocation and can make CPU-bound work slower."
+      },
+      {
+        "text": "Increase memory to provide more proportional CPU for the resizing code.",
+        "status": "correct",
+        "explanation": "Lambda CPU allocation increases with memory, which can reduce duration for CPU-bound resizing."
       },
       {
         "text": "Set reserved concurrency to zero during peak periods.",
@@ -809,6 +804,11 @@
         "text": "Move resized images to S3 Glacier Deep Archive before returning the response.",
         "status": "skipped",
         "explanation": "Archival storage does not reduce Lambda compute latency for synchronous image resizing."
+      },
+      {
+        "text": "Configure provisioned concurrency for the latency-critical alias.",
+        "status": "correct",
+        "explanation": "Provisioned concurrency keeps execution environments initialized and can reduce cold-start outliers."
       }
     ]
   },
@@ -820,14 +820,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "RDS read replicas for the reporting workload",
-        "status": "correct",
-        "explanation": "Read replicas offload read traffic from the primary database and are suitable when the workload can tolerate asynchronous lag."
-      },
-      {
         "text": "Multi-AZ standby as the reporting target",
         "status": "skipped",
         "explanation": "A Multi-AZ standby is for availability and failover, not for serving normal reporting queries."
+      },
+      {
+        "text": "RDS read replicas for the reporting workload",
+        "status": "correct",
+        "explanation": "Read replicas offload read traffic from the primary database and are suitable when the workload can tolerate asynchronous lag."
       },
       {
         "text": "An SQS queue in front of every SELECT query",
@@ -849,11 +849,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Aurora reader endpoint",
-        "status": "correct",
-        "explanation": "The Aurora reader endpoint load balances read-only connections across available Aurora Replicas in the cluster."
-      },
-      {
         "text": "The writer endpoint for all read and write traffic",
         "status": "skipped",
         "explanation": "Sending all reads to the writer misses the opportunity to scale read traffic across replicas."
@@ -862,6 +857,11 @@
         "text": "The RDS Proxy endpoint configured for schema migration only",
         "status": "skipped",
         "explanation": "RDS Proxy can pool connections, but the Aurora reader endpoint is the direct endpoint for distributing read traffic."
+      },
+      {
+        "text": "Aurora reader endpoint",
+        "status": "correct",
+        "explanation": "The Aurora reader endpoint load balances read-only connections across available Aurora Replicas in the cluster."
       },
       {
         "text": "The instance endpoint of one replica stored in a configuration file",
@@ -878,11 +878,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon RDS Proxy",
-        "status": "correct",
-        "explanation": "RDS Proxy pools and shares database connections, helping applications handle bursts without overwhelming the database with connection churn."
-      },
-      {
         "text": "Amazon CloudFront",
         "status": "skipped",
         "explanation": "CloudFront caches HTTP content and does not pool database connections."
@@ -896,6 +891,11 @@
         "text": "AWS Glue Data Catalog",
         "status": "skipped",
         "explanation": "The Glue Data Catalog stores metadata for analytics and does not pool RDS application connections."
+      },
+      {
+        "text": "Amazon RDS Proxy",
+        "status": "correct",
+        "explanation": "RDS Proxy pools and shares database connections, helping applications handle bursts without overwhelming the database with connection churn."
       }
     ]
   },
@@ -936,14 +936,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Provisioned capacity mode with auto scaling configured for table throughput",
-        "status": "correct",
-        "explanation": "Provisioned mode can be cost efficient for predictable traffic, and auto scaling adjusts capacity as utilization changes."
-      },
-      {
         "text": "On-demand mode with a fixed EC2 Auto Scaling group",
         "status": "skipped",
         "explanation": "EC2 Auto Scaling does not control DynamoDB table capacity."
+      },
+      {
+        "text": "Provisioned capacity mode with auto scaling configured for table throughput",
+        "status": "correct",
+        "explanation": "Provisioned mode can be cost efficient for predictable traffic, and auto scaling adjusts capacity as utilization changes."
       },
       {
         "text": "DynamoDB global tables in every Region solely to increase one Region's write capacity",
@@ -965,11 +965,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon DynamoDB Accelerator (DAX)",
-        "status": "correct",
-        "explanation": "DAX is an in-memory cache for DynamoDB that can reduce read latency for suitable read-heavy access patterns."
-      },
-      {
         "text": "Amazon RDS Proxy",
         "status": "skipped",
         "explanation": "RDS Proxy pools connections for relational databases and does not cache DynamoDB items."
@@ -978,6 +973,11 @@
         "text": "AWS DataSync",
         "status": "skipped",
         "explanation": "DataSync transfers file and object data and does not provide a DynamoDB read-through cache."
+      },
+      {
+        "text": "Amazon DynamoDB Accelerator (DAX)",
+        "status": "correct",
+        "explanation": "DAX is an in-memory cache for DynamoDB that can reduce read latency for suitable read-heavy access patterns."
       },
       {
         "text": "Amazon EBS io2",
@@ -994,11 +994,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon ElastiCache",
-        "status": "correct",
-        "explanation": "ElastiCache provides managed in-memory caching, which can serve repeated reads with lower latency and reduce database load."
-      },
-      {
         "text": "AWS CloudTrail Lake",
         "status": "skipped",
         "explanation": "CloudTrail Lake stores and queries audit events and is not an application data cache."
@@ -1012,6 +1007,11 @@
         "text": "AWS Site-to-Site VPN",
         "status": "skipped",
         "explanation": "A VPN changes network connectivity and does not reduce repeated database query execution."
+      },
+      {
+        "text": "Amazon ElastiCache",
+        "status": "correct",
+        "explanation": "ElastiCache provides managed in-memory caching, which can serve repeated reads with lower latency and reduce database load."
       }
     ]
   },
@@ -1052,14 +1052,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon Aurora Serverless v2",
-        "status": "correct",
-        "explanation": "Aurora Serverless v2 provides Aurora relational database capacity that can scale automatically in fine-grained increments."
-      },
-      {
         "text": "Amazon Neptune",
         "status": "skipped",
         "explanation": "Neptune is a graph database and does not preserve Aurora PostgreSQL compatibility."
+      },
+      {
+        "text": "Amazon Aurora Serverless v2",
+        "status": "correct",
+        "explanation": "Aurora Serverless v2 provides Aurora relational database capacity that can scale automatically in fine-grained increments."
       },
       {
         "text": "DynamoDB DAX only",
@@ -1081,16 +1081,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Add read replicas and direct eligible read-only queries to them.",
-        "status": "correct",
-        "explanation": "Read replicas can offload read traffic from the primary database for queries that can tolerate replica lag."
-      },
-      {
-        "text": "Cache product metadata in Amazon ElastiCache with an appropriate TTL.",
-        "status": "correct",
-        "explanation": "Caching repeatedly read metadata reduces database query volume and improves read latency."
-      },
-      {
         "text": "Use the Multi-AZ standby endpoint for reporting queries.",
         "status": "skipped",
         "explanation": "The standby in a standard RDS Multi-AZ deployment is not used for normal read traffic."
@@ -1099,6 +1089,16 @@
         "text": "Move the primary database volume to S3 Glacier Deep Archive.",
         "status": "skipped",
         "explanation": "Archival object storage is not a live relational database storage engine."
+      },
+      {
+        "text": "Add read replicas and direct eligible read-only queries to them.",
+        "status": "correct",
+        "explanation": "Read replicas can offload read traffic from the primary database for queries that can tolerate replica lag."
+      },
+      {
+        "text": "Cache product metadata in Amazon ElastiCache with an appropriate TTL.",
+        "status": "correct",
+        "explanation": "Caching repeatedly read metadata reduces database query volume and improves read latency."
       },
       {
         "text": "Disable indexes so writes use fewer database resources.",
@@ -1115,19 +1115,14 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Redesign the partition key strategy to distribute requests more evenly.",
-        "status": "correct",
-        "explanation": "A high-cardinality, well-distributed partition key helps avoid concentrated traffic on a small number of partitions."
-      },
-      {
-        "text": "Use DAX for suitable repeated read operations.",
-        "status": "correct",
-        "explanation": "DAX can reduce read pressure on DynamoDB for cacheable, read-heavy access patterns."
-      },
-      {
         "text": "Use a single constant partition key for every tenant.",
         "status": "skipped",
         "explanation": "A constant partition key concentrates all traffic and worsens hot partition behavior."
+      },
+      {
+        "text": "Redesign the partition key strategy to distribute requests more evenly.",
+        "status": "correct",
+        "explanation": "A high-cardinality, well-distributed partition key helps avoid concentrated traffic on a small number of partitions."
       },
       {
         "text": "Move the table to S3 Standard-IA to increase partition count.",
@@ -1138,6 +1133,11 @@
         "text": "Replace all queries with full table scans.",
         "status": "skipped",
         "explanation": "Full table scans are usually less efficient and do not solve hot-key access for popular tenants."
+      },
+      {
+        "text": "Use DAX for suitable repeated read operations.",
+        "status": "correct",
+        "explanation": "DAX can reduce read pressure on DynamoDB for cacheable, read-heavy access patterns."
       }
     ]
   },
@@ -1148,6 +1148,16 @@
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
     "type": "multiple",
     "answers": [
+      {
+        "text": "Send all reporting queries to the Multi-AZ standby instance.",
+        "status": "skipped",
+        "explanation": "A typical RDS Multi-AZ standby is reserved for failover and is not used for normal read scaling."
+      },
+      {
+        "text": "Use AWS WAF rate-based rules as the database connection pool.",
+        "status": "skipped",
+        "explanation": "WAF filters web requests and does not pool database connections or cache query results."
+      },
       {
         "text": "Use RDS Proxy to pool and reuse database connections.",
         "status": "correct",
@@ -1162,16 +1172,6 @@
         "text": "Use read replicas for reporting queries that tolerate replication lag.",
         "status": "correct",
         "explanation": "Read replicas offload eligible reporting reads from the primary database."
-      },
-      {
-        "text": "Send all reporting queries to the Multi-AZ standby instance.",
-        "status": "skipped",
-        "explanation": "A typical RDS Multi-AZ standby is reserved for failover and is not used for normal read scaling."
-      },
-      {
-        "text": "Use AWS WAF rate-based rules as the database connection pool.",
-        "status": "skipped",
-        "explanation": "WAF filters web requests and does not pool database connections or cache query results."
       }
     ]
   },
@@ -1183,11 +1183,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon Neptune",
-        "status": "correct",
-        "explanation": "Neptune is a managed graph database designed for highly connected data and graph query patterns."
-      },
-      {
         "text": "Amazon S3 Inventory",
         "status": "skipped",
         "explanation": "S3 Inventory reports object metadata and does not execute graph traversals."
@@ -1196,6 +1191,11 @@
         "text": "Amazon Timestream",
         "status": "skipped",
         "explanation": "Timestream is optimized for time series data rather than graph relationship traversal."
+      },
+      {
+        "text": "Amazon Neptune",
+        "status": "correct",
+        "explanation": "Neptune is a managed graph database designed for highly connected data and graph query patterns."
       },
       {
         "text": "Amazon EFS",
@@ -1212,11 +1212,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon OpenSearch Service",
-        "status": "correct",
-        "explanation": "OpenSearch Service is designed for search, log analytics, and text query workloads that need indexing and relevance-based retrieval."
-      },
-      {
         "text": "Amazon RDS Multi-AZ standby",
         "status": "skipped",
         "explanation": "A standby database improves availability but is not a search engine for free-form text."
@@ -1230,6 +1225,11 @@
         "text": "Amazon VPC Flow Logs",
         "status": "skipped",
         "explanation": "VPC Flow Logs capture network metadata and do not provide application search functionality."
+      },
+      {
+        "text": "Amazon OpenSearch Service",
+        "status": "correct",
+        "explanation": "OpenSearch Service is designed for search, log analytics, and text query workloads that need indexing and relevance-based retrieval."
       }
     ]
   },
@@ -1270,14 +1270,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon CloudFront",
-        "status": "correct",
-        "explanation": "CloudFront caches content at edge locations and can reduce latency and origin load for global users."
-      },
-      {
         "text": "AWS Direct Connect",
         "status": "skipped",
         "explanation": "Direct Connect provides private connectivity to AWS but is not a global content delivery cache."
+      },
+      {
+        "text": "Amazon CloudFront",
+        "status": "correct",
+        "explanation": "CloudFront caches content at edge locations and can reduce latency and origin load for global users."
       },
       {
         "text": "Amazon EBS Fast Snapshot Restore",
@@ -1299,11 +1299,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Use CloudFront with the S3 bucket as the origin and configure appropriate cache behavior.",
-        "status": "correct",
-        "explanation": "CloudFront can cache S3-origin content near viewers, lowering latency and reducing repeated origin fetches."
-      },
-      {
         "text": "Mount the S3 bucket as an EBS volume in every Region.",
         "status": "skipped",
         "explanation": "S3 buckets are not mounted as EBS volumes, and this would not provide edge caching."
@@ -1312,6 +1307,11 @@
         "text": "Use AWS Batch to pre-process every viewer request.",
         "status": "skipped",
         "explanation": "Batch processing is not used to serve repeated low-latency video downloads."
+      },
+      {
+        "text": "Use CloudFront with the S3 bucket as the origin and configure appropriate cache behavior.",
+        "status": "correct",
+        "explanation": "CloudFront can cache S3-origin content near viewers, lowering latency and reducing repeated origin fetches."
       },
       {
         "text": "Place a NAT gateway in front of the S3 bucket.",
@@ -1328,11 +1328,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Global Accelerator",
-        "status": "correct",
-        "explanation": "Global Accelerator provides static anycast IPs and routes user traffic over the AWS global network to healthy endpoints."
-      },
-      {
         "text": "Amazon CloudWatch Logs Insights",
         "status": "skipped",
         "explanation": "CloudWatch Logs Insights queries logs and does not provide network acceleration or anycast IPs."
@@ -1346,6 +1341,11 @@
         "text": "Amazon S3 Transfer Acceleration",
         "status": "skipped",
         "explanation": "S3 Transfer Acceleration helps S3 object transfers and is not a general TCP/UDP application accelerator."
+      },
+      {
+        "text": "AWS Global Accelerator",
+        "status": "correct",
+        "explanation": "Global Accelerator provides static anycast IPs and routes user traffic over the AWS global network to healthy endpoints."
       }
     ]
   },
@@ -1386,14 +1386,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Application Load Balancer",
-        "status": "correct",
-        "explanation": "Application Load Balancers provide Layer 7 routing features such as host-based and path-based routing."
-      },
-      {
         "text": "Network Load Balancer only",
         "status": "skipped",
         "explanation": "NLBs operate at Layer 4 and do not provide HTTP host and path routing rules."
+      },
+      {
+        "text": "Application Load Balancer",
+        "status": "correct",
+        "explanation": "Application Load Balancers provide Layer 7 routing features such as host-based and path-based routing."
       },
       {
         "text": "AWS Direct Connect gateway",
@@ -1415,11 +1415,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Direct Connect",
-        "status": "correct",
-        "explanation": "Direct Connect provides dedicated network connectivity from on-premises locations to AWS for more consistent performance."
-      },
-      {
         "text": "Amazon CloudFront",
         "status": "skipped",
         "explanation": "CloudFront accelerates content delivery to users and does not provide a dedicated private data center link."
@@ -1428,6 +1423,11 @@
         "text": "Amazon API Gateway cache",
         "status": "skipped",
         "explanation": "API Gateway caching improves API response performance and does not create private network connectivity."
+      },
+      {
+        "text": "AWS Direct Connect",
+        "status": "correct",
+        "explanation": "Direct Connect provides dedicated network connectivity from on-premises locations to AWS for more consistent performance."
       },
       {
         "text": "AWS Organizations",
@@ -1444,11 +1444,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Site-to-Site VPN",
-        "status": "correct",
-        "explanation": "Site-to-Site VPN provides encrypted tunnels over the internet and can usually be provisioned faster than dedicated circuits."
-      },
-      {
         "text": "A new AWS Direct Connect dedicated connection only",
         "status": "skipped",
         "explanation": "Direct Connect can provide dedicated connectivity but typically requires circuit provisioning and is not the fastest short-term option."
@@ -1462,6 +1457,11 @@
         "text": "An S3 lifecycle policy",
         "status": "skipped",
         "explanation": "S3 lifecycle policies manage object transitions and expirations, not network connectivity."
+      },
+      {
+        "text": "AWS Site-to-Site VPN",
+        "status": "correct",
+        "explanation": "Site-to-Site VPN provides encrypted tunnels over the internet and can usually be provisioned faster than dedicated circuits."
       }
     ]
   },
@@ -1502,6 +1502,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "AWS Glue crawler for edge routing",
+        "status": "skipped",
+        "explanation": "Glue crawlers discover data schemas and do not route user network traffic."
+      },
+      {
         "text": "Amazon CloudFront for static and cacheable web content",
         "status": "correct",
         "explanation": "CloudFront caches HTTP and HTTPS content at edge locations to reduce user latency and origin load."
@@ -1510,11 +1515,6 @@
         "text": "AWS Global Accelerator for non-cacheable TCP application traffic",
         "status": "correct",
         "explanation": "Global Accelerator routes traffic over the AWS global network to healthy endpoints using anycast IPs."
-      },
-      {
-        "text": "AWS Glue crawler for edge routing",
-        "status": "skipped",
-        "explanation": "Glue crawlers discover data schemas and do not route user network traffic."
       },
       {
         "text": "Amazon EBS snapshots replicated to every edge location",
@@ -1536,9 +1536,19 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "AWS Step Functions as the TCP load balancer",
+        "status": "skipped",
+        "explanation": "Step Functions orchestrates workflows and is not a network load balancer."
+      },
+      {
         "text": "Application Load Balancer for HTTP path-based API routing",
         "status": "correct",
         "explanation": "ALB provides Layer 7 routing capabilities including path-based routing."
+      },
+      {
+        "text": "AWS KMS as the image content delivery network",
+        "status": "skipped",
+        "explanation": "KMS manages cryptographic keys and does not cache or deliver static content."
       },
       {
         "text": "Network Load Balancer for high-throughput TCP routing",
@@ -1549,16 +1559,6 @@
         "text": "Amazon CloudFront for globally cached static images",
         "status": "correct",
         "explanation": "CloudFront caches static content near users to reduce latency and origin load."
-      },
-      {
-        "text": "AWS Step Functions as the TCP load balancer",
-        "status": "skipped",
-        "explanation": "Step Functions orchestrates workflows and is not a network load balancer."
-      },
-      {
-        "text": "AWS KMS as the image content delivery network",
-        "status": "skipped",
-        "explanation": "KMS manages cryptographic keys and does not cache or deliver static content."
       }
     ]
   },
@@ -1570,14 +1570,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Place the load balancer in public subnets across multiple AZs and application instances in private subnets across multiple AZs.",
-        "status": "correct",
-        "explanation": "Using multiple AZs for both the load balancer and application tier supports availability and distributes traffic across zones."
-      },
-      {
         "text": "Place all load balancer nodes and application instances in one public subnet.",
         "status": "skipped",
         "explanation": "A single subnet and AZ create a zone-level bottleneck and failure domain."
+      },
+      {
+        "text": "Place the load balancer in public subnets across multiple AZs and application instances in private subnets across multiple AZs.",
+        "status": "correct",
+        "explanation": "Using multiple AZs for both the load balancer and application tier supports availability and distributes traffic across zones."
       },
       {
         "text": "Place application instances in public subnets only so they bypass the load balancer.",
@@ -1599,11 +1599,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon Kinesis Data Streams",
-        "status": "correct",
-        "explanation": "Kinesis Data Streams supports near-real-time streaming with consumers that can process and replay records from the stream."
-      },
-      {
         "text": "Amazon S3 Glacier Deep Archive",
         "status": "skipped",
         "explanation": "Deep Archive is long-term storage and does not provide near-real-time stream processing."
@@ -1612,6 +1607,11 @@
         "text": "AWS CloudFormation StackSets",
         "status": "skipped",
         "explanation": "StackSets deploy CloudFormation stacks across accounts and Regions, not clickstream event streams."
+      },
+      {
+        "text": "Amazon Kinesis Data Streams",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports near-real-time streaming with consumers that can process and replay records from the stream."
       },
       {
         "text": "Amazon EFS Lifecycle Management",
@@ -1628,11 +1628,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon Data Firehose",
-        "status": "correct",
-        "explanation": "Firehose can capture, transform, and deliver streaming data to destinations such as S3 with minimal custom consumer management."
-      },
-      {
         "text": "Amazon EBS direct APIs",
         "status": "skipped",
         "explanation": "EBS direct APIs work with snapshot block data and do not deliver streaming logs to S3."
@@ -1646,6 +1641,11 @@
         "text": "AWS Direct Connect",
         "status": "skipped",
         "explanation": "Direct Connect provides network connectivity and does not manage streaming log delivery into S3."
+      },
+      {
+        "text": "Amazon Data Firehose",
+        "status": "correct",
+        "explanation": "Firehose can capture, transform, and deliver streaming data to destinations such as S3 with minimal custom consumer management."
       }
     ]
   },
@@ -1657,16 +1657,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Use Kinesis Data Streams for custom stream consumers that need replay control.",
-        "status": "correct",
-        "explanation": "Kinesis Data Streams supports custom consumers and replay from retained stream records."
-      },
-      {
-        "text": "Use Amazon Managed Streaming for Apache Kafka for Kafka-compatible applications.",
-        "status": "correct",
-        "explanation": "Amazon MSK provides managed Apache Kafka clusters for applications that use Kafka APIs and tooling."
-      },
-      {
         "text": "Use Amazon EFS as a Kafka broker replacement for ordered event streaming.",
         "status": "skipped",
         "explanation": "EFS is a shared file system and is not a managed event streaming broker."
@@ -1675,6 +1665,16 @@
         "text": "Use AWS Backup to replay stream events to consumers.",
         "status": "skipped",
         "explanation": "AWS Backup protects resources but does not act as a streaming event service."
+      },
+      {
+        "text": "Use Kinesis Data Streams for custom stream consumers that need replay control.",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports custom consumers and replay from retained stream records."
+      },
+      {
+        "text": "Use Amazon Managed Streaming for Apache Kafka for Kafka-compatible applications.",
+        "status": "correct",
+        "explanation": "Amazon MSK provides managed Apache Kafka clusters for applications that use Kafka APIs and tooling."
       },
       {
         "text": "Use Amazon Route 53 Resolver query logs as the primary stream broker.",
@@ -1720,14 +1720,14 @@
     "type": "single",
     "answers": [
       {
-        "text": "Amazon Athena",
-        "status": "correct",
-        "explanation": "Athena is a serverless interactive query service that can query data in S3 using SQL."
-      },
-      {
         "text": "Amazon ECR",
         "status": "skipped",
         "explanation": "ECR stores container images and does not run SQL queries against S3 data."
+      },
+      {
+        "text": "Amazon Athena",
+        "status": "correct",
+        "explanation": "Athena is a serverless interactive query service that can query data in S3 using SQL."
       },
       {
         "text": "AWS Systems Manager Session Manager",
@@ -1749,11 +1749,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS DataSync",
-        "status": "correct",
-        "explanation": "DataSync is designed to move data between on-premises storage and AWS storage with automation, scheduling, and transfer verification."
-      },
-      {
         "text": "Amazon Inspector",
         "status": "skipped",
         "explanation": "Inspector scans workloads for vulnerabilities and does not perform large-scale data transfers."
@@ -1762,6 +1757,11 @@
         "text": "AWS Config conformance packs",
         "status": "skipped",
         "explanation": "Config conformance packs evaluate compliance and do not transfer file data to S3."
+      },
+      {
+        "text": "AWS DataSync",
+        "status": "correct",
+        "explanation": "DataSync is designed to move data between on-premises storage and AWS storage with automation, scheduling, and transfer verification."
       },
       {
         "text": "Amazon SNS message filtering",
@@ -1778,11 +1778,6 @@
     "type": "single",
     "answers": [
       {
-        "text": "AWS Storage Gateway Volume Gateway",
-        "status": "correct",
-        "explanation": "Volume Gateway presents iSCSI block storage locally and can store or back up data in AWS."
-      },
-      {
         "text": "Amazon Athena federated query",
         "status": "skipped",
         "explanation": "Athena federated query runs SQL across data sources and does not present local iSCSI volumes."
@@ -1796,6 +1791,11 @@
         "text": "AWS Lambda function URLs",
         "status": "skipped",
         "explanation": "Lambda function URLs expose HTTPS endpoints and do not provide iSCSI storage access."
+      },
+      {
+        "text": "AWS Storage Gateway Volume Gateway",
+        "status": "correct",
+        "explanation": "Volume Gateway presents iSCSI block storage locally and can store or back up data in AWS."
       }
     ]
   },
@@ -1807,16 +1807,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Kinesis Data Streams for real-time event ingestion and consumer processing",
-        "status": "correct",
-        "explanation": "Kinesis Data Streams supports near-real-time ingestion and independent consumers."
-      },
-      {
-        "text": "Amazon Data Firehose to deliver stream data into S3",
-        "status": "correct",
-        "explanation": "Firehose can deliver streaming data to S3 without requiring custom delivery consumers."
-      },
-      {
         "text": "Amazon EBS snapshots as the event stream",
         "status": "skipped",
         "explanation": "EBS snapshots capture block volume state and are not an event streaming service."
@@ -1827,9 +1817,19 @@
         "explanation": "CloudTrail records API activity and is not a general-purpose stream processor for application events."
       },
       {
+        "text": "Kinesis Data Streams for real-time event ingestion and consumer processing",
+        "status": "correct",
+        "explanation": "Kinesis Data Streams supports near-real-time ingestion and independent consumers."
+      },
+      {
         "text": "Amazon Route 53 hosted zones for raw event persistence",
         "status": "skipped",
         "explanation": "Hosted zones store DNS records and do not persist analytics events in a data lake."
+      },
+      {
+        "text": "Amazon Data Firehose to deliver stream data into S3",
+        "status": "correct",
+        "explanation": "Firehose can deliver streaming data to S3 without requiring custom delivery consumers."
       }
     ]
   },
@@ -1841,24 +1841,24 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "Amazon Athena for serverless SQL queries on S3 data",
-        "status": "correct",
-        "explanation": "Athena enables SQL queries directly over data stored in S3."
-      },
-      {
-        "text": "AWS Glue Data Catalog for shared table metadata",
-        "status": "correct",
-        "explanation": "The Glue Data Catalog stores metadata that analytics services can use to discover data lake tables."
-      },
-      {
         "text": "AWS Shield Advanced as the table catalog",
         "status": "skipped",
         "explanation": "Shield Advanced provides DDoS protection and does not catalog data lake schemas."
       },
       {
+        "text": "Amazon Athena for serverless SQL queries on S3 data",
+        "status": "correct",
+        "explanation": "Athena enables SQL queries directly over data stored in S3."
+      },
+      {
         "text": "Amazon EBS Fast Snapshot Restore for SQL access to S3 files",
         "status": "skipped",
         "explanation": "Fast Snapshot Restore improves EBS volume creation from snapshots and does not query S3 data."
+      },
+      {
+        "text": "AWS Glue Data Catalog for shared table metadata",
+        "status": "correct",
+        "explanation": "The Glue Data Catalog stores metadata that analytics services can use to discover data lake tables."
       },
       {
         "text": "AWS IAM Identity Center as the query engine",
@@ -1875,6 +1875,11 @@
     "type": "multiple",
     "answers": [
       {
+        "text": "Amazon EC2 instances required for every Athena query coordinator",
+        "status": "skipped",
+        "explanation": "Athena is serverless from the user's perspective and does not require managing EC2 query coordinator instances."
+      },
+      {
         "text": "Amazon Data Firehose for managed buffering, transformation, and delivery",
         "status": "correct",
         "explanation": "Firehose can buffer, optionally transform, and deliver streaming records to destinations such as S3."
@@ -1885,19 +1890,14 @@
         "explanation": "The Glue Data Catalog provides shared metadata so analytics tools can discover the S3 data."
       },
       {
-        "text": "Amazon Athena for serverless SQL queries",
-        "status": "correct",
-        "explanation": "Athena provides serverless SQL querying over data stored in S3."
-      },
-      {
-        "text": "Amazon EC2 instances required for every Athena query coordinator",
-        "status": "skipped",
-        "explanation": "Athena is serverless from the user's perspective and does not require managing EC2 query coordinator instances."
-      },
-      {
         "text": "Amazon S3 Glacier Deep Archive as the only active query layer",
         "status": "skipped",
         "explanation": "Deep Archive is designed for long-term retention and is not the active layer for frequent SQL queries."
+      },
+      {
+        "text": "Amazon Athena for serverless SQL queries",
+        "status": "correct",
+        "explanation": "Athena provides serverless SQL querying over data stored in S3."
       }
     ]
   },
@@ -1938,16 +1938,6 @@
     "type": "multiple",
     "answers": [
       {
-        "text": "AWS DataSync to move and synchronize data from on-premises storage to Amazon S3",
-        "status": "correct",
-        "explanation": "DataSync supports automated transfers from on-premises file systems into AWS storage such as S3."
-      },
-      {
-        "text": "Amazon Athena to query the S3 data with SQL",
-        "status": "correct",
-        "explanation": "Athena can run SQL queries directly against structured data stored in S3."
-      },
-      {
         "text": "AWS KMS key rotation as the file transfer engine",
         "status": "skipped",
         "explanation": "KMS key rotation manages cryptographic keys and does not transfer file shares."
@@ -1961,6 +1951,16 @@
         "text": "Amazon EBS Multi-Attach to mount the same S3 bucket to all analysts",
         "status": "skipped",
         "explanation": "EBS Multi-Attach applies to compatible EBS volumes and does not mount S3 buckets or provide SQL analysis."
+      },
+      {
+        "text": "AWS DataSync to move and synchronize data from on-premises storage to Amazon S3",
+        "status": "correct",
+        "explanation": "DataSync supports automated transfers from on-premises file systems into AWS storage such as S3."
+      },
+      {
+        "text": "Amazon Athena to query the S3 data with SQL",
+        "status": "correct",
+        "explanation": "Athena can run SQL queries directly against structured data stored in S3."
       }
     ]
   }

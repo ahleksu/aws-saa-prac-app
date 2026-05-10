@@ -10,7 +10,7 @@ Build a self-paced quiz SPA to help the user (`@ahleksu`) prepare for **AWS Cert
 
 - **Solo Practice Mode** is the only in-scope feature for the exam-prep window. Live/Kahoot mode from the sibling CLF repo is **explicitly deferred** — see §10.
 - Prioritize a working question bank, working quiz/review/result loop, and zero-config local dev. Hosting is optional.
-- Re-use the proven UX shape from `aws-clf-prac-app` but adapt to this repo's modern stack (Angular 21, Vitest, Tailwind v4, **no PrimeNG**).
+- Re-use the proven UX shape from `aws-clf-prac-app` but adapt to this repo's modern stack (Angular 21, Vitest, Tailwind v4, PrimeNG 21/Aura-Noir, Chart.js direct).
 
 ## 2. Reference Repository
 
@@ -89,7 +89,8 @@ export interface Question {
 - `multiple` → **two or more** answers with `status: 'correct'`; stem must say `(Choose TWO)` / `(Choose THREE)`.
 - Every distractor needs a real `explanation` of why it is wrong (the CLF bank's distinguishing strength — preserve this).
 - `resource` URL points to `docs.aws.amazon.com`, `aws.amazon.com/blogs/...`, or an AWS whitepaper. Third-party blogs are not acceptable as the canonical source.
-- `id` is unique per file. `all.json` is the union of the four domain files (regenerate via script — see TODOs P1-T6).
+- `id` is unique per file. `all.json` is the union of the four domain files (regenerate via script — see TODOs P1-T7).
+- Answer order is defense in depth: authored JSON banks keep correct answers balanced across positions, and quiz runtime shuffles answer choices per run before display/result/review state. Source order must never teach the user an answer-position pattern.
 
 ## 6. Question Bank Strategy
 
@@ -192,16 +193,16 @@ If the user requests Live mode after the exam, restart with the CLF repo's `PLAN
   - `QuizService.loadQuestions(type)` returns parsed `Question[]`.
   - Answer-correctness logic for `single` and `multiple` (sorted-array comparison).
   - Domain summary aggregation in result navigation.
-- A `scripts/validate-quiz.mjs` script must pass on every commit: schema check + `single`/`multiple` invariants + unique IDs + `domain` whitelist + `resource` URL host whitelist.
+- A `scripts/validate-quiz.mjs` script must pass on every commit: schema check + `single`/`multiple` invariants + unique IDs + unique answer text per question + `domain` whitelist + `resource` URL host whitelist + answer-position guardrails.
 
 ## 13. Dev Loop
 
 ```bash
 npm install
 npm start                    # ng serve → http://localhost:4200
-npm test                     # vitest, watch mode
+npm test                     # vitest; add -- --watch=false for a one-shot run
 npm run build                # production build to dist/
-node scripts/validate-quiz.mjs   # P1 question-bank linter (to be created)
+node scripts/validate-quiz.mjs   # validate quiz JSON schema and invariants
 node scripts/build-all-json.mjs  # regenerate public/quiz/all.json
 ```
 

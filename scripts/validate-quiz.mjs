@@ -31,6 +31,8 @@ const RESOURCE_HOSTS = new Set([
 
 const STATUSES = new Set(['correct', 'skipped']);
 const TYPES = new Set(['single', 'multiple']);
+const FIRST_ANSWER_BIAS_MIN_SINGLE = 4;
+const FIRST_ANSWER_BIAS_MAX_RATIO = 0.75;
 
 function validateAnswer(a, qId, qIndex, aIndex, errors) {
   const where = `q[${qIndex}] (id=${qId}) answer[${aIndex}]`;
@@ -123,6 +125,7 @@ function validateQuestion(q, qIndex, idsSeen, errors) {
   }
 
   q.answers.forEach((a, i) => validateAnswer(a, qId, qIndex, i, errors));
+  validateUniqueAnswerText(q.answers, qId, qIndex, errors);
 
   const correctCount = q.answers.filter(
     (a) => a && a.status === 'correct',
@@ -176,6 +179,68 @@ function validateQuestion(q, qIndex, idsSeen, errors) {
   return TYPES.has(q.type) ? q.type : null;
 }
 
+function validateUniqueAnswerText(answers, qId, qIndex, errors) {
+  const firstIndexByText = new Map();
+  const where = `q[${qIndex}] (id=${qId})`;
+
+  answers.forEach((answer, answerIndex) => {
+    if (answer == null || typeof answer !== 'object' || Array.isArray(answer)) {
+      return;
+    }
+    if (typeof answer.text !== 'string') return;
+
+    const text = answer.text.trim();
+    if (text === '') return;
+
+    const firstIndex = firstIndexByText.get(text);
+    if (firstIndex !== undefined) {
+      errors.push(
+        `${where}: duplicate answer text ${JSON.stringify(text)} at answer[${firstIndex}] and answer[${answerIndex}]`,
+      );
+      return;
+    }
+
+    firstIndexByText.set(text, answerIndex);
+  });
+}
+
+function correctIndexes(question) {
+  if (!question || !Array.isArray(question.answers)) return [];
+
+  return question.answers
+    .map((answer, index) => (answer && answer.status === 'correct' ? index : -1))
+    .filter((index) => index !== -1);
+}
+
+function isLeadingContiguous(indexes) {
+  return indexes.length > 0 && indexes.every((index, i) => index === i);
+}
+
+function validateBankAnswerPositions(file, stats, errors) {
+  if (stats.singleCorrectIndexes.length >= FIRST_ANSWER_BIAS_MIN_SINGLE) {
+    const firstAnswerCorrect = stats.singleCorrectIndexes.filter(
+      (index) => index === 0,
+    ).length;
+    const firstAnswerRatio =
+      firstAnswerCorrect / stats.singleCorrectIndexes.length;
+
+    if (firstAnswerRatio > FIRST_ANSWER_BIAS_MAX_RATIO) {
+      errors.push(
+        `${file}: extreme first-answer bias: ${firstAnswerCorrect}/${stats.singleCorrectIndexes.length} single correct answers are at answer[0]`,
+      );
+    }
+  }
+
+  if (
+    stats.multipleCorrectSets.length > 0 &&
+    stats.multipleCorrectSets.every(isLeadingContiguous)
+  ) {
+    errors.push(
+      `${file}: all ${stats.multipleCorrectSets.length} multiple-choice correct answer sets are leading-contiguous`,
+    );
+  }
+}
+
 function validateFile(absPath) {
   const file = basename(absPath);
   const empty = { file, count: 0, single: 0, multiple: 0, errors: [] };
@@ -202,6 +267,10 @@ function validateFile(absPath) {
 
   const idsSeen = new Set();
   const errors = [];
+  const answerPositionStats = {
+    singleCorrectIndexes: [],
+    multipleCorrectSets: [],
+  };
   let single = 0;
   let multiple = 0;
 
@@ -209,7 +278,16 @@ function validateFile(absPath) {
     const t = validateQuestion(q, i, idsSeen, errors);
     if (t === 'single') single += 1;
     else if (t === 'multiple') multiple += 1;
+
+    const indexes = correctIndexes(q);
+    if (t === 'single' && indexes.length === 1) {
+      answerPositionStats.singleCorrectIndexes.push(indexes[0]);
+    } else if (t === 'multiple' && indexes.length >= 2) {
+      answerPositionStats.multipleCorrectSets.push(indexes);
+    }
   });
+
+  validateBankAnswerPositions(file, answerPositionStats, errors);
 
   return { file, count: parsed.length, single, multiple, errors };
 }

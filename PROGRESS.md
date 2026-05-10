@@ -9,6 +9,7 @@
 - **Today:** 2026-05-10
 - **Exam date:** 2026-05-15 (target: T-5 days)
 - **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/review complete; latest commits tracked in git log.
+- **Latest context audit:** 2026-05-10 — answer-position bias fix implemented on `fix/answer-order-randomization`; authored JSON now distributes single-correct positions in `all.json` as `[52,51,50,50]` and multiple-choice leading-contiguous count is `0`; manager verification reran validator, tests, build, and audit successfully. Open readiness tasks remain P4-T1 and P4-T5.
 - **Active phase:** P4 — Polish & Readiness Gate. P0, P1, P2, and P3 complete as of 2026-05-10.
 
 ## Phase Status Overview
@@ -19,7 +20,7 @@
 | P1 | Question Bank | **Complete** | 8 / 8 | 270 validated questions across all four domains; `all.json` regenerated |
 | P2 | Quiz Page | **Complete** | 6 / 6 | Full CLF-style quiz loop implemented with Angular signals |
 | P3 | Result & Review | **Complete** | 6 / 6 | Result and Review pages complete with text labels for non-color-only status |
-| P4 | Polish & Readiness Gate | **In Progress** | 1 / 5 | Production build gate complete; AXE, mobile, mock run, and final DoD remain |
+| P4 | Polish & Readiness Gate | **In Progress** | 5 / 7 | Production build, user-confirmed mobile pass, user-confirmed mock run, answer-order bias fix, and manager verification complete; AXE and final DoD/tag remain |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
 
 ---
@@ -92,6 +93,10 @@
 ## Phase P4 — Polish & Exam Readiness Gate
 
 - [x] P4-T3: `npm run build` passes after the CLF-mirrored Quiz/Result/Review implementation; production initial bundle is 479.50 kB raw / 111.23 kB transfer, below the 500 kB warning and 1 MB error budgets. `node scripts/validate-quiz.mjs` also remains clean. — 2026-05-10
+- [x] P4-T2: User-confirmed mobile pass at 360px minimum; Quiz page is usable on mobile. — 2026-05-10
+- [x] P4-T4: User-confirmed one full `type=all` 65-question mock run; no new pain-point task was requested. — 2026-05-10
+- [x] P4-T6: Root cause was authored SAA answer order: all 203 single-answer questions had answer[0] correct and all 67 multiple-answer questions used leading-contiguous correct sets. Fixed with deterministic JSON rebalance (`all.json` singles `[52,51,50,50]`, leading-contiguous multiple sets `0`), runtime Fisher-Yates answer shuffling before display/result/review state, and validator guardrails for duplicate answer text plus answer-position bias. `node scripts/validate-quiz.mjs` passes for all 270 questions after regeneration. — 2026-05-10
+- [x] P4-T7: Read-only manager review approved the branch for commit/push after reviewing scope, Angular rules, context accuracy, data-only JSON reorder, and rerunning `node scripts/validate-quiz.mjs`, `npm test -- --watch=false`, `npm run build`, and answer-position audit (`all.json` singles `[52,51,50,50]`, multiple leading-contiguous `0/67`). — 2026-05-10
 
 ---
 
@@ -99,10 +104,11 @@
 <!-- Format: "YYYY-MM-DD — <decision> — <reason>" -->
 
 - 2026-05-10 — Defer Live/Kahoot mode until after exam — only 5 days to exam, solo mode is sufficient for prep. (PLAN §10)
-- 2026-05-10 — Drop PrimeNG, use Tailwind v4 + plain HTML; charts via `chart.js` directly — keeps bundle small and aligns with this repo's existing stack. (PLAN §4)
+- 2026-05-10 — Drop PrimeNG, use Tailwind v4 + plain HTML; charts via `chart.js` directly — keeps bundle small and aligns with this repo's existing stack. **Superseded later the same day by the PrimeNG 21 CLF-parity decision below.** (PLAN §4)
 - 2026-05-10 — Mirror CLF question schema verbatim so `quiz.service.ts` logic ports without translation — but rebuild components on signals + OnPush per project rules. (PLAN §5, §8)
 - 2026-05-10 — **Reverse "no PrimeNG" decision**; adopt PrimeNG 21 (Aura/Noir preset, light-mode only) + PrimeIcons + `tailwindcss-primeui` + `@angular/animations`. Required to port CLF templates 1:1 inside the 5-day budget; bundle cost (~150-200kB gz) is well within the 500kB-warn / 1MB-error budget configured in `angular.json`. _(Supersedes the earlier "Drop PrimeNG" decision dated 2026-05-10.)_ (PLAN §4)
 - 2026-05-10 — Disable Angular CLI persistent cache in `angular.json` — plain `npm run build` repeatedly aborted with `SIGABRT` in the native LMDB cache path under Node 24/macOS; `CI=true npm run build` passed, proving the app build was clean. Disabling the cache makes normal local builds reliable with only a rebuild-speed tradeoff.
+- 2026-05-10 — Use both authored JSON balancing and runtime answer shuffling for SAA answer order — JSON balance prevents static bank bias and runtime Fisher-Yates prevents any per-run answer-position pattern from reaching the user.
 
 ## Blockers
 <!-- Format: "YYYY-MM-DD — <blocker> — <what would unblock>" -->

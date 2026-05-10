@@ -28,6 +28,7 @@ import {
   isSelectionCorrect,
   toReviewQuestions,
 } from '../../core/quiz-results';
+import { prepareQuestions } from '../../core/quiz-randomization';
 
 const quizTypes: readonly QuizType[] = ['all', 'secure', 'resilient', 'performance', 'cost'];
 
@@ -338,7 +339,7 @@ export class Quiz {
         switchMap((type) =>
           this.quizService.loadQuestions(type).pipe(
             map((questions) => ({
-              questions: this.prepareQuestions(type, questions),
+              questions: prepareQuestions(type, questions),
               error: null,
             })),
             catchError(() =>
@@ -496,24 +497,5 @@ export class Quiz {
     }
 
     this.selectedAnswers.set(this.answerState()[question.id]?.selected ?? []);
-  }
-
-  private prepareQuestions(type: QuizType, questions: Question[]): Question[] {
-    if (type !== 'all') {
-      return questions;
-    }
-
-    return this.shuffleQuestions(questions).slice(0, 65);
-  }
-
-  private shuffleQuestions(questions: Question[]): Question[] {
-    const shuffled = [...questions];
-
-    for (let index = shuffled.length - 1; index > 0; index -= 1) {
-      const randomIndex = Math.floor(Math.random() * (index + 1));
-      [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
-    }
-
-    return shuffled;
   }
 }
