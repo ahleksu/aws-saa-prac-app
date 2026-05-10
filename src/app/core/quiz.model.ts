@@ -10,6 +10,8 @@ export type QuestionDomain =
   | 'Design High-Performing Architectures'
   | 'Design Cost-Optimized Architectures';
 
+export type QuizType = 'all' | 'secure' | 'resilient' | 'performance' | 'cost';
+
 export interface Question {
   id: number;
   question: string;
@@ -23,6 +25,30 @@ export interface AnswerEntry {
   selected: string[];
   isCorrect: boolean;
   submitted: boolean;
+}
+
+export interface DomainSummaryEntry {
+  correct: number;
+  total: number;
+  skipped: number;
+}
+
+export type DomainSummaryMap = Partial<Record<QuestionDomain, DomainSummaryEntry>>;
+
+export interface ReviewQuestion extends Question {
+  userAnswer: string[];
+  isCorrect: boolean;
+  isSkipped: boolean;
+}
+
+export interface QuizResultNavigationState {
+  total: number;
+  correct: number;
+  skipped: number;
+  timestamp: number;
+  domainSummary: DomainSummaryMap;
+  type: QuizType;
+  questions: ReviewQuestion[];
 }
 
 export interface DomainSummary {
