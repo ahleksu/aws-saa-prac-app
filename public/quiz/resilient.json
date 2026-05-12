@@ -2143,5 +2143,97 @@
         "explanation": "Correlation IDs help connect logs and traces for the same request across services."
       }
     ]
+  },
+  {
+    "id": 71,
+    "question": "A company plans to run a monitoring application on an Amazon EC2 instance in a VPC. Connections are made to the EC2 instance using the instance's private IPv4 address. A solutions architect needs to design a solution that will allow traffic to be quickly directed to a standby EC2 instance if the application fails and becomes unreachable. Which approach will meet these requirements?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Deploy an Application Load Balancer configured with a listener for the private IP address and register the primary EC2 instance with the load balancer. Upon failure, de-register the instance and register the standby EC2 instance.",
+        "status": "skipped",
+        "explanation": "An Application Load Balancer is addressed through load balancer DNS and listeners, not by moving a specific private IPv4 address used by clients."
+      },
+      {
+        "text": "Configure a custom DHCP option set. Configure DHCP to assign the same private IP address to the standby EC2 instance when the primary EC2 instance fails.",
+        "status": "skipped",
+        "explanation": "DHCP option sets do not provide failover assignment of the same private IP address between EC2 instances."
+      },
+      {
+        "text": "Attach a secondary elastic network interface to the EC2 instance configured with the private IP address. Move the network interface to the standby EC2 instance if the primary EC2 instance becomes unreachable.",
+        "status": "correct",
+        "explanation": "A secondary elastic network interface can be detached from one instance and attached to another, moving its private IP address with it."
+      },
+      {
+        "text": "Associate an Elastic IP address with the network interface of the primary EC2 instance. Disassociate the Elastic IP from the primary instance upon failure and associate it with a standby EC2 instance.",
+        "status": "skipped",
+        "explanation": "The clients connect by private IPv4 address, so moving a public Elastic IP address does not satisfy the requirement."
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "question": "A company runs an online voting system for a weekly live television program. During broadcasts, users submit hundreds of thousands of votes within minutes to a front-end fleet of Amazon EC2 instances that run in an Auto Scaling group. The EC2 instances write the votes to an Amazon RDS database. However, the database is unable to keep up with the requests that come from the EC2 instances. A solutions architect must design a solution that processes the votes in the most efficient manner and without downtime. Which solution meets these requirements?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Migrate the front-end application to AWS Lambda. Use Amazon API Gateway to route user requests to the Lambda functions.",
+        "status": "skipped",
+        "explanation": "Changing the compute layer does not remove the database write bottleneck and could still overload the database."
+      },
+      {
+        "text": "Scale the database horizontally by converting it to a Multi-AZ deployment. Configure the front-end application to write to both the primary and secondary DB instances.",
+        "status": "skipped",
+        "explanation": "RDS Multi-AZ provides a standby for availability; applications do not write to both primary and standby instances."
+      },
+      {
+        "text": "Configure the front-end application to send votes to an Amazon Simple Queue Service (Amazon SQS) queue. Provision worker instances to read the SQS queue and write the vote information to the database.",
+        "status": "correct",
+        "explanation": "SQS decouples vote ingestion from database writes so votes can be accepted quickly and workers can write at a rate the database can handle."
+      },
+      {
+        "text": "Use Amazon EventBridge (Amazon CloudWatch Events) to create a scheduled event to re-provision the database with larger, memory optimized instances during voting periods. When voting ends, re-provision the database to use smaller instances.",
+        "status": "skipped",
+        "explanation": "Resizing the database creates operational risk and does not buffer sudden vote spikes without downtime."
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "question": "A company has a two-tier application architecture that runs in public and private subnets. Amazon EC2 instances running the web application are in the public subnet and an EC2 instance for the database runs on the private subnet. The web application instances and the database are running in a single Availability Zone (AZ). Which combination of steps should a solutions architect take to provide high availability for this architecture? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Create new public and private subnets in the same AZ.",
+        "status": "skipped",
+        "explanation": "More subnets in the same Availability Zone do not provide AZ-level redundancy."
+      },
+      {
+        "text": "Create an Amazon EC2 Auto Scaling group and Application Load Balancer spanning multiple AZs for the web application instances.",
+        "status": "correct",
+        "explanation": "An Auto Scaling group behind an Application Load Balancer across multiple AZs improves web-tier availability."
+      },
+      {
+        "text": "Add the existing web application instances to an Auto Scaling group behind an Application Load Balancer.",
+        "status": "skipped",
+        "explanation": "Using only the existing single-AZ instances does not add multi-AZ redundancy."
+      },
+      {
+        "text": "Create new public and private subnets in a new AZ. Create a database using an EC2 instance in the public subnet in the new AZ. Migrate the old database contents to the new database.",
+        "status": "skipped",
+        "explanation": "A database in a public subnet weakens the design and manually managing EC2 database failover is not the high-availability pattern requested."
+      },
+      {
+        "text": "Create new public and private subnets in the same VPC, each in a new AZ. Create an Amazon RDS Multi-AZ DB instance in the private subnets. Migrate the old database contents to the new DB instance.",
+        "status": "correct",
+        "explanation": "New subnets in another AZ plus an RDS Multi-AZ deployment provide managed database high availability in private subnets."
+      }
+    ]
   }
 ]

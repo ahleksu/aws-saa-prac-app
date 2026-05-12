@@ -2438,5 +2438,102 @@
         "explanation": "S3 replication can copy objects across accounts and Regions for compliance and resilience."
       }
     ]
+  },
+  {
+    "id": 81,
+    "question": "A company runs a public-facing three-tier web application in a VPC across multiple Availability Zones. Amazon EC2 instances for the application tier running in private subnets need to download software patches from the internet. However, the EC2 instances cannot be directly accessible from the internet. Which actions should be taken to allow the EC2 instances to download the needed patches? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Configure a NAT gateway in a public subnet.",
+        "status": "correct",
+        "explanation": "A NAT gateway in a public subnet lets private-subnet instances initiate outbound internet connections without exposing the instances to inbound internet traffic."
+      },
+      {
+        "text": "Define a custom route table with a route to the NAT gateway for internet traffic and associate it with the private subnets for the application tier.",
+        "status": "correct",
+        "explanation": "Private subnet route tables must send default internet-bound traffic to the NAT gateway so the instances can reach patch repositories."
+      },
+      {
+        "text": "Assign Elastic IP addresses to the EC2 instances.",
+        "status": "skipped",
+        "explanation": "Elastic IP addresses would make the instances directly addressable from the internet, which violates the requirement."
+      },
+      {
+        "text": "Define a custom route table with a route to the internet gateway for internet traffic and associate it with the private subnets for the application tier.",
+        "status": "skipped",
+        "explanation": "A direct route to an internet gateway is for public subnet internet access and would not keep the instances private."
+      },
+      {
+        "text": "Configure a NAT instance in a private subnet.",
+        "status": "skipped",
+        "explanation": "A NAT instance must be reachable from private subnets and have internet access through a public subnet; placing it in a private subnet does not satisfy the design."
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "question": "An analytics company is planning to offer a web analytics service to its users. The service will require that the users' webpages include a JavaScript script that makes authenticated GET requests to the company's Amazon S3 bucket. What must a solutions architect do to ensure that the script will successfully execute?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable cross-origin resource sharing (CORS) on the S3 bucket.",
+        "status": "correct",
+        "explanation": "Browsers enforce same-origin policy, and S3 CORS rules allow approved browser requests from other origins."
+      },
+      {
+        "text": "Enable S3 Versioning on the S3 bucket.",
+        "status": "skipped",
+        "explanation": "Versioning preserves object versions but does not authorize browser cross-origin JavaScript requests."
+      },
+      {
+        "text": "Provide the users with a signed URL for the script.",
+        "status": "skipped",
+        "explanation": "Signed URLs can authorize object access, but they do not by themselves satisfy the browser CORS requirement."
+      },
+      {
+        "text": "Configure an S3 bucket policy to allow public execute privileges.",
+        "status": "skipped",
+        "explanation": "S3 does not use public execute privileges for browser CORS, and making access public is not required for authenticated GET requests."
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "question": "A company's security team requires that all data stored in the cloud be encrypted at rest at all times using encryption keys stored on premises. Which encryption options meet these requirements? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use server-side encryption with Amazon S3 managed encryption keys (SSE-S3).",
+        "status": "skipped",
+        "explanation": "SSE-S3 uses keys managed by Amazon S3, not keys stored on premises."
+      },
+      {
+        "text": "Use server-side encryption with AWS KMS managed encryption keys (SSE-KMS).",
+        "status": "skipped",
+        "explanation": "SSE-KMS uses keys managed in AWS KMS, so it does not meet the requirement for keys stored on premises."
+      },
+      {
+        "text": "Use server-side encryption with customer-provided encryption keys (SSE-C).",
+        "status": "correct",
+        "explanation": "SSE-C lets the customer provide the encryption key with each request while retaining key material outside AWS."
+      },
+      {
+        "text": "Use client-side encryption to provide at-rest encryption.",
+        "status": "correct",
+        "explanation": "Client-side encryption encrypts data before upload, allowing the customer to keep encryption keys on premises."
+      },
+      {
+        "text": "Use an AWS Lambda function invoked by Amazon S3 events to encrypt the data using the customer's keys.",
+        "status": "skipped",
+        "explanation": "S3 event processing happens after the object is stored, so it does not guarantee that data is encrypted at rest at all times."
+      }
+    ]
   }
 ]

@@ -6,11 +6,11 @@
 
 ## Snapshot
 
-- **Today:** 2026-05-11
+- **Today:** 2026-05-12
 - **Exam date:** 2026-05-15 (target: T-5 days)
-- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/review complete; P4 readiness gate complete.
-- **Latest context audit:** 2026-05-11 — Final readiness verification completed on `main`: `all.json` regenerated to 270 questions, validator/tests/build passed, answer audit remains `[52,51,50,50]` with multiple leading-contiguous `0/67`, Playwright Edge AXE has zero serious/critical issues on `/`, `/quiz?type=secure`, `/result`, and `/review`, and the DoD flow smoke passes for `all`, `secure`, `resilient`, `performance`, and `cost`.
-- **Active phase:** Exam-ready. P0, P1, P2, P3, and P4 complete; P5 remains deferred until after 2026-05-16.
+- **Repo state:** P0 complete plus P1 question bank complete; P2 quiz page complete; P3 result/review complete; P4 readiness gate complete; P6 official AWS samples and sibling prep CLI complete.
+- **Latest context audit:** 2026-05-12 — Added the 10 AWS official SAA-C03 sample questions from the AWS sample PDF, regenerated `all.json` to 280 questions, added `scripts/check-official-samples.mjs` plus `npm run check:official-samples`, updated source attribution, and created sibling `../aws-saa-prep` Python `uv` CLI repo for hands-on lab tracking.
+- **Active phase:** Exam-ready with P6 add-on complete. P5 live/deployment/future-study features remain deferred until after 2026-05-16.
 
 ## Phase Status Overview
 
@@ -22,6 +22,7 @@
 | P3 | Result & Review | **Complete** | 6 / 6 | Result and Review pages complete with text labels for non-color-only status |
 | P4 | Polish & Readiness Gate | **Complete** | 7 / 7 | AXE clean, production build passes, user-confirmed mobile/mock run recorded, answer-order bias fixed, DoD flow smoke passes, and `v1.0-exam-ready` tag created |
 | P5 | Post-exam (Live mode etc.) | **Deferred** | 0 / 4 | Do not start before 2026-05-16 |
+| P6 | Official Samples + Hands-On Prep CLI | **Complete** | 6 / 6 | Official AWS sample set added; sibling Python `uv` CLI repo created at `../aws-saa-prep` |
 
 ---
 
@@ -100,6 +101,15 @@
 - [x] P4-T7: Read-only manager review approved the branch for commit/push after reviewing scope, Angular rules, context accuracy, data-only JSON reorder, and rerunning `node scripts/validate-quiz.mjs`, `npm test -- --watch=false`, `npm run build`, and answer-position audit (`all.json` singles `[52,51,50,50]`, multiple leading-contiguous `0/67`). — 2026-05-10
 - [x] P4-T5: PLAN §14 DoD verified: `node scripts/build-all-json.mjs` regenerated `public/quiz/all.json` to 270 questions; `node scripts/validate-quiz.mjs` passed for all five JSON files; Playwright flow smoke (`scripts/flow-check.mjs`, `npm run flow`) passed Home → Quiz → Result → Review for `all`, `secure`, `resilient`, `performance`, and `cost`; Playwright Edge AXE passed with 0 serious/critical issues on all required routes; `npm run build` passed within budgets; user-confirmed full mock exam remains recorded. Tagged final readiness commit as `v1.0-exam-ready`. — 2026-05-11
 
+## Phase P6 — Official AWS Samples + Hands-On Prep CLI
+
+- [x] P6-T1: Added `scripts/check-official-samples.mjs` and `npm run check:official-samples`; red run confirmed the 10 official sample stems were missing, then the check passed after ingestion. — 2026-05-12
+- [x] P6-T2: Added the 10 AWS official SAA-C03 sample questions from the AWS sample PDF across `secure.json`, `resilient.json`, `performance.json`, and `cost.json`, with app-specific explanations and canonical AWS documentation resources. — 2026-05-12
+- [x] P6-T3: Regenerated `public/quiz/all.json`; total is now 280 questions with ids `1..280`. `node scripts/validate-quiz.mjs` reports 0 errors across all five JSON files. — 2026-05-12
+- [x] P6-T4: Updated `PLAN.md`, `TODOs.md`, `PROGRESS.md`, and `NOTICES.md` for the official AWS sample addition, source attribution, and sibling CLI scope. — 2026-05-12
+- [x] P6-T5: Created `/Users/johnalexrobles/Desktop/ahleksu/aws-saa-prep` as a standalone Python `uv` repository with `pyproject.toml`, `uv.lock`, README, `src/`, tests, `.git`, and tracked `hands-on/`, `resources/`, and `notes/` directories. — 2026-05-12
+- [x] P6-T6: Implemented `aws-saa-prep` CLI commands: `init`, `new`, `list`, `show`, `status`, and `learn`; tests cover the lab folder/metadata/readme workflows. — 2026-05-12
+
 ---
 
 ## Decisions Log
@@ -112,6 +122,8 @@
 - 2026-05-10 — Disable Angular CLI persistent cache in `angular.json` — plain `npm run build` repeatedly aborted with `SIGABRT` in the native LMDB cache path under Node 24/macOS; `CI=true npm run build` passed, proving the app build was clean. Disabling the cache makes normal local builds reliable with only a rebuild-speed tradeoff.
 - 2026-05-10 — Use both authored JSON balancing and runtime answer shuffling for SAA answer order — JSON balance prevents static bank bias and runtime Fisher-Yates prevents any per-run answer-position pattern from reaching the user.
 - 2026-05-11 — Keep Playwright + `axe-core` as dev dependencies for repeatable readiness checks — required for automated AXE coverage and DoD flow smoke without relying on manual DevTools state.
+- 2026-05-12 — Use a separate Python `uv` CLI repository for hands-on lab tracking — keeps lab notes and AWS account practice artifacts out of the Angular quiz app while still living beside it under `~/Desktop/ahleksu`.
+- 2026-05-12 — Keep official sample PDF attribution in `NOTICES.md` while using canonical AWS documentation URLs in each question's `resource` field — preserves existing validator host rules and gives each answer a service-specific reference.
 
 ## Blockers
 <!-- Format: "YYYY-MM-DD — <blocker> — <what would unblock>" -->

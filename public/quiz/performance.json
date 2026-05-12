@@ -1963,5 +1963,63 @@
         "explanation": "Athena can run SQL queries directly against structured data stored in S3."
       }
     ]
+  },
+  {
+    "id": 66,
+    "question": "A website runs a custom web application that receives a burst of traffic each day at noon. The users upload new pictures and content daily, but have been complaining of timeouts. The architecture uses Amazon EC2 Auto Scaling groups, and the application consistently takes 1 minute to initiate upon boot up before responding to user requests. How should a solutions architect redesign the architecture to better respond to changing traffic?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-warmup.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Configure a Network Load Balancer with a slow start configuration.",
+        "status": "skipped",
+        "explanation": "Slow start is an Application Load Balancer target group feature, not a Network Load Balancer setting for EC2 boot warmup."
+      },
+      {
+        "text": "Configure Amazon ElastiCache for Redis to offload direct requests from the EC2 instances.",
+        "status": "skipped",
+        "explanation": "Caching can reduce repeated reads, but it does not address Auto Scaling adding instances before they are ready."
+      },
+      {
+        "text": "Configure an Auto Scaling step scaling policy with an EC2 instance warmup condition.",
+        "status": "correct",
+        "explanation": "Instance warmup keeps newly launched instances out of aggregated scaling metrics until they are ready, improving response to predictable bursts."
+      },
+      {
+        "text": "Configure Amazon CloudFront to use an Application Load Balancer as the origin.",
+        "status": "skipped",
+        "explanation": "CloudFront can cache content at edge locations, but it does not solve the instance initialization delay for uncached uploads and dynamic requests."
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "question": "An application running on AWS uses an Amazon Aurora Multi-AZ DB cluster deployment for its database. When evaluating performance metrics, a solutions architect discovered that the database reads are causing high I/O and adding latency to the write requests against the database. What should the solutions architect do to separate the read requests from the write requests?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable read-through caching on the Aurora database.",
+        "status": "skipped",
+        "explanation": "Aurora does not provide a database-level read-through cache setting that separates read and write endpoints."
+      },
+      {
+        "text": "Update the application to read from the Multi-AZ standby instance.",
+        "status": "skipped",
+        "explanation": "Aurora read scaling uses Aurora Replicas and reader endpoints, not reads from a traditional standby instance."
+      },
+      {
+        "text": "Create an Aurora replica and modify the application to use the appropriate endpoints.",
+        "status": "correct",
+        "explanation": "Aurora Replicas can serve read traffic through reader endpoints, separating reads from writes on the writer endpoint."
+      },
+      {
+        "text": "Create a second Aurora database and link it to the primary database as a read replica.",
+        "status": "skipped",
+        "explanation": "Aurora Replicas belong to the same Aurora DB cluster and share storage; creating a separate database is not the normal read-scaling pattern."
+      }
+    ]
   }
 ]

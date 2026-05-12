@@ -2441,6 +2441,103 @@
   },
   {
     "id": 81,
+    "question": "A company runs a public-facing three-tier web application in a VPC across multiple Availability Zones. Amazon EC2 instances for the application tier running in private subnets need to download software patches from the internet. However, the EC2 instances cannot be directly accessible from the internet. Which actions should be taken to allow the EC2 instances to download the needed patches? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Configure a NAT gateway in a public subnet.",
+        "status": "correct",
+        "explanation": "A NAT gateway in a public subnet lets private-subnet instances initiate outbound internet connections without exposing the instances to inbound internet traffic."
+      },
+      {
+        "text": "Define a custom route table with a route to the NAT gateway for internet traffic and associate it with the private subnets for the application tier.",
+        "status": "correct",
+        "explanation": "Private subnet route tables must send default internet-bound traffic to the NAT gateway so the instances can reach patch repositories."
+      },
+      {
+        "text": "Assign Elastic IP addresses to the EC2 instances.",
+        "status": "skipped",
+        "explanation": "Elastic IP addresses would make the instances directly addressable from the internet, which violates the requirement."
+      },
+      {
+        "text": "Define a custom route table with a route to the internet gateway for internet traffic and associate it with the private subnets for the application tier.",
+        "status": "skipped",
+        "explanation": "A direct route to an internet gateway is for public subnet internet access and would not keep the instances private."
+      },
+      {
+        "text": "Configure a NAT instance in a private subnet.",
+        "status": "skipped",
+        "explanation": "A NAT instance must be reachable from private subnets and have internet access through a public subnet; placing it in a private subnet does not satisfy the design."
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "question": "An analytics company is planning to offer a web analytics service to its users. The service will require that the users' webpages include a JavaScript script that makes authenticated GET requests to the company's Amazon S3 bucket. What must a solutions architect do to ensure that the script will successfully execute?",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable cross-origin resource sharing (CORS) on the S3 bucket.",
+        "status": "correct",
+        "explanation": "Browsers enforce same-origin policy, and S3 CORS rules allow approved browser requests from other origins."
+      },
+      {
+        "text": "Enable S3 Versioning on the S3 bucket.",
+        "status": "skipped",
+        "explanation": "Versioning preserves object versions but does not authorize browser cross-origin JavaScript requests."
+      },
+      {
+        "text": "Provide the users with a signed URL for the script.",
+        "status": "skipped",
+        "explanation": "Signed URLs can authorize object access, but they do not by themselves satisfy the browser CORS requirement."
+      },
+      {
+        "text": "Configure an S3 bucket policy to allow public execute privileges.",
+        "status": "skipped",
+        "explanation": "S3 does not use public execute privileges for browser CORS, and making access public is not required for authenticated GET requests."
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "question": "A company's security team requires that all data stored in the cloud be encrypted at rest at all times using encryption keys stored on premises. Which encryption options meet these requirements? (Choose TWO)",
+    "domain": "Design Secure Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerSideEncryptionCustomerKeys.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Use server-side encryption with Amazon S3 managed encryption keys (SSE-S3).",
+        "status": "skipped",
+        "explanation": "SSE-S3 uses keys managed by Amazon S3, not keys stored on premises."
+      },
+      {
+        "text": "Use server-side encryption with AWS KMS managed encryption keys (SSE-KMS).",
+        "status": "skipped",
+        "explanation": "SSE-KMS uses keys managed in AWS KMS, so it does not meet the requirement for keys stored on premises."
+      },
+      {
+        "text": "Use server-side encryption with customer-provided encryption keys (SSE-C).",
+        "status": "correct",
+        "explanation": "SSE-C lets the customer provide the encryption key with each request while retaining key material outside AWS."
+      },
+      {
+        "text": "Use client-side encryption to provide at-rest encryption.",
+        "status": "correct",
+        "explanation": "Client-side encryption encrypts data before upload, allowing the customer to keep encryption keys on premises."
+      },
+      {
+        "text": "Use an AWS Lambda function invoked by Amazon S3 events to encrypt the data using the customer's keys.",
+        "status": "skipped",
+        "explanation": "S3 event processing happens after the object is stored, so it does not guarantee that data is encrypted at rest at all times."
+      }
+    ]
+  },
+  {
+    "id": 84,
     "question": "An ecommerce application receives bursts of orders during flash sales. The checkout API must respond quickly even when the fulfillment system is temporarily slow, and no accepted order should be lost. Which design best improves resilience through loose coupling?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -2469,7 +2566,7 @@
     ]
   },
   {
-    "id": 82,
+    "id": 85,
     "question": "A billing platform must notify email, analytics, and fraud services whenever an invoice is created. Each service should be able to fail or scale independently without blocking the others. Which architecture is the best fit?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/sns/latest/dg/welcome.html",
@@ -2498,7 +2595,7 @@
     ]
   },
   {
-    "id": 83,
+    "id": 86,
     "question": "A company is moving to event-driven microservices. Teams need to route events from internal applications and supported SaaS sources to different targets based on event content, with minimal custom routing code. Which service should they use?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
@@ -2527,7 +2624,7 @@
     ]
   },
   {
-    "id": 84,
+    "id": 87,
     "question": "An order workflow validates payment, reserves inventory, ships products, and sends notifications. The workflow needs retries, branching, and a visible execution history when a step fails. Which service should coordinate the workflow?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
@@ -2556,7 +2653,7 @@
     ]
   },
   {
-    "id": 85,
+    "id": 88,
     "question": "A photo processing service receives thousands of uploads per minute. Processing can take several seconds, and temporary processor failures should not require users to retry uploads. Which design is most resilient?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -2585,7 +2682,7 @@
     ]
   },
   {
-    "id": 86,
+    "id": 89,
     "question": "A containerized web application must stay available during an Availability Zone impairment. The team wants AWS to manage the container hosts and replace unhealthy tasks. Which deployment option best meets the requirement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
@@ -2614,7 +2711,7 @@
     ]
   },
   {
-    "id": 87,
+    "id": 90,
     "question": "A web platform has separate services for user profiles, search, and checkout. The company wants one public HTTPS endpoint that routes requests by path to healthy targets in multiple Availability Zones. Which component should be used?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
@@ -2643,7 +2740,7 @@
     ]
   },
   {
-    "id": 88,
+    "id": 91,
     "question": "A stateless web tier runs on EC2 instances and has predictable daily traffic peaks. The application must add capacity automatically and replace unhealthy instances. Which design should be chosen?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
@@ -2672,7 +2769,7 @@
     ]
   },
   {
-    "id": 89,
+    "id": 92,
     "question": "A production application uses Amazon RDS for PostgreSQL. The database must automatically fail over if the primary DB instance or its Availability Zone fails, with minimal application changes. Which option should be configured?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html",
@@ -2701,7 +2798,7 @@
     ]
   },
   {
-    "id": 90,
+    "id": 93,
     "question": "A company is building a relational workload on Amazon Aurora. The database must tolerate storage failures and support rapid failover to another instance in the cluster. Which design is most appropriate?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
@@ -2730,7 +2827,7 @@
     ]
   },
   {
-    "id": 91,
+    "id": 94,
     "question": "A global gaming application stores player profiles in DynamoDB. Users in North America and Europe require local low-latency reads and writes, and the application must remain available if one Region is unavailable. Which feature should be used?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",
@@ -2759,7 +2856,7 @@
     ]
   },
   {
-    "id": 92,
+    "id": 95,
     "question": "A media company stores source video files in an S3 bucket. It needs copies in a second AWS Region for disaster recovery while retaining object metadata and updates after the rule is enabled. Which capability should be configured?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
@@ -2788,7 +2885,7 @@
     ]
   },
   {
-    "id": 93,
+    "id": 96,
     "question": "A public web application runs in two AWS Regions. The company wants DNS to direct users to the primary Region and automatically route to the secondary Region only when health checks fail. Which Route 53 routing policy should be used?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
@@ -2817,7 +2914,7 @@
     ]
   },
   {
-    "id": 94,
+    "id": 97,
     "question": "A reporting application can be offline for several hours after a Regional disaster, and up to one day of data loss is acceptable. The company wants the lowest ongoing DR cost. Which strategy is most appropriate?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -2846,7 +2943,7 @@
     ]
   },
   {
-    "id": 95,
+    "id": 98,
     "question": "A transactional workload requires faster disaster recovery than backup and restore, but the business cannot justify running a full duplicate environment. The secondary Region should contain core infrastructure and replicated data, with application servers scaled up during recovery. Which DR strategy is this?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -2875,7 +2972,7 @@
     ]
   },
   {
-    "id": 96,
+    "id": 99,
     "question": "A customer-facing workload needs a disaster recovery design with minutes of RTO. A smaller version of the full application stack should run continuously in a second Region and scale out during failover. Which strategy matches this requirement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -2904,7 +3001,7 @@
     ]
   },
   {
-    "id": 97,
+    "id": 100,
     "question": "A critical SaaS application requires the lowest possible recovery time and near-continuous service through a Regional event. The company is willing to pay for full production capacity in more than one Region. Which DR pattern is most suitable?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -2933,7 +3030,7 @@
     ]
   },
   {
-    "id": 98,
+    "id": 101,
     "question": "A company is defining DR requirements for a payment system. The business states that no more than 5 minutes of committed transactions can be lost during a disaster. Which metric is being defined?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -2962,7 +3059,7 @@
     ]
   },
   {
-    "id": 99,
+    "id": 102,
     "question": "A read-heavy product catalog stores data in a relational database. During campaigns, many users repeatedly request the same product details and the database becomes overloaded. Which addition can improve resilience by reducing database load?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
@@ -2991,7 +3088,7 @@
     ]
   },
   {
-    "id": 100,
+    "id": 103,
     "question": "A public API receives unpredictable traffic spikes from mobile clients. The backend can process requests asynchronously, and clients do not need an immediate completed result. Which design best protects the backend?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html",
@@ -3020,7 +3117,7 @@
     ]
   },
   {
-    "id": 101,
+    "id": 104,
     "question": "A ticketing system must process reservation requests in the order they are submitted for each event and avoid accepting duplicate reservation messages generated by client retries. Which queue type is most appropriate?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3049,7 +3146,7 @@
     ]
   },
   {
-    "id": 102,
+    "id": 105,
     "question": "A worker fleet processes SQS messages. Some messages repeatedly fail because of invalid payloads, and the team needs to isolate these messages without blocking the queue. What should be configured?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3078,7 +3175,7 @@
     ]
   },
   {
-    "id": 103,
+    "id": 106,
     "question": "A Lambda function consumes messages from an SQS queue and writes to a database with a strict connection limit. During large bursts, the function opens too many concurrent database connections. Which configuration can protect the database while preserving queued work?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -3107,7 +3204,7 @@
     ]
   },
   {
-    "id": 104,
+    "id": 107,
     "question": "A company needs to coordinate a month-long approval workflow with durable state, human review steps, retries, and auditability. Which Step Functions workflow type is the better default choice?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
@@ -3136,7 +3233,7 @@
     ]
   },
   {
-    "id": 105,
+    "id": 108,
     "question": "A product team wants independent services to react to customer-created events. New consumers should be added later without changing the customer service code. Which integration approach best supports this goal?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
@@ -3165,7 +3262,7 @@
     ]
   },
   {
-    "id": 106,
+    "id": 109,
     "question": "An application uses Amazon RDS for MySQL. The main issue is heavy read traffic from reports, not failover time. Which option should be added to scale reads while keeping the primary focused on writes?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
@@ -3194,7 +3291,7 @@
     ]
   },
   {
-    "id": 107,
+    "id": 110,
     "question": "A global application uses Aurora and needs a disaster recovery copy in another Region with low-lag replication and faster cross-Region recovery than snapshot restore. Which Aurora capability should be considered?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
@@ -3223,7 +3320,7 @@
     ]
   },
   {
-    "id": 108,
+    "id": 111,
     "question": "A web application stores user session data in memory on each EC2 instance. Users are frequently logged out when Auto Scaling replaces instances. Which change best supports a resilient stateless web tier?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3252,7 +3349,7 @@
     ]
   },
   {
-    "id": 109,
+    "id": 112,
     "question": "A company is refactoring a monolithic application into services. It wants each service to scale independently and avoid cascading failures when a noncritical service is slow. Which design principle should be applied?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3281,7 +3378,7 @@
     ]
   },
   {
-    "id": 110,
+    "id": 113,
     "question": "A batch ingestion job runs on a fixed schedule and occasionally has more work than one container can finish. The team wants managed container orchestration with the ability to run tasks without managing servers. Which service combination fits?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
@@ -3310,7 +3407,7 @@
     ]
   },
   {
-    "id": 111,
+    "id": 114,
     "question": "A workload uses a queue to absorb bursts, but workers often receive empty responses while polling. The team wants to reduce unnecessary polling and cost without changing the asynchronous design. What should be enabled?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3339,7 +3436,7 @@
     ]
   },
   {
-    "id": 112,
+    "id": 115,
     "question": "An online store needs to process thumbnails after customers upload images. Upload success should not depend on thumbnail generation, and failed thumbnail jobs should be retried later. Which design is most resilient?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3368,7 +3465,7 @@
     ]
   },
   {
-    "id": 113,
+    "id": 116,
     "question": "A web application is behind an Application Load Balancer and uses an Auto Scaling group. Instances sometimes pass EC2 status checks but fail the application health endpoint. What should be configured so failed application instances are replaced?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
@@ -3397,7 +3494,7 @@
     ]
   },
   {
-    "id": 114,
+    "id": 117,
     "question": "A team deploys a web application into one public subnet. It needs to tolerate failure of a single Availability Zone. What is the best architectural change?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
@@ -3426,7 +3523,7 @@
     ]
   },
   {
-    "id": 115,
+    "id": 118,
     "question": "A company wants deployments to be repeatable and recover from failed instances by launching known-good replacements instead of patching servers manually. Which practice best supports resilient infrastructure?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3455,7 +3552,7 @@
     ]
   },
   {
-    "id": 116,
+    "id": 119,
     "question": "A streaming event application expects a major launch day spike. The architecture scales horizontally, but current AWS service quotas might cap the number of tasks and message throughput. What should the team do before launch?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3484,7 +3581,7 @@
     ]
   },
   {
-    "id": 117,
+    "id": 120,
     "question": "A microservices application has intermittent failures and slow requests across several services. The team needs end-to-end traces to see which downstream dependency is adding latency or returning errors. Which AWS service is designed for this visibility?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
@@ -3513,7 +3610,7 @@
     ]
   },
   {
-    "id": 118,
+    "id": 121,
     "question": "A company hosts a static website in S3 and wants users to access cached content from edge locations while reducing origin load. Which service should be added in front of the S3 origin?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -3542,7 +3639,7 @@
     ]
   },
   {
-    "id": 119,
+    "id": 122,
     "question": "A company needs a centrally managed backup service for EC2 EBS volumes, RDS databases, and other supported AWS resources. The solution should apply backup schedules and retention policies consistently. What should be used?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
@@ -3571,7 +3668,7 @@
     ]
   },
   {
-    "id": 120,
+    "id": 123,
     "question": "An RDS database needs point-in-time recovery to restore to a recent moment before an accidental data change. Which feature supports this requirement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
@@ -3600,7 +3697,7 @@
     ]
   },
   {
-    "id": 121,
+    "id": 124,
     "question": "A serverless API uses API Gateway and Lambda. The business wants the API to remain highly available without managing servers across Availability Zones. Which statement best describes this design?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -3629,7 +3726,7 @@
     ]
   },
   {
-    "id": 122,
+    "id": 125,
     "question": "A Lambda function processes batches of SQS messages. One bad message can cause the whole batch to be retried, delaying other valid messages. Which improvement reduces repeated processing of successful messages?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -3658,7 +3755,7 @@
     ]
   },
   {
-    "id": 123,
+    "id": 126,
     "question": "An inventory service receives more update requests than its downstream database can process during promotions. Requests can be processed asynchronously, and the system must smooth bursts. Which AWS service is the most appropriate buffer?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3687,7 +3784,7 @@
     ]
   },
   {
-    "id": 124,
+    "id": 127,
     "question": "An ECS service needs to increase the number of running tasks when CPU utilization rises and reduce them when demand falls. Which feature should be configured?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
@@ -3716,7 +3813,7 @@
     ]
   },
   {
-    "id": 125,
+    "id": 128,
     "question": "A three-tier web application must expose only the load balancer to the internet. Web servers should not have public IP addresses, and the database should be isolated from public traffic. Which design best matches this requirement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
@@ -3745,7 +3842,7 @@
     ]
   },
   {
-    "id": 126,
+    "id": 129,
     "question": "A web service makes calls to a payment provider that occasionally times out. Retrying can create duplicate charges unless each request is recognized safely. What design should the application implement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3774,7 +3871,7 @@
     ]
   },
   {
-    "id": 127,
+    "id": 130,
     "question": "A data platform wants to replay past business events into a newly added service for backfill and testing. The team prefers a managed event bus feature instead of maintaining a custom event archive. Which capability should be considered?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
@@ -3803,7 +3900,7 @@
     ]
   },
   {
-    "id": 128,
+    "id": 131,
     "question": "A workflow includes a payment step followed by a shipping step. If shipping fails after payment succeeds, the system must run a compensation step and record the final outcome. Which approach is most appropriate?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
@@ -3832,7 +3929,7 @@
     ]
   },
   {
-    "id": 129,
+    "id": 132,
     "question": "A DynamoDB table stores operational records that must be recoverable after accidental deletes or writes. The team wants a managed recovery feature for recent points in time. Which feature should be enabled?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
@@ -3861,7 +3958,7 @@
     ]
   },
   {
-    "id": 130,
+    "id": 133,
     "question": "A company needs to make sure backups cannot be deleted or shortened by a compromised administrator account during a retention period. Which AWS Backup feature helps meet this requirement?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
@@ -3890,7 +3987,7 @@
     ]
   },
   {
-    "id": 131,
+    "id": 134,
     "question": "A company wants a multi-Region architecture for a public API. The application can serve traffic from either Region, and users should be sent to the Region with the lowest network latency during normal operation. Which Route 53 policy is most appropriate?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
@@ -3919,7 +4016,7 @@
     ]
   },
   {
-    "id": 132,
+    "id": 135,
     "question": "A company wants to reduce the effect of an Availability Zone failure on an application that uses EC2 instances. Application code is stateless and stores durable data externally. Which deployment pattern is best?",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -3948,7 +4045,7 @@
     ]
   },
   {
-    "id": 133,
+    "id": 136,
     "question": "A checkout service must accept orders during short traffic spikes while a fulfillment service processes them at a slower fixed rate. Failed fulfillment attempts should be isolated for later inspection. Which design choices meet these requirements? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
@@ -3982,7 +4079,7 @@
     ]
   },
   {
-    "id": 134,
+    "id": 137,
     "question": "A company is designing a highly available web application on EC2 with a relational database. It must tolerate the loss of one Availability Zone and automatically remove unhealthy web instances from service. Which components should be included? (Choose THREE)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
@@ -4021,7 +4118,7 @@
     ]
   },
   {
-    "id": 135,
+    "id": 138,
     "question": "A user-registration service must publish an event to fraud, email, and analytics consumers. Each consumer needs its own retry behavior and should not block the others. Which choices support this architecture? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/sns/latest/dg/welcome.html",
@@ -4055,7 +4152,7 @@
     ]
   },
   {
-    "id": 136,
+    "id": 139,
     "question": "A SaaS company wants to route application events to different targets based on event attributes. It also wants to add new event consumers without modifying producer services. Which choices are appropriate? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
@@ -4089,7 +4186,7 @@
     ]
   },
   {
-    "id": 137,
+    "id": 140,
     "question": "A workload requires a warm standby disaster recovery strategy in a secondary Region. The business wants faster recovery than pilot light but lower cost than full active-active. Which characteristics should be present? (Choose THREE)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -4128,7 +4225,7 @@
     ]
   },
   {
-    "id": 138,
+    "id": 141,
     "question": "A team is comparing disaster recovery patterns for several workloads. Which statements correctly match DR strategy tradeoffs? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/welcome.html",
@@ -4162,7 +4259,7 @@
     ]
   },
   {
-    "id": 139,
+    "id": 142,
     "question": "A company is enabling Amazon RDS Multi-AZ for a production database. Which statements describe this configuration? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
@@ -4196,7 +4293,7 @@
     ]
   },
   {
-    "id": 140,
+    "id": 143,
     "question": "A team is designing an Aurora database for high availability. Which statements are accurate for Aurora resiliency? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
@@ -4230,7 +4327,7 @@
     ]
   },
   {
-    "id": 141,
+    "id": 144,
     "question": "A company stores compliance documents in Amazon S3 and needs a disaster recovery copy in another Region. It wants new object versions copied automatically after configuration. Which requirements must be met? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
@@ -4264,7 +4361,7 @@
     ]
   },
   {
-    "id": 142,
+    "id": 145,
     "question": "A serverless order processor uses Lambda and asynchronous integrations. The team wants to handle transient failures without losing events and avoid duplicate side effects when retries occur. Which practices should be used? (Choose THREE)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -4303,7 +4400,7 @@
     ]
   },
   {
-    "id": 143,
+    "id": 146,
     "question": "A mobile application stores user preferences in DynamoDB and must support low-latency reads and writes in two Regions. The application should continue operating locally if one Region is impaired. Which statements support this design? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
@@ -4337,7 +4434,7 @@
     ]
   },
   {
-    "id": 144,
+    "id": 147,
     "question": "A company has primary and secondary endpoints for a public application. It wants DNS to return the secondary endpoint only when the primary endpoint fails health checks. Which Route 53 configurations are needed? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
@@ -4371,7 +4468,7 @@
     ]
   },
   {
-    "id": 145,
+    "id": 148,
     "question": "A stateless application on EC2 must scale with demand and recover automatically from instance or Availability Zone failures. Which Auto Scaling design choices help meet this requirement? (Choose THREE)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
@@ -4410,7 +4507,7 @@
     ]
   },
   {
-    "id": 146,
+    "id": 149,
     "question": "An insurance application has a claims workflow with several service calls, retries, timeouts, and manual review. The company wants durable orchestration rather than custom retry code in every service. Which choices are appropriate? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
@@ -4444,7 +4541,7 @@
     ]
   },
   {
-    "id": 147,
+    "id": 150,
     "question": "A company runs a containerized API on Amazon ECS with Fargate. The API must continue serving traffic if tasks fail or an Availability Zone is impaired. Which configurations help achieve this? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
@@ -4478,7 +4575,7 @@
     ]
   },
   {
-    "id": 148,
+    "id": 151,
     "question": "A company wants to reduce cascading failures in a microservices platform. Services should be independently deployable and should not all fail when one reporting service is slow. Which practices help? (Choose THREE)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
@@ -4517,7 +4614,7 @@
     ]
   },
   {
-    "id": 149,
+    "id": 152,
     "question": "A company must protect backups for several AWS services and also survive an account-level or Regional incident. Which AWS Backup practices support this requirement? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
@@ -4551,7 +4648,7 @@
     ]
   },
   {
-    "id": 150,
+    "id": 153,
     "question": "A distributed application has intermittent failures that are hard to isolate. The operations team needs request-level visibility and enough telemetry to identify which downstream service is causing errors. Which practices should be used? (Choose TWO)",
     "domain": "Design Resilient Architectures",
     "resource": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
@@ -4585,7 +4682,99 @@
     ]
   },
   {
-    "id": 151,
+    "id": 154,
+    "question": "A company plans to run a monitoring application on an Amazon EC2 instance in a VPC. Connections are made to the EC2 instance using the instance's private IPv4 address. A solutions architect needs to design a solution that will allow traffic to be quickly directed to a standby EC2 instance if the application fails and becomes unreachable. Which approach will meet these requirements?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Deploy an Application Load Balancer configured with a listener for the private IP address and register the primary EC2 instance with the load balancer. Upon failure, de-register the instance and register the standby EC2 instance.",
+        "status": "skipped",
+        "explanation": "An Application Load Balancer is addressed through load balancer DNS and listeners, not by moving a specific private IPv4 address used by clients."
+      },
+      {
+        "text": "Configure a custom DHCP option set. Configure DHCP to assign the same private IP address to the standby EC2 instance when the primary EC2 instance fails.",
+        "status": "skipped",
+        "explanation": "DHCP option sets do not provide failover assignment of the same private IP address between EC2 instances."
+      },
+      {
+        "text": "Attach a secondary elastic network interface to the EC2 instance configured with the private IP address. Move the network interface to the standby EC2 instance if the primary EC2 instance becomes unreachable.",
+        "status": "correct",
+        "explanation": "A secondary elastic network interface can be detached from one instance and attached to another, moving its private IP address with it."
+      },
+      {
+        "text": "Associate an Elastic IP address with the network interface of the primary EC2 instance. Disassociate the Elastic IP from the primary instance upon failure and associate it with a standby EC2 instance.",
+        "status": "skipped",
+        "explanation": "The clients connect by private IPv4 address, so moving a public Elastic IP address does not satisfy the requirement."
+      }
+    ]
+  },
+  {
+    "id": 155,
+    "question": "A company runs an online voting system for a weekly live television program. During broadcasts, users submit hundreds of thousands of votes within minutes to a front-end fleet of Amazon EC2 instances that run in an Auto Scaling group. The EC2 instances write the votes to an Amazon RDS database. However, the database is unable to keep up with the requests that come from the EC2 instances. A solutions architect must design a solution that processes the votes in the most efficient manner and without downtime. Which solution meets these requirements?",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Migrate the front-end application to AWS Lambda. Use Amazon API Gateway to route user requests to the Lambda functions.",
+        "status": "skipped",
+        "explanation": "Changing the compute layer does not remove the database write bottleneck and could still overload the database."
+      },
+      {
+        "text": "Scale the database horizontally by converting it to a Multi-AZ deployment. Configure the front-end application to write to both the primary and secondary DB instances.",
+        "status": "skipped",
+        "explanation": "RDS Multi-AZ provides a standby for availability; applications do not write to both primary and standby instances."
+      },
+      {
+        "text": "Configure the front-end application to send votes to an Amazon Simple Queue Service (Amazon SQS) queue. Provision worker instances to read the SQS queue and write the vote information to the database.",
+        "status": "correct",
+        "explanation": "SQS decouples vote ingestion from database writes so votes can be accepted quickly and workers can write at a rate the database can handle."
+      },
+      {
+        "text": "Use Amazon EventBridge (Amazon CloudWatch Events) to create a scheduled event to re-provision the database with larger, memory optimized instances during voting periods. When voting ends, re-provision the database to use smaller instances.",
+        "status": "skipped",
+        "explanation": "Resizing the database creates operational risk and does not buffer sudden vote spikes without downtime."
+      }
+    ]
+  },
+  {
+    "id": 156,
+    "question": "A company has a two-tier application architecture that runs in public and private subnets. Amazon EC2 instances running the web application are in the public subnet and an EC2 instance for the database runs on the private subnet. The web application instances and the database are running in a single Availability Zone (AZ). Which combination of steps should a solutions architect take to provide high availability for this architecture? (Choose TWO)",
+    "domain": "Design Resilient Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "type": "multiple",
+    "answers": [
+      {
+        "text": "Create new public and private subnets in the same AZ.",
+        "status": "skipped",
+        "explanation": "More subnets in the same Availability Zone do not provide AZ-level redundancy."
+      },
+      {
+        "text": "Create an Amazon EC2 Auto Scaling group and Application Load Balancer spanning multiple AZs for the web application instances.",
+        "status": "correct",
+        "explanation": "An Auto Scaling group behind an Application Load Balancer across multiple AZs improves web-tier availability."
+      },
+      {
+        "text": "Add the existing web application instances to an Auto Scaling group behind an Application Load Balancer.",
+        "status": "skipped",
+        "explanation": "Using only the existing single-AZ instances does not add multi-AZ redundancy."
+      },
+      {
+        "text": "Create new public and private subnets in a new AZ. Create a database using an EC2 instance in the public subnet in the new AZ. Migrate the old database contents to the new database.",
+        "status": "skipped",
+        "explanation": "A database in a public subnet weakens the design and manually managing EC2 database failover is not the high-availability pattern requested."
+      },
+      {
+        "text": "Create new public and private subnets in the same VPC, each in a new AZ. Create an Amazon RDS Multi-AZ DB instance in the private subnets. Migrate the old database contents to the new DB instance.",
+        "status": "correct",
+        "explanation": "New subnets in another AZ plus an RDS Multi-AZ deployment provide managed database high availability in private subnets."
+      }
+    ]
+  },
+  {
+    "id": 157,
     "question": "A photo-sharing application stores millions of new objects per hour in Amazon S3. Upload and read traffic is spread across many users, and the team wants higher aggregate request throughput without changing durability requirements. Which design best supports the expected S3 request rate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html",
@@ -4614,7 +4803,7 @@
     ]
   },
   {
-    "id": 152,
+    "id": 158,
     "question": "A media company uploads 80 GB video files from a processing fleet to Amazon S3. Single PUT requests are slow and occasionally fail late in the transfer. Which upload method should the company use to improve throughput and recovery?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html",
@@ -4643,7 +4832,7 @@
     ]
   },
   {
-    "id": 153,
+    "id": 159,
     "question": "A global customer base uploads large design files to one S3 bucket in us-east-1. Users in Asia and Europe report poor upload latency over the public internet. Which S3 feature can improve long-distance upload performance with minimal application changes?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/transfer-acceleration.html",
@@ -4672,7 +4861,7 @@
     ]
   },
   {
-    "id": 154,
+    "id": 160,
     "question": "A data lake ingestion service writes thousands of objects per second to Amazon S3 and periodically uploads 50 GB compressed files. The team must improve aggregate throughput and make large uploads more resilient. (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html",
@@ -4706,7 +4895,7 @@
     ]
   },
   {
-    "id": 155,
+    "id": 161,
     "question": "A database on Amazon EC2 requires very low storage latency and must sustain more IOPS than general purpose SSD volumes can provide. The instance type supports the highest EBS performance features. Which EBS volume type is the best fit?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
@@ -4735,7 +4924,7 @@
     ]
   },
   {
-    "id": 156,
+    "id": 162,
     "question": "An application uses EC2 instances with EBS volumes for a transactional workload. The current gp2 volumes are oversized only to get enough IOPS, and the team wants to tune IOPS and throughput independently. Which volume type should be selected?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
@@ -4764,7 +4953,7 @@
     ]
   },
   {
-    "id": 157,
+    "id": 163,
     "question": "A team is tuning storage for two EC2 workloads: a latency-sensitive database that needs high random IOPS, and a log analytics system that reads large files sequentially. Which storage choices are performance aligned? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
@@ -4798,7 +4987,7 @@
     ]
   },
   {
-    "id": 158,
+    "id": 164,
     "question": "A Linux application runs on hundreds of EC2 instances across multiple Availability Zones and needs shared POSIX file storage. File activity is bursty and the team does not want to provision throughput manually. Which storage service and throughput mode should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
@@ -4827,7 +5016,7 @@
     ]
   },
   {
-    "id": 159,
+    "id": 165,
     "question": "A company has a large EFS file system used by thousands of container tasks. The workload can tolerate slightly higher metadata latency but needs the highest aggregate throughput and operations per second. Which EFS performance mode is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
@@ -4856,7 +5045,7 @@
     ]
   },
   {
-    "id": 160,
+    "id": 166,
     "question": "A machine learning team runs short-lived training clusters that require a high-performance shared file system and fast access to training data stored in Amazon S3. Which AWS storage service best fits this workload?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html",
@@ -4885,7 +5074,7 @@
     ]
   },
   {
-    "id": 161,
+    "id": 167,
     "question": "A Windows-based line-of-business application requires shared file storage that supports SMB, Windows ACLs, and integration with Microsoft Active Directory. The workload is sensitive to file-server latency. Which service should be selected?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html",
@@ -4914,7 +5103,7 @@
     ]
   },
   {
-    "id": 162,
+    "id": 168,
     "question": "A company is moving a large on-premises NFS data set to AWS. The migration must run repeatedly during a transition period, and the production application also needs low-latency access from the data center to files stored in AWS. Which services can address these needs? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
@@ -4948,7 +5137,7 @@
     ]
   },
   {
-    "id": 163,
+    "id": 169,
     "question": "A branch office needs local SMB access to recently used files while the authoritative copy is stored durably in AWS. Users should not need to change to an object API. Which service meets this performance pattern?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
@@ -4977,7 +5166,7 @@
     ]
   },
   {
-    "id": 164,
+    "id": 170,
     "question": "A stateless image rendering service spends most of its time performing CPU-bound calculations and has little memory pressure. The team wants the best EC2 instance family orientation for high processor performance. Which instance family should be evaluated first?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
@@ -5006,7 +5195,7 @@
     ]
   },
   {
-    "id": 165,
+    "id": 171,
     "question": "An in-memory analytics engine keeps a large working set in RAM and shows frequent paging on current instances. CPU use is moderate, but query latency rises when memory pressure increases. Which EC2 instance family is the best starting point?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
@@ -5035,7 +5224,7 @@
     ]
   },
   {
-    "id": 166,
+    "id": 172,
     "question": "A tightly coupled HPC simulation runs on EC2 instances and sends frequent low-latency messages between nodes. The application needs the lowest network latency and highest packet-per-second performance inside one Availability Zone. Which placement strategy should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
@@ -5064,7 +5253,7 @@
     ]
   },
   {
-    "id": 167,
+    "id": 173,
     "question": "A distributed NoSQL cluster on EC2 stores several replicas of each shard. The architect wants to reduce the effect of a single rack-level failure while keeping related nodes grouped by shard. Which placement group strategy is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
@@ -5093,7 +5282,7 @@
     ]
   },
   {
-    "id": 168,
+    "id": 174,
     "question": "A web service runs behind an Application Load Balancer and an Auto Scaling group. The request rate varies throughout the day, and the team wants the group to automatically maintain a steady number of requests per target. Which scaling policy should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
@@ -5122,7 +5311,7 @@
     ]
   },
   {
-    "id": 169,
+    "id": 175,
     "question": "An Auto Scaling group needs to add a small number of instances when CPU is moderately high and add many instances when CPU is extremely high. Which policy type supports different scaling adjustments for different alarm breach sizes?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
@@ -5151,7 +5340,7 @@
     ]
   },
   {
-    "id": 170,
+    "id": 176,
     "question": "An EC2 Auto Scaling group hosts a public API with predictable weekday peaks and occasional unexpected surges. The company wants responsive capacity while avoiding constant manual changes. Which scaling approaches are appropriate? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html",
@@ -5185,7 +5374,7 @@
     ]
   },
   {
-    "id": 171,
+    "id": 177,
     "question": "A Lambda function performs CPU-heavy JSON transformations. Profiling shows the function is slow, but code optimization opportunities are limited. Which configuration change can improve CPU performance for the function?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html",
@@ -5214,7 +5403,7 @@
     ]
   },
   {
-    "id": 172,
+    "id": 178,
     "question": "A serverless API has strict p95 latency requirements and receives sudden traffic spikes after marketing emails. Cold starts during spikes are causing latency outliers. Which Lambda feature should be configured for the critical function alias?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html",
@@ -5243,7 +5432,7 @@
     ]
   },
   {
-    "id": 173,
+    "id": 179,
     "question": "A company runs containerized web services with variable traffic and wants to avoid managing EC2 capacity while still scaling tasks horizontally. Which compute option best fits the requirement?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
@@ -5272,7 +5461,7 @@
     ]
   },
   {
-    "id": 174,
+    "id": 180,
     "question": "A genomics company must process thousands of independent batch jobs. Each job can run in a container, and the compute fleet should scale up for the queue and scale down when work is complete. Which service should orchestrate the workload?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html",
@@ -5301,7 +5490,7 @@
     ]
   },
   {
-    "id": 175,
+    "id": 181,
     "question": "A data engineering team needs to run Apache Spark jobs over terabytes of data in S3. The team wants managed cluster provisioning and the ability to tune cluster size for each workload. Which service is the best fit?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
@@ -5330,7 +5519,7 @@
     ]
   },
   {
-    "id": 176,
+    "id": 182,
     "question": "A latency-sensitive trading analytics platform runs on EC2 and has both compute-heavy services and tightly coupled messaging nodes. Which design choices can improve compute and network performance? (Choose THREE)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
@@ -5364,7 +5553,7 @@
     ]
   },
   {
-    "id": 177,
+    "id": 183,
     "question": "A Lambda-based image API has inconsistent latency during traffic spikes and CPU-bound resizing tasks. Which configuration changes should be evaluated to improve performance? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html",
@@ -5398,7 +5587,7 @@
     ]
   },
   {
-    "id": 178,
+    "id": 184,
     "question": "An Amazon RDS for MySQL database handles a write-heavy order system and many reporting queries. Reporting queries are causing read contention on the primary database, but the reports can tolerate replication lag. What should the architect add?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
@@ -5427,7 +5616,7 @@
     ]
   },
   {
-    "id": 179,
+    "id": 185,
     "question": "An Aurora MySQL application has one writer and several Aurora Replicas. The application should distribute read-only queries across healthy replicas without hard-coding instance endpoints. Which endpoint should it use for reads?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html",
@@ -5456,7 +5645,7 @@
     ]
   },
   {
-    "id": 180,
+    "id": 186,
     "question": "A serverless application opens many short-lived connections to an Amazon RDS database during bursts. The database spends too much time handling connection churn, and the team wants to pool and reuse connections. Which service should be added?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
@@ -5485,7 +5674,7 @@
     ]
   },
   {
-    "id": 181,
+    "id": 187,
     "question": "A new DynamoDB-backed application expects unpredictable traffic spikes after social media campaigns. The team does not have reliable capacity forecasts and wants the table to handle changing request rates without capacity planning. Which capacity mode should be used initially?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html",
@@ -5514,7 +5703,7 @@
     ]
   },
   {
-    "id": 182,
+    "id": 188,
     "question": "A DynamoDB table has steady, predictable traffic with a known daily peak window. The company wants cost-efficient throughput while still allowing automatic adjustments around the peak. Which configuration is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html",
@@ -5543,7 +5732,7 @@
     ]
   },
   {
-    "id": 183,
+    "id": 189,
     "question": "A gaming leaderboard reads the same DynamoDB items many times per second. The workload is read-heavy, eventually consistent reads are acceptable, and microsecond response times are desired. Which service can be placed in front of DynamoDB?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
@@ -5572,7 +5761,7 @@
     ]
   },
   {
-    "id": 184,
+    "id": 190,
     "question": "An application repeatedly queries a relational database for product catalog data that changes only a few times per hour. Database CPU is high because the same read queries are executed by many web servers. Which service should be added to reduce read latency and database load?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
@@ -5601,7 +5790,7 @@
     ]
   },
   {
-    "id": 185,
+    "id": 191,
     "question": "A session store must support sub-millisecond access for ephemeral key-value data. The application can rebuild sessions if a cache node fails, and no complex data structures are required. Which caching option is suitable?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html",
@@ -5630,7 +5819,7 @@
     ]
   },
   {
-    "id": 186,
+    "id": 192,
     "question": "A SaaS application uses Aurora PostgreSQL and has unpredictable scaling needs during onboarding events. The team wants relational compatibility and capacity that can scale more granularly than manually resizing fixed DB instances. Which option should be evaluated?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html",
@@ -5659,7 +5848,7 @@
     ]
   },
   {
-    "id": 187,
+    "id": 193,
     "question": "An application has a relational order database that is overloaded by read traffic. Some reads need fresh relational data, while product metadata can be cached for minutes. Which changes improve read performance without moving writes off the primary database? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
@@ -5693,7 +5882,7 @@
     ]
   },
   {
-    "id": 188,
+    "id": 194,
     "question": "A DynamoDB table receives heavy traffic for a small set of popular tenant IDs, causing throttling on hot partitions. The application can adjust its access pattern and has repeated reads for popular items. Which actions can improve performance? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
@@ -5727,7 +5916,7 @@
     ]
   },
   {
-    "id": 189,
+    "id": 195,
     "question": "A high-traffic relational application must improve database performance. It has many short-lived application connections, frequent repeated lookups, and separate reporting reads that can be slightly stale. Which options can help? (Choose THREE)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
@@ -5761,7 +5950,7 @@
     ]
   },
   {
-    "id": 190,
+    "id": 196,
     "question": "A fraud detection system needs to traverse relationships between accounts, devices, IP addresses, and transactions with millisecond query latency. The data model is highly connected and queries follow graph patterns. Which database service is the best fit?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/neptune/latest/userguide/intro.html",
@@ -5790,7 +5979,7 @@
     ]
   },
   {
-    "id": 191,
+    "id": 197,
     "question": "An application must provide low-latency search over product descriptions, logs, and free-form text. Users need relevance-ranked results and filtering at query time. Which AWS service should be evaluated?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html",
@@ -5819,7 +6008,7 @@
     ]
   },
   {
-    "id": 192,
+    "id": 198,
     "question": "A team is migrating an application that already uses MongoDB-compatible document APIs. The workload requires a managed document database with scalable read capacity and minimal application rewrite. Which service should be considered?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html",
@@ -5848,7 +6037,7 @@
     ]
   },
   {
-    "id": 193,
+    "id": 199,
     "question": "A website serves static assets and dynamic API responses to users around the world. The team wants to reduce latency for cacheable content and offload requests from the origin. Which service should be placed in front of the origin?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -5877,7 +6066,7 @@
     ]
   },
   {
-    "id": 194,
+    "id": 200,
     "question": "An application serves private video files from S3 to viewers worldwide. Most viewers watch the same popular files repeatedly, and origin egress must be reduced. Which architecture is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -5906,7 +6095,7 @@
     ]
   },
   {
-    "id": 195,
+    "id": 201,
     "question": "A multiplayer application uses UDP and TCP endpoints in multiple AWS Regions. Users connect over the public internet, and the company wants static anycast IP addresses plus routing to the healthiest low-latency regional endpoint. Which service should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
@@ -5935,7 +6124,7 @@
     ]
   },
   {
-    "id": 196,
+    "id": 202,
     "question": "A financial application uses long-lived TCP connections and requires very high throughput with ultra-low latency. The load balancer must preserve client IP addresses and operate at Layer 4. Which load balancer type should be selected?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html",
@@ -5964,7 +6153,7 @@
     ]
   },
   {
-    "id": 197,
+    "id": 203,
     "question": "A microservices application exposes HTTPS endpoints and must route requests to different target groups based on host headers and URL paths. Which AWS load balancing option should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
@@ -5993,7 +6182,7 @@
     ]
   },
   {
-    "id": 198,
+    "id": 204,
     "question": "A company transfers large data sets between an on-premises data center and AWS every day. Internet VPN performance is inconsistent, and the company wants a dedicated private network connection with more predictable bandwidth. Which service should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
@@ -6022,7 +6211,7 @@
     ]
   },
   {
-    "id": 199,
+    "id": 205,
     "question": "A company needs encrypted connectivity from a branch office to a VPC within days. The bandwidth requirements are moderate, and the team can use the public internet for transport. Which connectivity option is fastest to establish?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html",
@@ -6051,7 +6240,7 @@
     ]
   },
   {
-    "id": 200,
+    "id": 206,
     "question": "A SaaS provider exposes an API hosted behind a Network Load Balancer in its VPC. Customer VPCs should access the service privately without public IPs, NAT gateways, or VPC peering. Which networking service should the provider use?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
@@ -6080,7 +6269,7 @@
     ]
   },
   {
-    "id": 201,
+    "id": 207,
     "question": "A company serves a public application to global users. Static files should be cached close to users, and non-cacheable TCP traffic should enter the AWS network through the closest edge location and route to healthy regional endpoints. Which services fit these needs? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -6114,7 +6303,7 @@
     ]
   },
   {
-    "id": 202,
+    "id": 208,
     "question": "An application has three traffic patterns: HTTP path-based routing for APIs, high-throughput TCP routing for a custom protocol, and global caching of static images. Which AWS services are appropriate? (Choose THREE)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
@@ -6148,7 +6337,7 @@
     ]
   },
   {
-    "id": 203,
+    "id": 209,
     "question": "A public web application must remain responsive if one Availability Zone has issues. The architecture uses an internet-facing load balancer and private application instances. Which subnet placement is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html",
@@ -6177,7 +6366,7 @@
     ]
   },
   {
-    "id": 204,
+    "id": 210,
     "question": "An application ingests clickstream events from thousands of producers. Multiple consumer applications must process the same ordered stream in near real time, and consumers need control over replay from earlier positions. Which service should be selected?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html",
@@ -6206,7 +6395,7 @@
     ]
   },
   {
-    "id": 205,
+    "id": 211,
     "question": "A security team wants to load streaming application logs into Amazon S3 for later Athena queries. The team does not want to manage stream consumers or custom delivery code. Which service is the simplest fit?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
@@ -6235,7 +6424,7 @@
     ]
   },
   {
-    "id": 206,
+    "id": 212,
     "question": "A company is choosing a streaming platform. One workload needs custom low-latency consumers with replay control, and another team needs compatibility with existing Apache Kafka clients and tooling. Which services are appropriate? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/msk/latest/developerguide/what-is-msk.html",
@@ -6269,7 +6458,7 @@
     ]
   },
   {
-    "id": 207,
+    "id": 213,
     "question": "A data lake stores raw JSON files in S3. The analytics team needs a managed ETL service to discover schemas, transform the data into Parquet, and write curated datasets back to S3. Which service should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html",
@@ -6298,7 +6487,7 @@
     ]
   },
   {
-    "id": 208,
+    "id": 214,
     "question": "A business analyst wants to run ad hoc SQL queries directly against structured files stored in Amazon S3. The team wants a serverless query service and does not want to load the data into a database first. Which service should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
@@ -6327,7 +6516,7 @@
     ]
   },
   {
-    "id": 209,
+    "id": 215,
     "question": "A research institute needs to move 200 TB of data from an on-premises file system to Amazon S3 over an existing network connection. The transfer must be incremental after the first copy and should include scheduling and verification features. Which service should be used?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
@@ -6356,7 +6545,7 @@
     ]
   },
   {
-    "id": 210,
+    "id": 216,
     "question": "A factory application must keep using local iSCSI block storage while asynchronously backing the data to AWS. The local appliance should provide low-latency access for the factory systems. Which AWS service pattern matches this requirement?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
@@ -6385,7 +6574,7 @@
     ]
   },
   {
-    "id": 211,
+    "id": 217,
     "question": "A streaming analytics pipeline must support near-real-time processing of events and also persist raw events to S3 for later analysis. The team wants independent consumers for real-time processing and managed delivery to the data lake. Which services should be combined? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html",
@@ -6419,7 +6608,7 @@
     ]
   },
   {
-    "id": 212,
+    "id": 218,
     "question": "A data lake team stores curated Parquet data in S3. Analysts need SQL access, and ETL jobs need a shared metadata catalog so tables are consistently discovered. Which services meet these needs? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
@@ -6453,7 +6642,7 @@
     ]
   },
   {
-    "id": 213,
+    "id": 219,
     "question": "A company is building a data ingestion architecture for application logs. Logs should be buffered, optionally transformed, delivered to S3, cataloged for discovery, and queried with SQL without managing servers. Which components are appropriate? (Choose THREE)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
@@ -6487,7 +6676,7 @@
     ]
   },
   {
-    "id": 214,
+    "id": 220,
     "question": "A data science team runs complex Spark transformations with custom libraries and wants fine control over cluster configuration. The input and output data are in S3, and jobs run for several hours. Which service is most appropriate?",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
@@ -6516,7 +6705,7 @@
     ]
   },
   {
-    "id": 215,
+    "id": 221,
     "question": "A company must keep a data lake synchronized with large on-premises file shares and then query the migrated data in AWS using standard SQL. Which services should be used together? (Choose TWO)",
     "domain": "Design High-Performing Architectures",
     "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
@@ -6550,7 +6739,65 @@
     ]
   },
   {
-    "id": 216,
+    "id": 222,
+    "question": "A website runs a custom web application that receives a burst of traffic each day at noon. The users upload new pictures and content daily, but have been complaining of timeouts. The architecture uses Amazon EC2 Auto Scaling groups, and the application consistently takes 1 minute to initiate upon boot up before responding to user requests. How should a solutions architect redesign the architecture to better respond to changing traffic?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-warmup.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Configure a Network Load Balancer with a slow start configuration.",
+        "status": "skipped",
+        "explanation": "Slow start is an Application Load Balancer target group feature, not a Network Load Balancer setting for EC2 boot warmup."
+      },
+      {
+        "text": "Configure Amazon ElastiCache for Redis to offload direct requests from the EC2 instances.",
+        "status": "skipped",
+        "explanation": "Caching can reduce repeated reads, but it does not address Auto Scaling adding instances before they are ready."
+      },
+      {
+        "text": "Configure an Auto Scaling step scaling policy with an EC2 instance warmup condition.",
+        "status": "correct",
+        "explanation": "Instance warmup keeps newly launched instances out of aggregated scaling metrics until they are ready, improving response to predictable bursts."
+      },
+      {
+        "text": "Configure Amazon CloudFront to use an Application Load Balancer as the origin.",
+        "status": "skipped",
+        "explanation": "CloudFront can cache content at edge locations, but it does not solve the instance initialization delay for uncached uploads and dynamic requests."
+      }
+    ]
+  },
+  {
+    "id": 223,
+    "question": "An application running on AWS uses an Amazon Aurora Multi-AZ DB cluster deployment for its database. When evaluating performance metrics, a solutions architect discovered that the database reads are causing high I/O and adding latency to the write requests against the database. What should the solutions architect do to separate the read requests from the write requests?",
+    "domain": "Design High-Performing Architectures",
+    "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Enable read-through caching on the Aurora database.",
+        "status": "skipped",
+        "explanation": "Aurora does not provide a database-level read-through cache setting that separates read and write endpoints."
+      },
+      {
+        "text": "Update the application to read from the Multi-AZ standby instance.",
+        "status": "skipped",
+        "explanation": "Aurora read scaling uses Aurora Replicas and reader endpoints, not reads from a traditional standby instance."
+      },
+      {
+        "text": "Create an Aurora replica and modify the application to use the appropriate endpoints.",
+        "status": "correct",
+        "explanation": "Aurora Replicas can serve read traffic through reader endpoints, separating reads from writes on the writer endpoint."
+      },
+      {
+        "text": "Create a second Aurora database and link it to the primary database as a read replica.",
+        "status": "skipped",
+        "explanation": "Aurora Replicas belong to the same Aurora DB cluster and share storage; creating a separate database is not the normal read-scaling pattern."
+      }
+    ]
+  },
+  {
+    "id": 224,
     "question": "A media company stores 80 TB of objects in Amazon S3. New objects are downloaded heavily for the first month, and then only a small unpredictable subset is accessed for audits with immediate retrieval required. Which storage choice is most cost-effective without manually analyzing object access patterns?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html",
@@ -6579,7 +6826,7 @@
     ]
   },
   {
-    "id": 217,
+    "id": 225,
     "question": "A healthcare application stores image files that are rarely opened after they are processed. Clinicians occasionally need any archived image to appear in the application within milliseconds. Which S3 storage class should be selected to reduce storage cost while preserving instant retrieval?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html",
@@ -6608,7 +6855,7 @@
     ]
   },
   {
-    "id": 218,
+    "id": 226,
     "question": "An application writes access logs to Amazon S3 every hour. The logs must stay searchable for 90 days, then be retained at the lowest practical cost for seven years before deletion. Which approach automates the storage cost reduction?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
@@ -6637,7 +6884,7 @@
     ]
   },
   {
-    "id": 219,
+    "id": 227,
     "question": "A fleet of EC2 instances uses large gp2 EBS volumes that were sized mainly to obtain enough IOPS. Monitoring shows the application needs less capacity than provisioned but still needs predictable IOPS and throughput. What is the most cost-effective EBS change?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
@@ -6666,7 +6913,7 @@
     ]
   },
   {
-    "id": 220,
+    "id": 228,
     "question": "A shared Amazon EFS file system stores engineering project files. Most files are edited during the first week and then remain untouched for months, but users still need POSIX file access when older files are opened. Which configuration reduces cost with minimal application change?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html",
@@ -6695,7 +6942,7 @@
     ]
   },
   {
-    "id": 221,
+    "id": 229,
     "question": "A university publishes a large public research dataset in an S3 bucket. External researchers download terabytes of data each month, and the university wants requesters to pay eligible request and data transfer charges. Which S3 feature should be used?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/RequesterPaysBuckets.html",
@@ -6724,7 +6971,7 @@
     ]
   },
   {
-    "id": 222,
+    "id": 230,
     "question": "A company must copy new files every night from an on-premises NFS share to Amazon S3. The team wants encryption in transit, data validation, scheduling, and bandwidth limits without building custom transfer scripts. Which service best meets the requirement?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html",
@@ -6753,7 +7000,7 @@
     ]
   },
   {
-    "id": 223,
+    "id": 231,
     "question": "A laboratory needs to migrate 700 TB of instrument data to Amazon S3. Its internet connection is slow, and using the WAN would delay the project for months while disrupting daily operations. Which migration option is the most cost-effective fit?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/snowball/latest/developer-guide/whatisedge.html",
@@ -6782,7 +7029,7 @@
     ]
   },
   {
-    "id": 224,
+    "id": 232,
     "question": "A company backs up EBS volumes, EFS file systems, and DynamoDB tables in several accounts. Compliance requires centralized policy management, automatic expiration, and lower-cost storage for old recovery points where supported. Which service should be used?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
@@ -6811,7 +7058,7 @@
     ]
   },
   {
-    "id": 225,
+    "id": 233,
     "question": "A financial modeling team runs short-lived HPC jobs on EC2. The input data is stored in S3, intermediate files can be recreated, and the team needs very high shared file throughput only during each run. Which storage design is most cost-effective?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/fsx/latest/LustreGuide/using-fsx-lustre.html",
@@ -6840,7 +7087,7 @@
     ]
   },
   {
-    "id": 226,
+    "id": 234,
     "question": "A data lake stores 500 TB in S3 Standard. Raw objects older than 30 days are rarely accessed but must remain immediately retrievable, and all raw objects must be deleted after five years. Which actions reduce cost while meeting the requirements? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
@@ -6874,7 +7121,7 @@
     ]
   },
   {
-    "id": 227,
+    "id": 235,
     "question": "An operations team finds hundreds of EBS volumes that were created with more capacity and IOPS than the applications currently use. The applications can tolerate general-purpose SSD latency. Which actions should the team take to reduce EBS cost? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
@@ -6908,7 +7155,7 @@
     ]
   },
   {
-    "id": 228,
+    "id": 236,
     "question": "A startup wants to reduce storage and backup costs across a data lake, shared engineering file system, and long-term backups. Which actions are appropriate cost optimizations? (Choose THREE)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
@@ -6947,7 +7194,7 @@
     ]
   },
   {
-    "id": 229,
+    "id": 237,
     "question": "An image processing service creates thumbnails that can be regenerated from original images. The thumbnails are accessed infrequently and the business accepts losing them if a single Availability Zone is lost. Which S3 storage class can reduce cost for this data?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html",
@@ -6976,7 +7223,7 @@
     ]
   },
   {
-    "id": 230,
+    "id": 238,
     "question": "A retailer receives daily files from suppliers over SFTP. The company wants the files to land directly in Amazon S3 and wants to avoid patching or scaling EC2-based SFTP servers. Which service should be used?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html",
@@ -7005,7 +7252,7 @@
     ]
   },
   {
-    "id": 231,
+    "id": 239,
     "question": "A genomics team runs batch analysis jobs that can checkpoint progress and retry interrupted tasks. The jobs need thousands of vCPUs for a few hours and have flexible start times. Which EC2 purchasing option is most cost-effective?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
@@ -7034,7 +7281,7 @@
     ]
   },
   {
-    "id": 232,
+    "id": 240,
     "question": "A company has predictable baseline compute usage across EC2, AWS Fargate, and AWS Lambda. Teams frequently change instance families and compute services as applications evolve. Which pricing model provides discounted compute while preserving the most flexibility?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
@@ -7063,7 +7310,7 @@
     ]
   },
   {
-    "id": 233,
+    "id": 241,
     "question": "An application will run continuously on a known EC2 instance family in one Region for the next three years. The team wants a commitment-based discount but does not need flexibility across instance families. Which purchase option is best aligned?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
@@ -7092,7 +7339,7 @@
     ]
   },
   {
-    "id": 234,
+    "id": 242,
     "question": "A ticketing site receives heavy traffic every weekday from 8 AM to 10 AM and very little traffic overnight. The application runs on an Auto Scaling group and can add instances before the rush starts. Which scaling approach reduces cost while maintaining capacity during the known peak?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
@@ -7121,7 +7368,7 @@
     ]
   },
   {
-    "id": 235,
+    "id": 243,
     "question": "A development analytics workstation on EC2 takes 30 minutes to load a large in-memory model. It is idle every night, and the user wants to stop paying for compute while resuming the next morning with memory state preserved. Which feature should be used if the instance type and AMI support it?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html",
@@ -7150,7 +7397,7 @@
     ]
   },
   {
-    "id": 236,
+    "id": 244,
     "question": "A reporting API is called in short bursts at the end of each month and receives almost no traffic the rest of the time. The team wants to avoid paying for idle servers and does not need control of the operating system. Which compute model is most cost-effective?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
@@ -7179,7 +7426,7 @@
     ]
   },
   {
-    "id": 237,
+    "id": 245,
     "question": "A company suspects many EC2 instances are oversized after a migration. Engineers want recommendations based on observed CPU, memory, network, and storage metrics before changing instance families or sizes. Which service should they use?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
@@ -7208,7 +7455,7 @@
     ]
   },
   {
-    "id": 238,
+    "id": 246,
     "question": "An EC2-hosted application has steady 15 percent CPU utilization and low network throughput on memory-optimized instances. Load tests show that general-purpose instances meet the performance target. What should the architect do to optimize cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html",
@@ -7237,7 +7484,7 @@
     ]
   },
   {
-    "id": 239,
+    "id": 247,
     "question": "A video transcoding pipeline can retry jobs when workers are interrupted, and each job writes checkpoints to durable storage. The team wants the lowest EC2 cost while keeping throughput high. Which design choices are appropriate? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
@@ -7271,7 +7518,7 @@
     ]
   },
   {
-    "id": 240,
+    "id": 248,
     "question": "A production web tier has a stable 24/7 baseline and a stateless scale-out layer for unpredictable traffic spikes. The business requires the baseline to be continuously available but can tolerate interruption of some burst capacity. Which cost actions fit this pattern? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
@@ -7305,7 +7552,7 @@
     ]
   },
   {
-    "id": 241,
+    "id": 249,
     "question": "A development environment runs many EC2 instances during business hours but is mostly idle overnight and on weekends. Teams also suspect several instances are larger than needed. Which actions should reduce cost without changing the application architecture? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
@@ -7339,7 +7586,7 @@
     ]
   },
   {
-    "id": 242,
+    "id": 250,
     "question": "A containerized cleanup job runs for six minutes after files arrive and may not run for days. The team currently keeps EC2 container hosts online only for this task. Which change most directly reduces idle compute cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
@@ -7368,7 +7615,7 @@
     ]
   },
   {
-    "id": 243,
+    "id": 251,
     "question": "A new mobile game stores player state in DynamoDB. The launch campaign may produce a large spike or very low traffic, and the team has no reliable forecast yet. Which capacity mode is the most cost-effective starting point?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CostOptimization.html",
@@ -7397,7 +7644,7 @@
     ]
   },
   {
-    "id": 244,
+    "id": 252,
     "question": "A DynamoDB table now has stable traffic after six months of production use. The workload has predictable daily peaks, and the team wants to lower recurring read and write cost while maintaining scaling for normal variation. Which approach should be used?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CostOptimization.html",
@@ -7426,7 +7673,7 @@
     ]
   },
   {
-    "id": 245,
+    "id": 253,
     "question": "A DynamoDB table supports a mature SaaS product with a predictable minimum level of read and write capacity every hour. The company can commit to that baseline for a one-year term. Which option can reduce cost for the baseline?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CostOptimization.html",
@@ -7455,7 +7702,7 @@
     ]
   },
   {
-    "id": 246,
+    "id": 254,
     "question": "A development team uses an Aurora-compatible database for integration tests. The database is idle most nights and weekends but occasionally needs to scale for load tests. Which option best reduces cost while preserving Aurora compatibility?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html",
@@ -7484,7 +7731,7 @@
     ]
   },
   {
-    "id": 247,
+    "id": 255,
     "question": "A production Amazon RDS database runs continuously with stable CPU, memory, and I/O requirements. The organization expects to keep it for at least three years and wants to lower database instance cost. Which option is most appropriate?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithReservedDBInstances.html",
@@ -7513,7 +7760,7 @@
     ]
   },
   {
-    "id": 248,
+    "id": 256,
     "question": "A team deleted several test RDS databases but kept manual snapshots indefinitely. Monthly storage reports show the snapshots are now a major cost, and the team only needs 30 days of rollback for test data. What should they do?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://aws.amazon.com/rds/features/backup/",
@@ -7542,7 +7789,7 @@
     ]
   },
   {
-    "id": 249,
+    "id": 257,
     "question": "An online store repeatedly reads the same product catalog rows from an RDS database during peak traffic. Database CPU scales up even though the data changes only a few times per day. Which design can reduce database load and cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.html",
@@ -7571,7 +7818,7 @@
     ]
   },
   {
-    "id": 250,
+    "id": 258,
     "question": "A company is reviewing DynamoDB costs for several applications. One new table has unpredictable traffic, while a mature table has stable traffic and many session records that expire after 24 hours. Which actions are appropriate? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/CostOptimization.html",
@@ -7605,7 +7852,7 @@
     ]
   },
   {
-    "id": 251,
+    "id": 259,
     "question": "A company runs several RDS databases with stable production usage and separate test databases. Finance reports high database cost from production instance hours and old test snapshots. Which actions should reduce cost while preserving production service levels? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithReservedDBInstances.html",
@@ -7639,7 +7886,7 @@
     ]
   },
   {
-    "id": 252,
+    "id": 260,
     "question": "A SaaS product has a PostgreSQL-compatible database with long quiet periods and sudden bursts when customers run reports. The team wants automatic capacity adjustment and does not want to manage separate read replicas for this pattern. Which database option should be considered?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html",
@@ -7668,7 +7915,7 @@
     ]
   },
   {
-    "id": 253,
+    "id": 261,
     "question": "A DynamoDB table stores password reset tokens and shopping carts that are invalid after a short period. The application currently leaves these records in the table indefinitely. Which feature can reduce storage cost with minimal operational effort?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html",
@@ -7697,7 +7944,7 @@
     ]
   },
   {
-    "id": 254,
+    "id": 262,
     "question": "An e-commerce platform wants to lower database-related cost without reducing customer-facing availability. The workload has a steady production RDS writer, repeated product catalog reads, and years of obsolete test snapshots. Which actions are appropriate? (Choose THREE)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
@@ -7736,7 +7983,7 @@
     ]
   },
   {
-    "id": 255,
+    "id": 263,
     "question": "A workload in private subnets downloads large objects from S3 through a NAT gateway. NAT data processing charges are now significant, and the traffic does not need to leave the AWS network. What should the architect add to reduce cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
@@ -7765,7 +8012,7 @@
     ]
   },
   {
-    "id": 256,
+    "id": 264,
     "question": "An application in private subnets calls DynamoDB thousands of times per second. The calls currently traverse a NAT gateway, creating recurring processing charges. Which change should reduce network cost for this access pattern?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
@@ -7794,7 +8041,7 @@
     ]
   },
   {
-    "id": 257,
+    "id": 265,
     "question": "A global website serves the same product images and JavaScript files from an S3-backed origin. Users are distributed worldwide, and origin data transfer and request load are increasing. Which service should be added to reduce origin load and improve delivery?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -7823,7 +8070,7 @@
     ]
   },
   {
-    "id": 258,
+    "id": 266,
     "question": "A media company transfers hundreds of terabytes from AWS to its on-premises facility every month. The traffic is steady, predictable, and expected to continue for years. Which connectivity option can reduce data transfer cost compared with sending all traffic over the public internet?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
@@ -7852,7 +8099,7 @@
     ]
   },
   {
-    "id": 259,
+    "id": 267,
     "question": "Two VPCs in the same Region exchange high volumes of private traffic. There is no need for transitive routing to other VPCs or centralized inspection. Which connectivity option is typically the simplest cost-conscious choice?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html",
@@ -7881,7 +8128,7 @@
     ]
   },
   {
-    "id": 260,
+    "id": 268,
     "question": "An analytics service sends large volumes of data between EC2 workers and a self-managed database. The workers and database are spread across multiple Availability Zones even though the application does not require cross-AZ placement for this internal processing tier. What placement change can reduce data transfer cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://aws.amazon.com/ec2/pricing/on-demand/",
@@ -7910,7 +8157,7 @@
     ]
   },
   {
-    "id": 261,
+    "id": 269,
     "question": "A team replicates application logs from us-east-1 to three other Regions but only queries logs in the primary Region. Compliance no longer requires multi-Region copies. What should the team do to reduce network and storage cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
@@ -7939,7 +8186,7 @@
     ]
   },
   {
-    "id": 262,
+    "id": 270,
     "question": "A private subnet workload calls several AWS regional services through public endpoints by using a NAT gateway. Security requires private connectivity, and finance wants to compare endpoint costs with NAT processing costs. Which option should be evaluated for services that support it?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-access-aws-services.html",
@@ -7968,7 +8215,7 @@
     ]
   },
   {
-    "id": 263,
+    "id": 271,
     "question": "A VPC has private subnets in two Availability Zones. Instances in both AZs send heavy traffic to S3 and also require occasional internet access for software updates. Current route tables send all outbound traffic through one NAT gateway in a different AZ. Which changes can reduce cost while preserving required access? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-pricing.html",
@@ -8002,7 +8249,7 @@
     ]
   },
   {
-    "id": 264,
+    "id": 272,
     "question": "A news site has a high cacheable content ratio, but most users currently fetch images and articles directly from an Application Load Balancer in one Region. The team wants to reduce origin load and data transfer from the Region. Which CloudFront choices help? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
@@ -8036,7 +8283,7 @@
     ]
   },
   {
-    "id": 265,
+    "id": 273,
     "question": "A company is reviewing network charges for a multi-tier application. The application has heavy S3 access from private subnets, repeated public downloads of static assets, and chatty internal traffic that crosses Availability Zones without an availability requirement. Which changes target network cost? (Choose THREE)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
@@ -8075,7 +8322,7 @@
     ]
   },
   {
-    "id": 266,
+    "id": 274,
     "question": "A startup connects three VPCs today but expects to connect dozens of VPCs and on-premises networks with centralized routing over the next year. The team wants to avoid managing a mesh of point-to-point connections as it grows. Which networking service is designed for this hub-and-spoke model?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
@@ -8104,7 +8351,7 @@
     ]
   },
   {
-    "id": 267,
+    "id": 275,
     "question": "A branch office sends a few gigabytes of data to AWS each week and can tolerate internet VPN performance. The company does not want fixed monthly port charges. Which hybrid connectivity option is likely more cost-effective than a dedicated connection?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
@@ -8133,7 +8380,7 @@
     ]
   },
   {
-    "id": 268,
+    "id": 276,
     "question": "A private workload sends large volumes of logs to CloudWatch Logs through a NAT gateway. The security team wants private service access and the finance team wants to reduce NAT processing where possible. Which option should be considered?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html",
@@ -8162,7 +8409,7 @@
     ]
   },
   {
-    "id": 269,
+    "id": 277,
     "question": "A company has two application VPCs that need private communication for one shared service. The CIDR ranges do not overlap, and there is no requirement for either VPC to route through the other to reach a third network. Which option avoids unnecessary transit infrastructure cost?",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html",
@@ -8191,7 +8438,7 @@
     ]
   },
   {
-    "id": 270,
+    "id": 278,
     "question": "An architect is optimizing a workload that uses private subnets, centralized outbound internet access, and frequent calls to AWS services. Which design choices can reduce network charges without removing required private access? (Choose TWO)",
     "domain": "Design Cost-Optimized Architectures",
     "resource": "https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-pricing.html",
@@ -8221,6 +8468,64 @@
         "text": "Use CloudFront as the private endpoint for all AWS API calls.",
         "status": "skipped",
         "explanation": "CloudFront caches web content and does not replace VPC endpoints for private AWS API connectivity."
+      }
+    ]
+  },
+  {
+    "id": 279,
+    "question": "A solutions architect wants to design a solution to save costs for Amazon EC2 instances that do not need to run during a 2-week company shutdown. The applications running on the EC2 instances store data in instance memory that must be present when the instances resume operation. Which approach should the solutions architect recommend to shut down and resume the EC2 instances?",
+    "domain": "Design Cost-Optimized Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Modify the application to store the data on instance store volumes. Reattach the volumes while restarting them.",
+        "status": "skipped",
+        "explanation": "Instance store volumes do not preserve instance memory, and they cannot be detached and reattached like EBS volumes."
+      },
+      {
+        "text": "Snapshot the EC2 instances before stopping them. Restore the snapshot after restarting the instances.",
+        "status": "skipped",
+        "explanation": "Snapshots preserve EBS volume data, but they do not preserve the contents of instance memory."
+      },
+      {
+        "text": "Run the applications on EC2 instances enabled for hibernation. Hibernate the instances before the 2-week company shutdown.",
+        "status": "correct",
+        "explanation": "EC2 hibernation saves RAM contents to the encrypted EBS root volume and restores memory when the instance starts again."
+      },
+      {
+        "text": "Note the Availability Zone for each EC2 instance before stopping it. Restart the instances in the same Availability Zones after the 2-week company shutdown.",
+        "status": "skipped",
+        "explanation": "Restarting in the same Availability Zone does not preserve in-memory application state."
+      }
+    ]
+  },
+  {
+    "id": 280,
+    "question": "A company uses Amazon EC2 Reserved Instances to run its data processing workload. The nightly job typically takes 7 hours to run and must finish within a 10-hour time window. The company anticipates temporary increases in demand at the end of each month that will cause the job to run over the time limit with the capacity of the current resources. Once started, the processing job cannot be interrupted before completion. The company wants to implement a solution that would provide increased resource capacity as cost-effectively as possible. What should a solutions architect do to accomplish this?",
+    "domain": "Design Cost-Optimized Architectures",
+    "resource": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html",
+    "type": "single",
+    "answers": [
+      {
+        "text": "Deploy On-Demand Instances during periods of high demand.",
+        "status": "correct",
+        "explanation": "On-Demand Instances add temporary capacity without interruption risk and are billed only while they run."
+      },
+      {
+        "text": "Create a second EC2 reservation for additional instances.",
+        "status": "skipped",
+        "explanation": "A new reservation commits to capacity for a longer term than the temporary end-of-month demand requires."
+      },
+      {
+        "text": "Deploy Spot Instances during periods of high demand.",
+        "status": "skipped",
+        "explanation": "Spot Instances can be interrupted, which is not acceptable for a job that cannot stop before completion."
+      },
+      {
+        "text": "Increase the EC2 instance size in the EC2 reservation to support the increased workload.",
+        "status": "skipped",
+        "explanation": "Increasing reserved capacity for the baseline would pay for extra capacity outside the temporary demand window."
       }
     ]
   }

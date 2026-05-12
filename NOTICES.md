@@ -1,19 +1,19 @@
 # SAA-C03 Question Bank Notices
 
-Last updated: 2026-05-10
+Last updated: 2026-05-12
 
 ## Scope
 
 This file records external sources consulted while building the SAA-C03 practice question bank in `public/quiz/*.json`.
 
-All question stems, answer options, and explanations in this repository are original practice content authored for this app. Publicly available practice questions were used only as topic and exam-style seeds. No third-party commercial sampler, exam-dump page, or AWS official practice item was copied verbatim into the quiz bank.
+Most question stems, answer options, and explanations in this repository are original practice content authored for this app. The 10 AWS official sample questions from the AWS Certified Solutions Architect - Associate (SAA-C03) sample questions PDF were intentionally added to the bank with AWS attribution and app-specific answer explanations. Third-party commercial samplers and exam-dump pages were used only as topic and exam-style seeds; no third-party question text was copied.
 
 Canonical resources for quiz answers are AWS-owned documentation URLs stored in each question's `resource` field.
 
 ## AWS Sources
 
 - AWS Certified Solutions Architect - Associate (SAA-C03) exam guide: https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-associate-03/solutions-architect-associate-03.html
-- AWS Certified Solutions Architect - Associate (SAA-C03) sample questions PDF: https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Sample-Questions_C03.pdf
+- AWS Certified Solutions Architect - Associate (SAA-C03) sample questions PDF: https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Sample-Questions.pdf
 - AWS Skill Builder official practice question set (auth-gated/free): https://explore.skillbuilder.aws/learn/course/external/view/elearning/13266/aws-certified-solutions-architect-associate-official-practice-question-set-saa-c03-english
 - AWS Well-Architected Framework documentation: https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html
 

@@ -162,3 +162,27 @@
 - [ ] P5-T2 — Vercel / EC2 deployment.
 - [ ] P5-T3 — Question authoring UI.
 - [ ] P5-T4 — Spaced-repetition for missed questions.
+
+---
+
+## Phase P6 — Official AWS Samples + Hands-On Prep CLI (PLAN §15)
+
+> Goal: add AWS's official 10-question SAA-C03 sample set to the quiz bank and create a sibling CLI repository for hands-on lab tracking.
+
+- [x] **P6-T1** — Add `scripts/check-official-samples.mjs` plus `npm run check:official-samples`.
+  - **Acceptance:** Running the script fails before the official sample questions are present and passes after all 10 are added.
+
+- [x] **P6-T2** — Add the 10 official AWS SAA-C03 sample questions from the AWS PDF into the domain JSON files.
+  - **Acceptance:** Domain files validate cleanly; `npm run check:official-samples` reports all 10 official samples present.
+
+- [x] **P6-T3** — Regenerate `public/quiz/all.json` from the four domain files.
+  - **Acceptance:** `all.json` contains 280 questions with ids `1..280`, and `node scripts/validate-quiz.mjs` passes.
+
+- [x] **P6-T4** — Update `NOTICES.md`, `PLAN.md`, `PROGRESS.md`, and this file for the official sample addition and sibling repository task.
+  - **Acceptance:** Context docs cite the official AWS sample PDF, the 280-question total, and the `aws-saa-prep` CLI scope.
+
+- [x] **P6-T5** — Create `/Users/johnalexrobles/Desktop/ahleksu/aws-saa-prep` as a standalone Python `uv` CLI repository.
+  - **Acceptance:** The repo has `pyproject.toml`, README, `src/`, tests, and `.git`; `uv run pytest` and `uv run ruff check .` pass.
+
+- [x] **P6-T6** — Implement CLI commands for hands-on lab management.
+  - **Acceptance:** `init`, `new`, `list`, `show`, `status`, and `learn` work against structured lab folders with metadata and README templates.

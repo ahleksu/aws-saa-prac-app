@@ -216,3 +216,31 @@ The app is "exam-ready" when, in order:
 4. ✅ AXE shows zero serious/critical issues on every route.
 5. ✅ `ng build` (production) passes within budgets.
 6. ✅ User has run a full mock exam (`type=all`, 65 questions) and reviewed every wrong answer.
+
+## 15. Post-Readiness Additions (Official AWS Samples + Hands-On Prep)
+
+Added 2026-05-12 after the v1 exam-readiness gate.
+
+### 15.1 Official AWS sample questions
+
+- Add the 10 AWS-authored SAA-C03 sample questions from the official AWS PDF:
+  `https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Sample-Questions.pdf`
+- Preserve the existing `Question` schema and use canonical AWS documentation URLs in each question's `resource` field; keep the PDF attribution in `NOTICES.md`.
+- Normalize AWS's "Select TWO" marker to the app validator's `(Choose TWO)` convention for multiple-answer stems.
+- Add `scripts/check-official-samples.mjs` and `npm run check:official-samples` so future edits cannot accidentally remove the official sample set.
+- Regenerate `public/quiz/all.json`; the expected post-addition total is **280 questions**.
+
+### 15.2 Sibling hands-on repository
+
+Create `/Users/johnalexrobles/Desktop/ahleksu/aws-saa-prep` as a separate `uv` Python repository for AWS SAA-C03 hands-on/lab tracking across FreeCodeCamp, AWS Skill Builder, and Tutorials Dojo study activities.
+
+The CLI must support:
+
+- `aws-saa-prep init` — create the standard local folders.
+- `aws-saa-prep new "<title>" --source <source> --domain <domain>` — create a slugged hands-on folder with structured markdown and metadata.
+- `aws-saa-prep list` — list labs by status, source, and domain.
+- `aws-saa-prep show <slug>` — print lab metadata and paths.
+- `aws-saa-prep status <slug> <planned|in-progress|done|blocked>` — update lab status.
+- `aws-saa-prep learn <slug> "<note>"` — append a dated learning note.
+
+Each hands-on folder contains `README.md`, `metadata.json`, `evidence/`, and `screenshots/`. The README template tracks objective, expectations, prerequisites, AWS services, estimated cost, validation, cleanup, and learnings.
