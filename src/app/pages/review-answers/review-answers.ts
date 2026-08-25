@@ -1,19 +1,33 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 import { SelectModule } from 'primeng/select';
+import { catchError, map, of } from 'rxjs';
 
 import type {
   Answer,
   DomainSummaryMap,
+  Question,
   QuestionDomain,
   QuizResultNavigationState,
   QuizType,
   ReviewQuestion,
 } from '../../core/quiz.model';
-import { buildDomainSummary } from '../../core/quiz-results';
+import { QuizService } from '../../core/quiz.service';
+import {
+  buildDomainSummary,
+  toReviewQuestions as questionsToReviewQuestions,
+} from '../../core/quiz-results';
 
 type DomainFilter = QuestionDomain | 'All domains';
 
@@ -33,13 +47,23 @@ interface ReviewNavigationState {
   imports: [FormsModule, ButtonModule, ChipModule, SelectModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (allQuestions().length > 0) {
+    @if (isLoading()) {
+      <p class="px-4 py-10 text-center text-gray-600">Loading questions...</p>
+    } @else if (error()) {
+      <p class="px-4 py-10 text-center text-red-700">{{ error() }}</p>
+    } @else if (allQuestions().length > 0) {
       <div class="max-w-5xl mx-auto px-4 md:px-6 py-8 space-y-8">
-        <p-button
-          icon="pi pi-arrow-left"
-          label="Back to Result Overview"
-          (onClick)="goBack()"
-        />
+        @if (!isQuestionBank()) {
+          <p-button
+            icon="pi pi-arrow-left"
+            label="Back to Result Overview"
+            (onClick)="goBack()"
+          />
+        }
+
+        <h1 class="text-2xl font-bold text-gray-950">
+          {{ isQuestionBank() ? 'All Questions Review' : 'Review Answers' }}
+        </h1>
 
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div class="w-full md:w-80">
@@ -62,19 +86,25 @@ interface ReviewNavigationState {
           </div>
 
           <div class="flex flex-wrap gap-3">
-            <p-chip [label]="totalQuestions() + ' Total'" />
-            <p-chip
-              [label]="correctAnswers() + ' Correct'"
-              class="bg-green-100 text-green-900"
-            />
-            <p-chip
-              [label]="incorrectAnswers() + ' Incorrect'"
-              class="bg-red-100 text-red-900"
-            />
-            <p-chip
-              [label]="skippedAnswers() + ' Skipped'"
-              class="bg-gray-100 text-gray-800"
-            />
+            @if (isQuestionBank()) {
+              <p-chip
+                [label]="totalQuestions() + (totalQuestions() === 1 ? ' Question' : ' Questions')"
+              />
+            } @else {
+              <p-chip [label]="totalQuestions() + ' Total'" />
+              <p-chip
+                [label]="correctAnswers() + ' Correct'"
+                class="bg-green-100 text-green-900"
+              />
+              <p-chip
+                [label]="incorrectAnswers() + ' Incorrect'"
+                class="bg-red-100 text-red-900"
+              />
+              <p-chip
+                [label]="skippedAnswers() + ' Skipped'"
+                class="bg-gray-100 text-gray-800"
+              />
+            }
           </div>
         </div>
 
@@ -147,20 +177,22 @@ interface ReviewNavigationState {
                 </div>
               }
 
-              <div
-                class="text-sm px-4 py-3 rounded-md border font-semibold"
-                [class.bg-green-50]="question.isCorrect"
-                [class.border-green-600]="question.isCorrect"
-                [class.text-green-900]="question.isCorrect"
-                [class.bg-red-50]="!question.isCorrect && !question.isSkipped"
-                [class.border-red-600]="!question.isCorrect && !question.isSkipped"
-                [class.text-red-900]="!question.isCorrect && !question.isSkipped"
-                [class.bg-gray-50]="question.isSkipped"
-                [class.border-gray-400]="question.isSkipped"
-                [class.text-gray-800]="question.isSkipped"
-              >
-                {{ questionStatusLabel(question) }}
-              </div>
+              @if (!isQuestionBank()) {
+                <div
+                  class="text-sm px-4 py-3 rounded-md border font-semibold"
+                  [class.bg-green-50]="question.isCorrect"
+                  [class.border-green-600]="question.isCorrect"
+                  [class.text-green-900]="question.isCorrect"
+                  [class.bg-red-50]="!question.isCorrect && !question.isSkipped"
+                  [class.border-red-600]="!question.isCorrect && !question.isSkipped"
+                  [class.text-red-900]="!question.isCorrect && !question.isSkipped"
+                  [class.bg-gray-50]="question.isSkipped"
+                  [class.border-gray-400]="question.isSkipped"
+                  [class.text-gray-800]="question.isSkipped"
+                >
+                  {{ questionStatusLabel(question) }}
+                </div>
+              }
             </article>
           }
         </section>
@@ -188,13 +220,19 @@ interface ReviewNavigationState {
   `,
 })
 export class ReviewAnswers {
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly quizService = inject(QuizService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly allQuestions = signal<ReviewQuestion[]>([]);
   readonly selectedDomain = signal<DomainFilter>('All domains');
   readonly showAll = signal(true);
   readonly quizType = signal<QuizType>('all');
   readonly resultState = signal<QuizResultNavigationState | null>(null);
+  readonly isQuestionBank = signal(false);
+  readonly isLoading = signal(false);
+  readonly error = signal<string | null>(null);
 
   readonly domainOptions: DomainOption[] = [
     { label: 'All domains', value: 'All domains' },
@@ -236,11 +274,20 @@ export class ReviewAnswers {
   constructor() {
     const state = this.readReviewState();
 
-    if (!state) {
-      this.router.navigate(['/']);
+    if (state) {
+      this.applyReviewState(state);
       return;
     }
 
+    if (this.isAllQuestionsRoute()) {
+      this.loadAllQuestions();
+      return;
+    }
+
+    this.router.navigate(['/']);
+  }
+
+  private applyReviewState(state: ReviewNavigationState): void {
     this.allQuestions.set(state.questions);
     this.quizType.set(state.type);
     this.resultState.set(state.resultState);
@@ -308,6 +355,38 @@ export class ReviewAnswers {
       type: this.quizType(),
       questions: this.allQuestions(),
     };
+  }
+
+  private isAllQuestionsRoute(): boolean {
+    return this.route.snapshot.data['reviewMode'] === 'allQuestions';
+  }
+
+  private loadAllQuestions(): void {
+    this.isQuestionBank.set(true);
+    this.quizType.set('all');
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.quizService
+      .loadQuestions('all')
+      .pipe(
+        map((questions) => ({
+          questions: toQuestionBankReviewQuestions(questions),
+          error: null,
+        })),
+        catchError(() =>
+          of({
+            questions: [],
+            error: 'Unable to load questions. Return home and try again.',
+          }),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({ questions, error }) => {
+        this.allQuestions.set(questions);
+        this.error.set(error);
+        this.isLoading.set(false);
+      });
   }
 
   private readReviewState(): ReviewNavigationState | null {
@@ -415,6 +494,13 @@ export class ReviewAnswers {
       return questions;
     }, []);
   }
+}
+
+function toQuestionBankReviewQuestions(questions: Question[]): ReviewQuestion[] {
+  return questionsToReviewQuestions(questions, {}).map((question) => ({
+    ...question,
+    isSkipped: false,
+  }));
 }
 
 function readHistoryState(): unknown {

@@ -1,13 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import type {
+  Question,
   QuestionDomain,
   QuizResultNavigationState,
   QuizType,
   ReviewQuestion,
 } from '../../core/quiz.model';
+import { QuizService } from '../../core/quiz.service';
 import { ReviewAnswers } from './review-answers';
 
 type DomainFilter = QuestionDomain | 'All domains';
@@ -26,18 +29,24 @@ describe('ReviewAnswers', () => {
     getCurrentNavigation: ReturnType<typeof vi.fn>;
     navigate: ReturnType<typeof vi.fn>;
   };
+  let route: { snapshot: { data: Record<string, unknown> } };
+  let quizService: { loadQuestions: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     router = {
       getCurrentNavigation: vi.fn(),
       navigate: vi.fn(),
     };
+    route = { snapshot: { data: {} } };
+    quizService = { loadQuestions: vi.fn() };
     history.replaceState({}, '', location.pathname);
 
     await TestBed.configureTestingModule({
       imports: [ReviewAnswers],
       providers: [
         provideNoopAnimations(),
+        { provide: ActivatedRoute, useValue: route },
+        { provide: QuizService, useValue: quizService },
         { provide: Router, useValue: router },
       ],
     }).compileComponents();
@@ -54,6 +63,28 @@ describe('ReviewAnswers', () => {
     fixture.detectChanges();
 
     expect(router.navigate).toHaveBeenCalledWith(['/']);
+    expect(quizService.loadQuestions).not.toHaveBeenCalled();
+  });
+
+  it('loads every question from the all-question review route without result state', () => {
+    route.snapshot.data = { reviewMode: 'allQuestions' };
+    router.getCurrentNavigation.mockReturnValue(null);
+    quizService.loadQuestions.mockReturnValue(
+      of([question(10, 'Design Secure Architectures')]),
+    );
+
+    fixture = TestBed.createComponent(ReviewAnswers);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(quizService.loadQuestions).toHaveBeenCalledWith('all');
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(compiled.textContent).toContain('1 Question');
+    expect(compiled.textContent).toContain('Question stem 10');
+    expect(compiled.textContent).toContain('Question 10 Answer A explanation');
+    expect(answerCard('Question 10 Answer A').textContent).toContain('Correct answer');
+    expect(compiled.textContent).not.toContain('Back to Result Overview');
+    expect(compiled.textContent).not.toContain('Skipped');
   });
 
   it('reads questions, type, and resultState from navigation state and renders chips and cards', () => {
@@ -329,4 +360,15 @@ function reviewQuestion(
     isCorrect,
     isSkipped,
   };
+}
+
+function question(id: number, domain: QuestionDomain): Question {
+  const { userAnswer, isCorrect, isSkipped, ...baseQuestion } = reviewQuestion(
+    id,
+    domain,
+    false,
+    false,
+  );
+
+  return baseQuestion;
 }
