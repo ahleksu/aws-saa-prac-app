@@ -15,6 +15,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/result/result').then((m) => m.Result),
   },
   {
+    path: 'review/all',
+    data: { reviewMode: 'allQuestions' },
+    loadComponent: () =>
+      import('./pages/review-answers/review-answers').then(
+        (m) => m.ReviewAnswers,
+      ),
+  },
+  {
     path: 'review',
     loadComponent: () =>
       import('./pages/review-answers/review-answers').then(
